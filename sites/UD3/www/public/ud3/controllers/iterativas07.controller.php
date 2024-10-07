@@ -49,4 +49,4 @@ include 'views/iterativas07.view.php';
 include 'views/templates/footer.php';
 ?>
 
-<a href="?sec=test&<?php echo http_build_query($data)?>"></a>
+<a href="?sec=iterativas07&<?php echo http_build_query($url)?>"></a>

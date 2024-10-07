@@ -40,7 +40,7 @@
       <div class="card-body">
         <form action="" method="post">
           <div class="mb-3 col-12">
-            <label for="textarea">Inserte una cadena de números</label>
+            <label for="textarea">Inserte un número</label>
             <textarea class="form-control" id="numeros" name="numeros"
                       rows="3"><?php echo $data['input_numeros'] ?? ''; ?></textarea>
             <p class="text-danger small"><?php echo $data['errors']['numeros'] ?? ''; ?></p>

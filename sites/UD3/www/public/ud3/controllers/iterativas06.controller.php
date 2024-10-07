@@ -5,7 +5,8 @@ declare(strict_types=1);
 //comprobamos que se envien datos
 if(!empty($_POST)){
   //saneamos
-  $data['input_numeros']= filter_var($_POST['numeros'], FILTER_SANITIZE_SPECIAL_CHARS);
+    //equivalencia a filter_var
+    $data['input_numeros']=filter_input(INPUT_POST, $_POST['numeros'],FILTER_SANITIZE_SPECIAL_CHARS);
   //validamos el formulario
   $errors = checkForm($_POST['numeros']);
   //hay o no errores
@@ -13,12 +14,26 @@ if(!empty($_POST)){
     $data['errors'] = $errors;
   }else{
     //procesamiento
-    //separamos los números
-
     $data['numeros_resultantes']= cribaErastotenes($_POST['numeros']);
+
+
+      /*  Alternativa criba de clase
+
+      $multiplos = [];
+      $conjuntoNumeros = range(2,$_POST['numeros']);
+      for($i=2; $i <(int)$data['numero']; $i++){
+          if(!in_array($i,$multiplos)){
+              for($j=2; $j<(int)$data['numero']; $j++) {
+                  $multiplos[] = $i * $j;
+              }
+          }
+      }
+
+      $data['numeros_resultantes']= array_diff($conjuntoNumeros, $multiplos);*/
   }
 
 }
+
 
 //funcion que valida la entrada de datos
 function checkForm(string $number): array{
@@ -26,11 +41,16 @@ function checkForm(string $number): array{
   $errors =[];
   //no se introducen valores
   if(empty($number)){
-    $errors['numeros'] = "Inserte un valor en este campo";
+    $errors['numeros'] = "Inserte un número en este campo";
   }else{
-    if(!is_numeric($number)){
-      $errors['numeros'] = "Solo se pueden intoducir números para realizar la Criba de Erastótenes";
+      //usamos filter_var para que solo valgan los números enteros
+      //no serviría el is_number
+    if(!filter_var($number,FILTER_VALIDATE_INT)){
+      $errors['numeros'] = "Solo se pueden intoducir números enteros para realizar la Criba de Erastótenes";
     }
+      if((int)$number<2){
+          $errors['numeros'] = "Solo se pueden intoducir números enteros mayores o iguales a 2 para realizar la Criba de Erastótenes";
+      }
 
   }
 
@@ -63,6 +83,8 @@ function cribaErastotenes(string $n): array{
 
   return $primos;
 }
+
+
 
 
 /*
