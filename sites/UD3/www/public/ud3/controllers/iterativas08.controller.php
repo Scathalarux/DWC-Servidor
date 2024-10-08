@@ -17,15 +17,33 @@ if (!empty($_POST)) {
   } else {
     //procesamiento
     $data['json'] = json_decode($_POST['texto'], true);
-    $data['json'] = calcSubject($data['json']);
+    listAlumnos($data['json']);;
+    $data['json_calculos'] = calcSubject($data['json']);
   }
 }
 
-//funcion que calcula la nota media de cada asignatura
-//función que calcula los suspensos
-//función que calcula los aprobados
-//función que calcula el alumno con mejor nota
-//función que calcula el alumno con peor nota
+function listAlumnos(array $datos): array
+{
+    $suspensos = [];
+    foreach ($datos as $asignatura => $alumnos) {
+      foreach ($alumnos as $alumno => $nota) {
+        $suspende = 0;
+        if ($nota < 5) {
+          $suspende++;
+        }
+        $suspensos[$alumno] = $suspende;
+      }
+      var_dump($suspensos);
+
+    }
+
+
+//var_dump(array_merge($suspensos[$asignatura]));
+//  var_dump($suspensos);
+return $suspensos;
+}
+
+//funcion que calcula la nota media de cada asignatura, los suspensos, los aprobados, el alumno con mejor nota, el alumno con peor nota
 function calcSubject(array $json): array
 {
   $resultados = [];
@@ -57,7 +75,6 @@ function calcSubject(array $json): array
     $asignatura['media'] = $conjuntoNotas / count($alumnos);
     $resultados[$asignaturas] = $asignatura;
   }
-  var_dump($resultados);
   return $resultados;
 }
 
