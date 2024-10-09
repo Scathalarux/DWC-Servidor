@@ -5,51 +5,77 @@
 </div>
 <!-- Content Row -->
 
-<?php if (isset($data['json'])) { ?>
+<?php if (isset($data['json_calculos'])) { ?>
     <div class="row">
         <div class="col-12">
             <div class="alert alert-success">
-                <table style="border: 1px solid black; text-align: left">
+                <table class="table table-striped table-hover" style="text-align: left">
+                    <thead class="thead-dark">
+                    <th>Asignatura</th>
+                    <th>Nota media</th>
+                    <th>Nº Suspensos</th>
+                    <th>Nº Aprobados</th>
+                    <th>Nota máxima</th>
+                    <th>Nota mínima</th>
+                    </thead>
                     <tbody style="border: 1px solid black">
-                    <?php foreach ($data['json'] as $asignatura => $datos) { ?>
+                    <?php foreach ($data['json_calculos'] as $asignatura => $datos) { ?>
                         <tr>
-                            <td style="padding: 10px">
-                              <?php echo $asignatura ?>
+                            <td>
+                                <?php echo $asignatura ?>
                             </td>
-                            <td style="padding: 10px"> Media:
-                              <?php echo $datos['media'] ?>
+                            <td> Media:
+                                <?php echo $datos['media'] ?>
                             </td>
-                            <td style="padding: 10px"> Suspensos:
-                              <?php echo $datos['suspensos'] ?>
+                            <td > Suspensos:
+                                <?php echo $datos['suspensos'] ?>
                             </td>
-                            <td style="padding: 10px"> Aprobados:
-                              <?php echo $datos['aprobados'] ?>
+                            <td > Aprobados:
+                                <?php echo $datos['aprobados'] ?>
                             </td>
-                            <td style="padding: 10px"> Max:
-                              <?php foreach ($datos['max'] as $key => $value) {
-                                echo $key . ": " . $value . "<br/>";
-                              } ?>
+                            <td > Max:
+                                <?php foreach ($datos['max'] as $key => $value) {
+                                    echo $key . ": " . $value . "<br/>";
+                                } ?>
                             </td>
-                            <td style="padding: 10px"> Min:
-                              <?php foreach ($datos['min'] as $key => $value) {
-                                echo $key . ": " . $value . "<br/>";
-                              } ?>
+                            <td> Min:
+                                <?php foreach ($datos['min'] as $key => $value) {
+                                    echo $key . ": " . $value . "<br/>";
+                                } ?>
                             </td>
                         </tr>
                     <?php }; ?>
                     </tbody>
                 </table>
-                <table>
-                    <tbody></tbody>
-                </table>
-                <p></p>
+                <?php if (isset($data['listaAlumnos'])) {?>
+                <h5>- Alumnos sin suspensos:</h5>
+                <p><?php echo implode('<br/>',$data['listaAlumnos']['sinSuspensos']) ?></p>
+                <h5>- Alumnos con 1 suspenso:</h5>
+                    <p>
+                    <?php foreach ($data['listaAlumnos']['conSuspensos'] as $alumno => $suspensos) {
+                        if($suspensos ===1){
+                        echo $alumno . "<br/>";
+                        }
+                     }   ?></p>
+                <h5>- Alumnos que no promocionan (>1 suspenso):</h5>
+                    <p> <?php foreach ($data['listaAlumnos']['conSuspensos'] as $alumno => $suspensos) {
+                        if($suspensos >1){
+                            echo $alumno . "<br/>";
+                        }
+                        }  ?></p>
 
+
+
+
+                <?php } ?>
             </div>
         </div>
     </div>
-  <?php
+    <?php
 }
 ?>
+
+
 <div class="row">
     <div class="col-12">
         <div class="card shadow mb-4">
@@ -63,10 +89,12 @@
                         <textarea class="form-control" id="texto" name="texto"
                                   rows="3"><?php echo $data['input_texto'] ?? ''; ?></textarea>
                         <p class="text-danger small">
-                          <?php foreach ($data['errors']['texto'] as $key => $value) {
-                            echo $value . "<br/>";
-                          }
-                          ?></p>
+                            <?php if (isset($data['errors'])) {
+                                foreach ($data['errors']['texto'] as $key => $value) {
+                                    echo $value . "<br/>";
+                                }
+                            }
+                            ?></p>
                         <br/>
                     </div>
                     <div class="mb-3">
