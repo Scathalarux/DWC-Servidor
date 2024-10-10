@@ -8,72 +8,79 @@
 <?php if (isset($data['json_calculos'])) { ?>
     <div class="row">
         <div class="col-12">
-            <div class="alert alert-success">
+            <div class="alert">
                 <table class="table table-striped table-hover" style="text-align: left">
                     <thead class="thead-dark">
-                    <th>Asignatura</th>
-                    <th>Nota media</th>
-                    <th>Nº Suspensos</th>
-                    <th>Nº Aprobados</th>
-                    <th>Nota máxima</th>
-                    <th>Nota mínima</th>
+                    <tr>
+                        <th>Asignatura</th>
+                        <th>Nota media</th>
+                        <th>Nº Suspensos</th>
+                        <th>Nº Aprobados</th>
+                        <th>Nota máxima</th>
+                        <th>Nota mínima</th>
+                    </tr>
                     </thead>
                     <tbody style="border: 1px solid black">
                     <?php foreach ($data['json_calculos'] as $asignatura => $datos) { ?>
                         <tr>
                             <td>
-                                <?php echo $asignatura ?>
+                                <strong><?php echo ucwords($asignatura) ?></strong>
                             </td>
-                            <td> Media:
+                            <td>
                                 <?php echo $datos['media'] ?>
                             </td>
-                            <td > Suspensos:
+                            <td>
                                 <?php echo $datos['suspensos'] ?>
                             </td>
-                            <td > Aprobados:
+                            <td>
                                 <?php echo $datos['aprobados'] ?>
                             </td>
-                            <td > Max:
+                            <td>
                                 <?php foreach ($datos['max'] as $key => $value) {
-                                    echo $key . ": " . $value . "<br/>";
+                                    echo ucwords($key) . ": " . $value . "<br/>";
                                 } ?>
                             </td>
-                            <td> Min:
+                            <td>
                                 <?php foreach ($datos['min'] as $key => $value) {
-                                    echo $key . ": " . $value . "<br/>";
+                                    echo ucwords($key) . ": " . $value . "<br/>";
                                 } ?>
                             </td>
                         </tr>
                     <?php }; ?>
                     </tbody>
                 </table>
-                <?php if (isset($data['listaAlumnos'])) {?>
-                <h5>- Alumnos sin suspensos:</h5>
-                <p><?php echo implode('<br/>',$data['listaAlumnos']['sinSuspensos']) ?></p>
-                <h5>- Alumnos con 1 suspenso:</h5>
-                    <p>
-                    <?php foreach ($data['listaAlumnos']['conSuspensos'] as $alumno => $suspensos) {
-                        if($suspensos ===1){
-                        echo $alumno . "<br/>";
-                        }
-                     }   ?></p>
-                <h5>- Alumnos que no promocionan (>1 suspenso):</h5>
-                    <p> <?php foreach ($data['listaAlumnos']['conSuspensos'] as $alumno => $suspensos) {
-                        if($suspensos >1){
-                            echo $alumno . "<br/>";
-                        }
-                        }  ?></p>
-
-
-
-
-                <?php } ?>
             </div>
         </div>
+    </div>
+    <div class="row">
+        <?php if (isset($data['listaAlumnos'])) { ?>
+            <div class="col-4 alert-success">
+                <h5>Alumnos sin suspensos:</h5>
+                <p><?php echo implode('<br/>', $data['listaAlumnos']['sinSuspensos']) ?></p>
+            </div>
+            <div class="col-4 alert-info">
+                <h5>Alumnos con al menos 1 suspenso:</h5>
+                <p>
+                    <?php foreach ($data['listaAlumnos']['conSuspensos'] as $alumno => $suspensos) {
+                        if ($suspensos >= 1) {
+                            echo $alumno . "<br/>";
+                        }
+                    } ?></p>
+            </div>
+            <div class="col-4 alert-warning">
+                <h5>Alumnos que no promocionan (>1 suspenso):</h5>
+                <p> <?php foreach ($data['listaAlumnos']['conSuspensos'] as $alumno => $suspensos) {
+                        if ($suspensos > 1) {
+                            echo $alumno . "<br/>";
+                        }
+                    } ?></p>
+            </div>
+        <?php } ?>
     </div>
     <?php
 }
 ?>
+
 
 
 <div class="row">

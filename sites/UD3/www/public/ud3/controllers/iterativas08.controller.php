@@ -35,8 +35,10 @@ function listAlumnos(array $datos): array
             $todosAlumnos[] = $alumno;
         }
     }
+    sort($todosAlumnos);
+    sort($suspensos);
     $listaAlumnos['sinSuspensos'] = array_diff(array_unique($todosAlumnos),array_unique($suspensos));
-    $listaAlumnos['conSuspensos'] = array_count_values($suspensos);
+    $listaAlumnos['conSuspensos'] = (array_count_values($suspensos));
 
     return $listaAlumnos;
 }
