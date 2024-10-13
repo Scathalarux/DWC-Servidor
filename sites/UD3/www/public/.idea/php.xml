@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MessDetectorOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCSFixerOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCodeSnifferOptionsConfiguration">
+    <option name="highlightLevel" value="WARNING" />
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/ud3/vendor/bootstrap/scss" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/sprites" />
+      <path value="$PROJECT_DIR$/ud3/vendor/bootstrap/js" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/webfonts" />
+      <path value="$PROJECT_DIR$/ud3/vendor/composer" />
+      <path value="$PROJECT_DIR$/ud3/vendor/summernote/lang" />
+      <path value="$PROJECT_DIR$/ud3/vendor/summernote/font" />
+      <path value="$PROJECT_DIR$/ud3/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/css" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/metadata" />
+      <path value="$PROJECT_DIR$/ud3/vendor/summernote/plugin" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/scss" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/svgs" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/js" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/less" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/css" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/summernote/font" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/metadata" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/scss" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/less" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/summernote/plugin" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/summernote/lang" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/composer" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/bootstrap/js" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/bootstrap/scss" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/sprites" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/webfonts" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/svgs" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/js" />
+    </include_path>
+  </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.0">
+    <option name="suggestChangeDefaultLanguageLevel" value="false" />
+  </component>
+  <component name="PhpStanOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PsalmOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+</project>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e824d22c-f9de-4330-8fa0-c40a02162fa1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/UD2-01-Prog-estructurada/controllers/calculos_notas.lara_comesana_varela.controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/UD2-01-Prog-estructurada/controllers/calculos_notas.lara_comesana_varela.controller.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UD2-01-Prog-estructurada/views/calculos_notas.lara_comesana_varela.view.php" beforeDir="false" afterPath="$PROJECT_DIR$/UD2-01-Prog-estructurada/views/calculos_notas.lara_comesana_varela.view.php" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerConfigs">
+    <option name="configs">
+      <option value="$PROJECT_DIR$/UD2-01-Prog-estructurada/composer.json" />
+    </option>
+  </component>
+  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/ud3/composer.json</pharConfigPath>
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../../../.." value="main" />
+        <entry key="$PROJECT_DIR$/UD2-01-Prog-estructurada" value="dev" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/UD2-01-Prog-estructurada" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Scathalarux"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:Scathalarux/CalculosDeNotas.git",
+    "accountId": "3bb17aec-69af-4c74-9cde-279a013be879"
+  }
+}]]></component>
+  <component name="PhpWorkspaceProjectConfiguration">
+    <include_path>
+      <path value="$PROJECT_DIR$/ud3/vendor/bootstrap/scss" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/sprites" />
+      <path value="$PROJECT_DIR$/ud3/vendor/bootstrap/js" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/webfonts" />
+      <path value="$PROJECT_DIR$/ud3/vendor/composer" />
+      <path value="$PROJECT_DIR$/ud3/vendor/summernote/lang" />
+      <path value="$PROJECT_DIR$/ud3/vendor/summernote/font" />
+      <path value="$PROJECT_DIR$/ud3/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/css" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/metadata" />
+      <path value="$PROJECT_DIR$/ud3/vendor/summernote/plugin" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/scss" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/svgs" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/js" />
+      <path value="$PROJECT_DIR$/ud3/vendor/fontawesome-free/less" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/css" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/summernote/font" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/metadata" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/scss" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/less" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/summernote/plugin" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/summernote/lang" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/composer" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/bootstrap/js" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/bootstrap/scss" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/sprites" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/webfonts" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/svgs" />
+      <path value="$PROJECT_DIR$/UD2-01-Prog-estructurada/vendor/fontawesome-free/js" />
+    </include_path>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2nLODgpXIAOVEKFJyIvZgUwbZY9" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "dev",
+    "last_opened_file_path": "/home/lara/DAW/2DAW/ContornoServidor/sites/UD3/www/public",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.23339.16" />
+        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.23339.16" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e824d22c-f9de-4330-8fa0-c40a02162fa1" name="Changes" comment="" />
+      <created>1728748771557</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1728748771557</updated>
+      <workItem from="1728748772573" duration="9521000" />
+      <workItem from="1728760395420" duration="228000" />
+      <workItem from="1728805251936" duration="7010000" />
+      <workItem from="1728836858829" duration="1520000" />
+      <workItem from="1728838396672" duration="224000" />
+      <workItem from="1728839908420" duration="4509000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="main" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="dev" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="dev" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
