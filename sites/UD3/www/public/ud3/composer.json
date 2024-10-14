@@ -1,5 +1,17 @@
 {
-    "require": {
-        "ezyang/htmlpurifier": "^4.13"
-    }
+    "name": "test-classes/daw2",
+    "description": "Proyecto de pruebas para crear clases",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "TestClasses\\Daw2\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "LaraCV"
+        }
+    ],
+    "require": {}
 }

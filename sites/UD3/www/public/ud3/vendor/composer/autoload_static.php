@@ -10,6 +10,20 @@ class ComposerStaticInitfad7225ef627e22258e390b35c1144b0
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
     );
 
+    public static $prefixLengthsPsr4 = array (
+        'T' => 
+        array (
+            'TestClasses\\Daw2\\' => 17,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'TestClasses\\Daw2\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
+        ),
+    );
+
     public static $prefixesPsr0 = array (
         'H' => 
         array (
@@ -27,6 +41,8 @@ class ComposerStaticInitfad7225ef627e22258e390b35c1144b0
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInitfad7225ef627e22258e390b35c1144b0::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitfad7225ef627e22258e390b35c1144b0::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInitfad7225ef627e22258e390b35c1144b0::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitfad7225ef627e22258e390b35c1144b0::$classMap;
 
