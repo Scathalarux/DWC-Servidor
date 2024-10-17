@@ -41,6 +41,18 @@ class FrontController{
                 $controlador->doFormularioAnagrama();
             }
             , 'post');
+        Route::add('/mismasLetras',
+            function(){
+                $controlador = new EjerciciosController();
+                $controlador->showFormularioMismasLetras();
+            }
+            , 'get');
+        Route::add('/mismasLetras',
+            function(){
+                $controlador = new EjerciciosController();
+                $controlador->doFormularioMismasLetras();
+            }
+            , 'post');
 
         Route::add('/demo-proveedores', 
                 function(){

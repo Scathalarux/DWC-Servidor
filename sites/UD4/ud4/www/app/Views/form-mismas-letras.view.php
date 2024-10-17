@@ -4,9 +4,9 @@
         <div class="col-12">
             <div class="alert alert-<?php echo ($resultadoAnagrama ? 'success' : 'danger') ?>">
                 <?php if ($resultadoAnagrama) { ?>
-                    Las palabras '<?php echo $input['palabra1'] ?>' y '<?php echo $input['palabra2'] ?>' sí son un anagrama.
+                    Las palabras sí son un anagrama.
                 <?php } else { ?>
-                    Las palabras '<?php echo $input['palabra1'] ?>' y '<?php echo $input['palabra2'] ?>' no son un anagrama.
+                    Las palabras no son un anagrama.
                 <?php } ?>
             </div>
         </div>
@@ -16,8 +16,8 @@
             <form method="post" action="">
                 <input type="hidden" name="order" value="1"/>
                 <div
-                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Comprobación de anagramas</h6>
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Comprobación de palabras con mismas letras</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -25,7 +25,7 @@
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label for="palabra1">Palabra 1:</label>
-                            <input type="text" class="form-control" name="palabra1" id="palabra1" value="<"/>
+                            <input type="text" class="form-control" name="palabra1" id="palabra1" value=""/>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="palabra2">Palabra 2:</label>
