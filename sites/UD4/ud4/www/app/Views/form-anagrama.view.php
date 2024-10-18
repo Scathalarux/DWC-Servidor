@@ -2,7 +2,7 @@
     <?php if (isset($resultadoAnagrama)) {
         ?>
         <div class="col-12">
-            <div class="alert alert-<?php echo ($resultadoAnagrama ? 'success' : 'danger') ?>">
+            <div class="alert alert-<?php echo($resultadoAnagrama ? 'success' : 'danger') ?>">
                 <?php if ($resultadoAnagrama) { ?>
                     Las palabras '<?php echo $input['palabra1'] ?>' y '<?php echo $input['palabra2'] ?>' sí son un anagrama.
                 <?php } else { ?>
@@ -25,18 +25,22 @@
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label for="palabra1">Palabra 1:</label>
-                            <input type="text" class="form-control" name="palabra1" id="palabra1" value="<"/>
+                            <input type="text" class="form-control" name="palabra1" id="palabra1"
+                                   value="<?php echo $input['palabra1'] ?>"/>
+                            <p class="small text-danger">
+                                <?php if (isset($errors['palabra1'])) {
+                                    echo $errors['palabra1'];
+                                } ?></p>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="palabra2">Palabra 2:</label>
-                            <input type="text" class="form-control" name="palabra2" id="palabra2" value=""/>
+                            <input type="text" class="form-control" name="palabra2" id="palabra2"
+                                   value="<?php echo $input['palabra2'] ?>"/>
+                            <p class="small text-danger">
+                                <?php if (isset($errors['palabra2'])) {
+                                    echo $errors['palabra2'];
+                                } ?></p>
                         </div>
-                        <p class="small text-danger">
-                            <?php if (isset($errors['palabra'])) {
-                                foreach ($errors['palabra'] as $key => $value) {
-                                    echo $value . '<br/>';
-                                }
-                            } ?></p>
                     </div>
                 </div>
                 <div class="card-footer">

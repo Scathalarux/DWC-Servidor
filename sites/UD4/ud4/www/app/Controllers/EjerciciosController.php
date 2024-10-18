@@ -44,7 +44,7 @@ class EjerciciosController extends BaseController
         return $errors;
     }
 
-    public function showFormularioAnagrama(): void
+    public function showAnagrama(): void
     {
         $data = array(
             'titulo' => 'Formulario anagrama',
@@ -56,14 +56,14 @@ class EjerciciosController extends BaseController
             $data);
     }
 
-    public function doFormularioAnagrama(): void
+    public function doAnagrama(): void
     {
         $data = array(
             'titulo' => 'Ejercicio anagrama',
             'breadcrumb' => ['Ejercicios', 'Formulario anagrama'],
             'seccion' => '/anagrama'
         );
-        $data['errors'] = $this->checkErrorFormularioAnagrama($_POST);
+        $data['errors'] = $this->checkErrorAnagrama($_POST);
         $data['input'] = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
         if (empty($data['errors'])) {
             $data['resultadoAnagrama'] = $this->checkAnagrama($data['input']['palabra1'], $data['input']['palabra2']);
@@ -85,22 +85,35 @@ class EjerciciosController extends BaseController
         } else {
             return false;
         }
+
+        /*
+         Alternativa del profe:
+
+         $a1 = mb_str_split($palabra1);
+         $a2 = mb_str_split($palabra2);
+         sort($a1);
+         sort($a2);
+         return $a1 === $a2;*/
     }
 
-    private function checkErrorFormularioAnagrama(array $data): array
+    private function checkErrorAnagrama(array $data): array
     {
         $errors = array();
         //comprobamos que en alguna parte del string tenga una letra
-        if (!preg_match('/[\p{L}]/iu', $data['palabra1'])) {
-            $errors['palabra'][] = 'La primera palabra debe contener al menos 1 letra';
+        if (empty($data['palabra1'])) {
+            $errors['palabra1'] = 'La primera palabra es obligatoria';
+        } else if (!preg_match('/[\p{L}]/iu', $data['palabra1'])) {
+            $errors['palabra1'] = 'La primera palabra debe contener al menos 1 letra';
         }
-        if (!preg_match('/[\p{L}]/iu', $data['palabra2'])) {
-            $errors['palabra'][] = 'La segunda palabra debe contener al menos 1 letra';
+        if (empty($data['palabra2'])) {
+            $errors['palabra2'] = 'La segunda palabra es obligatoria';
+        } else if (!preg_match('/[\p{L}]/iu', $data['palabra2'])) {
+            $errors['palabra2'] = 'La segunda palabra debe contener al menos 1 letra';
         }
         return $errors;
     }
 
-    public function showFormularioMismasLetras(): void
+    public function showMismasLetras(): void
     {
         $data = array(
             'titulo' => 'Ejercicio mismas letras',
@@ -112,14 +125,14 @@ class EjerciciosController extends BaseController
             $data);
     }
 
-    public function doFormularioMismasLetras(): void
+    public function doMismasLetras(): void
     {
         $data = array(
             'titulo' => 'Ejercicio mismas letras',
             'breadcrumb' => ['Ejercicios', 'Ejercicio mismas letras'],
             'seccion' => '/mismasLetras'
         );
-        $data['errors'] = $this->checkErrorFormularioMismasLetras($_POST);
+        $data['errors'] = $this->checkErrorMismasLetras($_POST);
         $data['input'] = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
         if (empty($data['errors'])) {
             $data['resultadoComparacion'] = $this->checkMismasLetras($data['input']['palabra1'], $data['input']['palabra2']);
@@ -131,10 +144,11 @@ class EjerciciosController extends BaseController
 
     }
 
-    function checkMismasLetras($palabra1, $palabra2): bool
+    private function checkMismasLetras($palabra1, $palabra2): bool
     {
-        $palabra1 = array_unique(mb_str_split($palabra1, 1));
-        $palabra2 = array_unique(mb_str_split($palabra2, 1));
+        $palabra1 = array_unique(mb_str_split(preg_replace('/\P{L}/u', '', mb_strtolower($palabra1))));
+        $palabra2 = array_unique(mb_str_split(preg_replace('/\P{L}/u', '', mb_strtolower($palabra2))));
+
 
         if (count(array_diff($palabra1, $palabra2)) === 0) {
             return true;
@@ -143,15 +157,19 @@ class EjerciciosController extends BaseController
         }
     }
 
-    private function checkErrorFormularioMismasLetras(array $data): array
+    private function checkErrorMismasLetras(array $data): array
     {
         $errors = array();
         //comprobamos que en alguna parte del string tenga una letra
-        if (!preg_match('/[\p{L}]/iu', $data['palabra1'])) {
-            $errors['palabra'][] = 'La primera palabra debe contener al menos 1 letra';
+        if (empty($data['palabra1'])) {
+            $errors['palabra1'] = 'La primera palabra es obligatoria';
+        } else if (!preg_match('/[\p{L}]/iu', mb_strtolower($data['palabra1']))) {
+            $errors['palabra1'] = 'La primera palabra debe contener al menos 1 letra';
         }
-        if (!preg_match('/[\p{L}]/iu', $data['palabra2'])) {
-            $errors['palabra'][] = 'La segunda palabra debe contener al menos 1 letra';
+        if (empty($data['palabra2'])) {
+            $errors['palabra2'] = 'La segunda palabra es obligatoria';
+        } else if (!preg_match('/[\p{L}]/iu', mb_strtolower($data['palabra2']))) {
+            $errors['palabra2'] = 'La segunda palabra debe contener al menos 1 letra';
         }
         return $errors;
     }

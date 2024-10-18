@@ -5,71 +5,73 @@ namespace Com\Daw2\Core;
 use Com\Daw2\Controllers\EjerciciosController;
 use Steampixel\Route;
 
-class FrontController{
-    
-    static function main(){
-        Route::add('/', 
-                function(){
-                    $controlador = new \Com\Daw2\Controllers\InicioController();
-                    $controlador->index();
-                }
-                , 'get');
+class FrontController
+{
+
+    static function main()
+    {
+        Route::add('/',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\InicioController();
+                $controlador->index();
+            }
+            , 'get');
 
         Route::add('/test',
-            function(){
+            function () {
                 $controlador = new EjerciciosController();
                 $controlador->showFormularioNombre();
             }
             , 'get');
 
         Route::add('/test',
-            function(){
+            function () {
                 $controlador = new EjerciciosController();
                 $controlador->doFormularioNombre();
             }
             , 'post');
 
         Route::add('/anagrama',
-            function(){
+            function () {
                 $controlador = new EjerciciosController();
-                $controlador->showFormularioAnagrama();
+                $controlador->showAnagrama();
             }
             , 'get');
         Route::add('/anagrama',
-            function(){
+            function () {
                 $controlador = new EjerciciosController();
-                $controlador->doFormularioAnagrama();
+                $controlador->doAnagrama();
             }
             , 'post');
         Route::add('/mismasLetras',
-            function(){
+            function () {
                 $controlador = new EjerciciosController();
-                $controlador->showFormularioMismasLetras();
+                $controlador->showMismasLetras();
             }
             , 'get');
         Route::add('/mismasLetras',
-            function(){
+            function () {
                 $controlador = new EjerciciosController();
-                $controlador->doFormularioMismasLetras();
+                $controlador->doMismasLetras();
             }
             , 'post');
 
-        Route::add('/demo-proveedores', 
-                function(){
-                    $controlador = new \Com\Daw2\Controllers\InicioController();
-                    $controlador->demo();
-                }
-                , 'get');
-                
+        Route::add('/demo-proveedores',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\InicioController();
+                $controlador->demo();
+            }
+            , 'get');
+
         Route::pathNotFound(
-            function(){
+            function () {
                 $controller = new \Com\Daw2\Controllers\ErroresController();
                 $controller->error404();
             }
         );
-        
+
         Route::methodNotAllowed(
-            function(){
+            function () {
                 $controller = new \Com\Daw2\Controllers\ErroresController();
                 $controller->error405();
             }

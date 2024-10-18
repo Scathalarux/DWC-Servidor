@@ -1,19 +1,18 @@
-
 <div class="row">
-    <?php if(isset($nombreAnterior)){
-    ?>
-    <div class="col-12">
-        <div class="alert alert-success">
-            ¡Hola <?php echo $nombreAnterior?>!
+    <?php if (isset($nombreAnterior)) {
+        ?>
+        <div class="col-12">
+            <div class="alert alert-success">
+                ¡Hola <?php echo $nombreAnterior ?>!
+            </div>
         </div>
-    </div>
-    <?php };?>
+    <?php }; ?>
     <div class="col-12">
         <div class="card shadow mb-4">
             <form method="post" action="">
                 <input type="hidden" name="order" value="1"/>
                 <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Filtros</h6>
                 </div>
                 <!-- Card Body -->
@@ -23,8 +22,8 @@
                         <div class="col-12">
                             <div class="mb-3">
                                 <label for="nombre">Nombre:</label>
-                                <input type="text" class="form-control" name="nombre" id="nombre" value="" />
-                                <p class="small text-danger"><?php echo $errors['nombre']??'';?></p>
+                                <input type="text" class="form-control" name="nombre" id="nombre" value="<?php echo $input['nombre']?>""/>
+                                <p class="small text-danger"><?php echo $errors['nombre'] ?? ''; ?></p>
                             </div>
                         </div>
                     </div>
