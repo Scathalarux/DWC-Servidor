@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e824d22c-f9de-4330-8fa0-c40a02162fa1" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/UD2-01-Prog-estructurada/controllers/calculos_notas.lara_comesana_varela.controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/UD2-01-Prog-estructurada/controllers/calculos_notas.lara_comesana_varela.controller.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UD2-01-Prog-estructurada/views/calculos_notas.lara_comesana_varela.view.php" beforeDir="false" afterPath="$PROJECT_DIR$/UD2-01-Prog-estructurada/views/calculos_notas.lara_comesana_varela.view.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CalculosDeNotas" beforeDir="false" afterPath="$PROJECT_DIR$/CalculosDeNotas" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CalculosDeNotas/controllers/calculos_notas.lara_comesana_varela.controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/CalculosDeNotas/controllers/calculos_notas.lara_comesana_varela.controller.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CalculosDeNotas/views/calculos_notas.lara_comesana_varela.view.php" beforeDir="false" afterPath="$PROJECT_DIR$/CalculosDeNotas/views/calculos_notas.lara_comesana_varela.view.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,21 +32,21 @@
         <entry key="$PROJECT_DIR$/UD2-01-Prog-estructurada" value="dev" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/UD2-01-Prog-estructurada" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/CalculosDeNotas" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Scathalarux"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Scathalarux&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:Scathalarux/CalculosDeNotas.git",
-    "accountId": "3bb17aec-69af-4c74-9cde-279a013be879"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Scathalarux/CalculosDeNotas.git&quot;,
+    &quot;accountId&quot;: &quot;3bb17aec-69af-4c74-9cde-279a013be879&quot;
   }
-}]]></component>
+}</component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
       <path value="$PROJECT_DIR$/ud3/vendor/bootstrap/scss" />
@@ -89,7 +92,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "/home/lara/DAW/2DAW/ContornoServidor/sites/UD3/www/public",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -121,6 +124,8 @@
       <workItem from="1728836858829" duration="1520000" />
       <workItem from="1728838396672" duration="224000" />
       <workItem from="1728839908420" duration="4509000" />
+      <workItem from="1729179350558" duration="710000" />
+      <workItem from="1729265605788" duration="1903000" />
     </task>
     <servers />
   </component>
