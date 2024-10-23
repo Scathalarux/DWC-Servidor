@@ -60,12 +60,20 @@ class FrontController
             'get'
         );
         Route::add(
-            '/añadirPoblacion',
+            '/anadirMunicipio',
             function () {
                 $controlador = new CsvController();
                 $controlador->addRow();
             },
             'post'
+        );
+        Route::add(
+            '/anadirMunicipio',
+            function () {
+                $controlador = new CsvController();
+                $controlador->addRow();
+            },
+            'get'
         );
 
 

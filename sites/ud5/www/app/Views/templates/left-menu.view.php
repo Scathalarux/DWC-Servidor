@@ -59,11 +59,14 @@
                         <p>Población Pontevedra 2020</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="<?php echo $_ENV['host.folder']?>anadirMunicipio"
+                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'].'anadirMunicipio' ? 'active' : ''; ?>">
+                        <i class="fas fa-table nav-icon"></i>
+                        <p>Añadir Municipio</p>
+                    </a>
+                </li>
             </ul>
-<!--            <ul class="nav nav-treeview">
-            </ul>
-            <ul class="nav nav-treeview">
-            </ul>-->
         </li>
     </ul>
 </nav>

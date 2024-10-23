@@ -29,31 +29,40 @@ class CsvController extends BaseController
         $vars['data'] = $csvModel->getPoblacion();
         //comprobamos cual es el mayor y el menor
         if (count($vars['data']) > 1) {
-            $vars['data'] = array_merge($vars['data'], $this->minMax($vars['data']));
+            $vars = array_merge($vars, $this->getMinMaxPo($vars['data']));
+            $vars['showMinMax'] = true ;
         }
-
-
         $this->view->showViews(array('templates/header.view.php', 'csv.view.php', 'templates/footer.view.php'), $vars);
     }
 
+    /**
+     * Funcion que elimina el punto del string que delimita los miles y lo devuelve en forma de int
+     * @param string $poblacion
+     * @return int
+     */
     private function cleanNumPoblacion(string $poblacion): int
     {
-        return $poblacion[3] = (int)str_replace('.', '', $poblacion);
+        return (int)str_replace('.', '', $poblacion);
     }
 
-    private function minMax($poblacion): array
+    /**
+     * Función que calcula el municipio con menor y mayor población
+     * @param $registros
+     * @return array
+     */
+    private function getMinMaxPo($registros): array
     {
-        $min = $poblacion[1];
-        $max = $poblacion[1];
-        //Quitamos el punto por si hay errores
+        $min = $registros[1];
+        $max = $registros[1];
+        //Quitamos el punto por si genera errores
         $min[3] = $this->cleanNumPoblacion($min[3]);
         $max[3] = $this->cleanNumPoblacion($max[3]);
 
 
-        for ($i = 1; $i <= count($poblacion); $i++) {
-            $actual = $poblacion[$i];
+        for ($i = 1; $i < count($registros); $i++) {
+            $actual = $registros[$i];
             //solo recorremos tupla si es la representacion de un int (evitamos lo vacío)
-            if (filter_var($actual, FILTER_VALIDATE_INT)) {
+            if (filter_var($actual[3], FILTER_VALIDATE_INT)) {
                 $poblacionActual = $this->cleanNumPoblacion($actual[3]);
                 if ($min[3] > $poblacionActual) {
                     $min = $actual;
@@ -75,7 +84,6 @@ class CsvController extends BaseController
 
     public function showPoblacionGruposEdad(): void
     {
-
         $vars = array(
             'titulo' => 'Población Grupos Edad',
             'breadcrumb' => array('Inicio', 'Población Grupos Edad'),
@@ -97,6 +105,15 @@ class CsvController extends BaseController
         ];
         $model = new CsvModel('../app/Data/poblacion_pontevedra_2020_totales.csv');
         $vars['data'] = $model->getPoblacion();
+
+        if (count($vars['data']) > 1) {
+            $vars = array_merge($vars, $this->getMinMaxPo($vars['data']));
+            $vars['min'][1] = '';
+            $vars['min'][2] = '';
+            $vars['max'][1] = '';
+            $vars['max'][2] = '';
+        }
+            $vars['showMinMax'] = false ;
 
         $this->view->showViews(array('templates/header.view.php', 'csv.view.php', 'templates/footer.view.php'), $vars);
     }
@@ -129,7 +146,10 @@ class CsvController extends BaseController
                     $resource = fopen('../app/Data/poblacion_pontevedra.csv', 'a');
                     fputcsv($resource, $registro, ';');
                     fclose($resource);
+
+                    $vars['exito'] = true;
                 } else {
+                    $vars['exito'] = false;
                     $vars['errors'] = 'El municipio, sexo y periodo establecidos ya existe en el registro';
                 }
             }
