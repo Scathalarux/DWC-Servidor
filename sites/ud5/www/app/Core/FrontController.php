@@ -71,7 +71,7 @@ class FrontController
             '/anadirMunicipio',
             function () {
                 $controlador = new CsvController();
-                $controlador->addRow();
+                $controlador->showAnadirPoblacion();
             },
             'get'
         );

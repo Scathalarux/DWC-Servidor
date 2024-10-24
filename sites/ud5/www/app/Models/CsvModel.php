@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Com\Daw2\Models;
@@ -31,4 +32,16 @@ class CsvModel
         return $data;
     }
 
+    public function addMunicipio(array $datosMunicipio): bool
+    {
+        $resource = fopen('../app/Data/poblacion_pontevedra.csv', 'a');
+        $resultadoOperacion = fputcsv($resource, $datosMunicipio, ';');
+        fclose($resource);
+
+        if ($resultadoOperacion) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

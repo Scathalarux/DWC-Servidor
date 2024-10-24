@@ -12,6 +12,8 @@ class CsvController extends BaseController
     //Podemos crear una constante y luego concatenarla al nombre del archivo cuando lo llamo
 //    private const DATA_FOLDER = '../app/Data/';
 
+    public const SEXOS = ['-', 'Hombre', 'Mujer', 'Total'];
+
     public function showPoblacionPontevedra(): void
     {
 
@@ -21,16 +23,14 @@ class CsvController extends BaseController
             'seccion' => '/historicoPoblacionPontevedra',
             /*'csv_div_titulo' => 'Datos del CSV',
             'js' => array('plugins/datatables/jquery.dataTables.min.js', 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js', 'assets/js/pages/csv.view.js')*/
-
         );
 
         $csvModel = new CsvModel('../app/Data/poblacion_pontevedra.csv');
-
         $vars['data'] = $csvModel->getPoblacion();
         //comprobamos cual es el mayor y el menor
         if (count($vars['data']) > 1) {
             $vars = array_merge($vars, $this->getMinMaxPo($vars['data']));
-            $vars['showMinMax'] = true ;
+            $vars['showMinMax'] = true;
         }
         $this->view->showViews(array('templates/header.view.php', 'csv.view.php', 'templates/footer.view.php'), $vars);
     }
@@ -113,9 +113,20 @@ class CsvController extends BaseController
             $vars['max'][1] = '';
             $vars['max'][2] = '';
         }
-            $vars['showMinMax'] = false ;
+        $vars['showMinMax'] = false;
 
         $this->view->showViews(array('templates/header.view.php', 'csv.view.php', 'templates/footer.view.php'), $vars);
+    }
+
+    public function showAnadirPoblacion()
+    {
+        $vars = [
+            'titulo' => 'Añadir Población',
+            'breadcrumb' => ['Csv', 'Añadir Población'],
+            'seccion' => '/añadirPoblacion',
+            'sexos' => self::SEXOS
+        ];
+        $this->view->showViews(array('templates/header.view.php', 'addCsv.view.php', 'templates/footer.view.php'), $vars);
     }
 
     //formulario para añadir una fila al fichero
@@ -125,16 +136,19 @@ class CsvController extends BaseController
             'titulo' => 'Añadir Población',
             'breadcrumb' => ['Csv', 'Añadir Población'],
             'seccion' => '/añadirPoblacion',
+            'sexos' => self::SEXOS
         ];
         $model = new CsvModel('../app/Data/poblacion_pontevedra.csv');
         $vars['data'] = $model->getPoblacion();
 
         if (isset($_POST['submit'])) {
-            $errors = $this->checkDatosMunicipio($_POST['submit']);
-            if (count($errors) > 0) {
-                $vars['errors'] = $errors;
+            $errores = $this->checkDatosMunicipio($_POST['submit']);
+            $vars['input'] = filter_var($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+
+            if (count($errores) > 0) {
+                $vars['errores'] = $errores;
             } else {
-                //Metemos los datos
+                //Metemos los datos si no hay elementos
                 if ($this->checkDatoRepetido($_POST['submit'])) {
                     $nombre = $_POST['nombre'];
                     $periodo = $_POST['periodo'];
@@ -143,32 +157,20 @@ class CsvController extends BaseController
 
                     $registro = [$nombre, $sexo, $periodo, $poblacion];
 
-                    $resource = fopen('../app/Data/poblacion_pontevedra.csv', 'a');
-                    fputcsv($resource, $registro, ';');
-                    fclose($resource);
-
-                    $vars['exito'] = true;
-                } else {
-                    $vars['exito'] = false;
-                    $vars['errors'] = 'El municipio, sexo y periodo establecidos ya existe en el registro';
+                    $model->addMunicipio($registro);
                 }
             }
         }
-
         $this->view->showViews(array('templates/header.view.php', 'addCsv.view.php', 'templates/footer.view.php'), $vars);
     }
 
     private function checkDatoRepetido($poblacion): bool
     {
-        $nombre = filter_var($poblacion['nombre'], FILTER_SANITIZE_STRING);
-        $periodo = filter_var($poblacion['periodo'], FILTER_VALIDATE_INT);
-        $sexo = filter_var($poblacion['sexo'], FILTER_SANITIZE_STRING);
-
         $noExiste = true;
 
         for ($i = 0; $i < count($poblacion); $i++) {
             for ($j = 0; $j < count($poblacion[$i]); $j++) {
-                if (($nombre | $periodo | $sexo) === $poblacion[$i][$j]) {
+                if (($poblacion['nombre'] | $poblacion['periodo'] | $poblacion['sexo']) === $poblacion[$i][$j]) {
                     $noExiste = false;
                 }
             }
@@ -178,38 +180,37 @@ class CsvController extends BaseController
 
     private function checkDatosMunicipio($poblacion): array
     {
-        $errors = [];
-
-        $tipos = ['-', 'Hombre', 'Mujer', 'Total'];
+        $errores = [];
 
         //Comprobamos el nombre del municipio
-        $nombre = filter_var($poblacion['nombre'], FILTER_SANITIZE_STRING);
-        if (mb_strlen($nombre) < 1) {
-            $errors['nombre'] = 'El nombre del municipio debe tener al menos 1 caracter';
-        } elseif (preg_match('/[\P]/u', $nombre)) {
-            $errors['nombre'] = 'El nombre del municio solo puede contener letras y espacios';
-        }
-
-        //comprobamos el periodo del municipio
-        $periodo = filter_var($poblacion['periodo'], FILTER_VALIDATE_INT);
-        if (!is_numeric($periodo)) {
-            $errors['periodo'] = 'El periodo debe ser un número ';
-        } elseif (mb_strlen($nombre) === 4) {
-            $errors['periodo'] = 'El periodo debe tener al menos 4 dígitos';
+        if (mb_strlen($poblacion['nombre']) < 1) {
+            $errores['nombre'] = 'El nombre del municipio debe tener al menos 1 caracter';
+        } elseif (!preg_match('/^[1-9]([0-9]|[0-9]{4})\p{L}[\p{L}\s]*$]/iu', $poblacion['nombre'])) {
+            $errores['nombre'] = 'El nombre del municipio solo puede contener el CP (2 o 5 cifras) seguido letras y espacios';
         }
 
         //comprobamos el sexo
-        $sexo = filter_var($poblacion['sexo'], FILTER_SANITIZE_STRING);
-        if (!in_array($sexo, $tipos)) {
-            $errors['sexo'] = "El sexo debe ser '-', 'Hombre', 'Mujer' o 'Total'";
+        if (!in_array($poblacion['sexo'], self::SEXOS)) {
+            $errores['sexo'] = "El sexo debe ser '-', 'Hombre', 'Mujer' o 'Total'";
         }
+
+        //comprobamos el periodo del municipio
+        if (!filter_var($poblacion['periodo'], FILTER_VALIDATE_INT)) {
+            $errores['periodo'] = 'El periodo debe ser un número entero';
+        } elseif ((int)(date('Y') - (int)$poblacion['periodo']) < 0 || (int)(date('Y') - (int)$poblacion['periodo']) > 100) {
+            $errores['periodo'] = 'El periodo debe estar entre hace 100 años y el año actual';
+        }
+
 
         //comprobamos el número de la población
-        $ponlacion = filter_var($poblacion['total'], FILTER_VALIDATE_INT);
-        if (!is_numeric($periodo)) {
-            $errors['periodo'] = 'El periodo debe ser un número ';
+        if (!filter_var($poblacion['total'], FILTER_VALIDATE_INT)) {
+            $errores['total'] = 'El periodo debe ser un número entero';
+        } else {
+            if ($poblacion['total'] < 0) {
+                $errores['total'] = 'El periodo debe ser mayor a 0';
+            }
         }
 
-        return $errors;
+        return $errores;
     }
 }
