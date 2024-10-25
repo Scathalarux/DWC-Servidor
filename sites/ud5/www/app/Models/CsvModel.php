@@ -9,6 +9,10 @@ use InvalidArgumentException;
 class CsvModel
 {
     private string $filename;
+    public const COL_MUNICIPIO = 0;
+    public const COL_SEXO = 1;
+    public const COL_PERIODO = 2;
+
 
     public function __construct($filename)
     {
@@ -34,14 +38,31 @@ class CsvModel
 
     public function addMunicipio(array $datosMunicipio): bool
     {
+        //si hay un warning lo tranasforma e un una excepción para que se pueda manejar y mostrar un mensaje
+        set_error_handler(function () {
+            throw new \ErrorException('No se ha podido insertar el municipio');
+        }, E_WARNING);
         $resource = fopen('../app/Data/poblacion_pontevedra.csv', 'a');
         $resultadoOperacion = fputcsv($resource, $datosMunicipio, ';');
         fclose($resource);
-
+        //Debememos reiniciarlo para que no nos genere problemas más adelante
+        restore_error_handler();
         if ($resultadoOperacion) {
             return true;
         } else {
             return false;
         }
+    }
+
+    private function checkDatosRepetido($poblacion): bool
+    {
+        $existe = false;
+
+        for ($i = 1; $i < count($poblacion); $i++) {
+                if (($poblacion['nombre'] === $poblacion[$i][]) && ($poblacion['periodo'] === $poblacion[$i][$j]) && ($poblacion['sexo'] === $poblacion[$i][$j])) {
+                    $existe = true;
+                }
+        }
+        return $existe;
     }
 }

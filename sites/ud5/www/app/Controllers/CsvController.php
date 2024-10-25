@@ -143,40 +143,32 @@ class CsvController extends BaseController
 
         if (isset($_POST['submit'])) {
             $errores = $this->checkDatosMunicipio($_POST['submit']);
-            $vars['input'] = filter_var($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
 
-            if (count($errores) > 0) {
-                $vars['errores'] = $errores;
-            } else {
+            if (count($errores) < 0) {
                 //Metemos los datos si no hay elementos
                 if ($this->checkDatoRepetido($_POST['submit'])) {
-                    $nombre = $_POST['nombre'];
-                    $periodo = $_POST['periodo'];
-                    $sexo = $_POST['sexo'];
-                    $poblacion = $_POST['total'];
+                    $registro = [$_POST['nombre'], $_POST['sexo'], $_POST['periodo'], $_POST['total']];
 
-                    $registro = [$nombre, $sexo, $periodo, $poblacion];
+                    $resultado = $model->addMunicipio($registro);
+                    try {
+                        if ($resultado) {
+                            header('Location: /historicoPoblacionPontevedra');
+                            die();
+                        } else {
+                            $errores['municipio'] = '';
+                        }
+                    } catch () {
+                        $errores['municipio'] = 
+                    }
 
-                    $model->addMunicipio($registro);
                 }
             }
         }
+        $vars['errores'] = $errores;
+        $vars['input'] = filter_var($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
         $this->view->showViews(array('templates/header.view.php', 'addCsv.view.php', 'templates/footer.view.php'), $vars);
     }
 
-    private function checkDatoRepetido($poblacion): bool
-    {
-        $noExiste = true;
-
-        for ($i = 0; $i < count($poblacion); $i++) {
-            for ($j = 0; $j < count($poblacion[$i]); $j++) {
-                if (($poblacion['nombre'] | $poblacion['periodo'] | $poblacion['sexo']) === $poblacion[$i][$j]) {
-                    $noExiste = false;
-                }
-            }
-        }
-        return $noExiste;
-    }
 
     private function checkDatosMunicipio($poblacion): array
     {
