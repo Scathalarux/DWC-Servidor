@@ -54,15 +54,28 @@ class CsvModel
         }
     }
 
-    private function checkDatosRepetido($poblacion): bool
+    private function checkDatosRepetidos(string $municipio, string $sexo, int $periodo): bool
     {
+        //si hay un warning lo tranasforma e un una excepción para que se pueda manejar y mostrar un mensaje
+        set_error_handler(function () {
+            throw new \ErrorException('No se ha podido insertar el municipio');
+        }, E_WARNING);
+        $datos = $this->getPoblacion();
+
+        //Debememos reiniciarlo para que no nos genere problemas más adelante
+        restore_error_handler();
         $existe = false;
 
-        for ($i = 1; $i < count($poblacion); $i++) {
-                if (($poblacion['nombre'] === $poblacion[$i][]) && ($poblacion['periodo'] === $poblacion[$i][$j]) && ($poblacion['sexo'] === $poblacion[$i][$j])) {
-                    $existe = true;
-                }
+        foreach ($datos as $fila) {
+            if (
+                ($fila[self::COL_MUNICIPIO] === $municipio) &&
+                ($fila[self::COL_SEXO] === $sexo) &&
+                ($fila[self::COL_PERIODO] === $periodo)
+            ) {
+                $existe = true;
+            }
         }
+
         return $existe;
     }
 }

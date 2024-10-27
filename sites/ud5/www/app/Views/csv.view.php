@@ -3,47 +3,44 @@
     <div class="col-12">
         <?php
         if (count($data) > 1) {
-        ?>
+            ?>
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary"><?php echo $titulo; ?></h6>
-                <p class="" ><a href="/addCsv.view.php"></a></p>
+                <p class="col-3 text-right" ><a href="<?php echo $_SERVER['REQUEST_URI']; ?>/new"value="" class="btn btn-primary">+ Nuevo registro</a></p>
             </div>
-            <div class="card-body">
-                <table id="csvTable" class="table table-bordered table-striped dataTable">
+            <div class="card-body" id="card_table">
+                <table id="tabladatos" class="table table-striped datatable">
                     <?php
                     $first = true;
 
-                    foreach ($data
-
-                             as $fila) {
-                    if ($first) {
-                    ?>
+                    foreach ($data as $fila) {
+                        if ($first) { ?>
                     <thead>
                     <tr>
-                        <?php foreach ($fila as $columna) { ?>
+                            <?php foreach ($fila as $columna) { ?>
                             <th><?php echo $columna; ?></th>
-                        <?php }
+                            <?php }
 
-                        //para que no cree más cabeceras
-                        $first = false;
-                        ?>
+                            //para que no cree más cabeceras
+                            $first = false;
+                            ?>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php } else { ?>
+                        <?php } else { ?>
                         <tr>
                             <?php foreach ($fila as $columna) { ?>
                                 <td><?php echo $columna; ?></td>
                             <?php } ?>
                         </tr>
-                        <?php
-                    }
+                            <?php
+                        }
                     } ?>
                     </tbody>
                     <?php
                     if (isset($min) && isset($max)) {
-                    ?>
+                        ?>
                     <tfoot>
                     <tr class="alert-primary">
                         <td>

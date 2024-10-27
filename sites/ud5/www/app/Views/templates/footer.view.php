@@ -23,28 +23,31 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
-<!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- daterangepicker -->
-<script src="plugins/moment/moment.min.js"></script>
-<script src="plugins/daterangepicker/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote -->
-<script src="plugins/summernote/summernote-bs4.min.js"></script>
-<!-- overlayScrollbars -->
-<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- Select2 -->
-<script src="plugins/select2/js/select2.full.min.js"></script>
-<script src="assets/js/adminlte.js"></script>
-<script src="assets/js/pages/main.js"></script>
-<?php
-//Para la carga adicional de ficheros JS desde un array
-if(isset($js) && is_array($js)){
-    foreach($js as $jsFile){
-        echo '<script src="'.$jsFile.'"></script>';
-    }
-}
-?>
-</body>
-</html>
+      <!-- Bootstrap 4 -->
+      <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- daterangepicker -->
+      <script src="plugins/moment/moment.min.js"></script>
+      <script src="plugins/daterangepicker/daterangepicker.js"></script>
+      <!-- Tempusdominus Bootstrap 4 -->
+      <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+      <!-- Summernote -->
+      <script src="plugins/summernote/summernote-bs4.min.js"></script>
+      <!-- overlayScrollbars -->
+      <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+      <!-- Select2 -->
+      <script src="plugins/select2/js/select2.full.min.js"></script>
+      <script src="assets/js/adminlte.js"></script>
+      <script src="assets/js/pages/main.js"></script>
+      <?php
+      //Para la carga adicional de ficheros JS desde un array
+        if (isset($js) && is_array($js)) {
+            foreach ($js as $jsFile) {
+                ?>
+              <script src="<?php echo $jsFile; ?>"></script>';
+                <?php
+            }
+        }
+        ?>
+      </body>
+      </html>
+

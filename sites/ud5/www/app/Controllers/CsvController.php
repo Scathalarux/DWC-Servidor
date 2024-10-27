@@ -14,13 +14,34 @@ class CsvController extends BaseController
 
     public const SEXOS = ['-', 'Hombre', 'Mujer', 'Total'];
 
+    private const DATATABLE_CSS_ARRAY = [
+        'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css',
+        'plugins/datatables-responsive/css/responsive.bootstrap4.min.css',
+        'plugins/datatables-buttons/css/buttons.bootstrap4.min.css',
+    ];
+
+    private const DATATABLE_JS_ARRAY = [
+        'plugins/datatables/jquery.dataTables.min.js',
+        'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js',
+        'plugins/datatables-responsive/js/dataTables.responsive.min.js',
+        'plugins/datatables-responsive/js/responsive.bootstrap4.min.js',
+        'plugins/datatables-buttons/js/dataTables.buttons.min.js',
+        'plugins/datatables-buttons/js/buttons.bootstrap4.min.js',
+        'plugins/datatables-buttons/js/buttons.html5.min.js',
+        'plugins/datatables-buttons/js/buttons.print.min.js',
+        'plugins/datatables-buttons/js/buttons.colVis.min.js',
+        'plugins/jszip/jszip.min.js',
+        'plugins/pdfmake/pdfmake.min.js',
+        'plugins/pdfmake/vfs_fonts.js'
+    ];
+
     public function showPoblacionPontevedra(): void
     {
 
         $vars = array(
             'titulo' => 'Histótico población Pontevedra',
             'breadcrumb' => array('Inicio', 'Historico poblacion Pontevedra'),
-            'seccion' => '/historicoPoblacionPontevedra',
+            //'seccion' => '/historicoPoblacionPontevedra',
             /*'csv_div_titulo' => 'Datos del CSV',
             'js' => array('plugins/datatables/jquery.dataTables.min.js', 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js', 'assets/js/pages/csv.view.js')*/
         );
@@ -32,6 +53,8 @@ class CsvController extends BaseController
             $vars = array_merge($vars, $this->getMinMaxPo($vars['data']));
             $vars['showMinMax'] = true;
         }
+        $vars['css'] = self::DATATABLE_CSS_ARRAY;
+        $vars['js'] = array_merge(self::DATATABLE_JS_ARRAY, ['assets/js/pages/csv.view.js']);
         $this->view->showViews(array('templates/header.view.php', 'csv.view.php', 'templates/footer.view.php'), $vars);
     }
 
@@ -50,7 +73,7 @@ class CsvController extends BaseController
      * @param $registros
      * @return array
      */
-    private function getMinMaxPo($registros): array
+    private function getMinMaxPo(array $registros): array
     {
         $min = $registros[1];
         $max = $registros[1];
@@ -87,7 +110,7 @@ class CsvController extends BaseController
         $vars = array(
             'titulo' => 'Población Grupos Edad',
             'breadcrumb' => array('Inicio', 'Población Grupos Edad'),
-            'seccion' => '/poblacionGruposEdad',
+            //'seccion' => '/poblacionGruposEdad',
         );
 
         $csvModel = new CsvModel('../app/Data/poblacion_grupos_edad.csv');
@@ -101,7 +124,7 @@ class CsvController extends BaseController
         $vars = [
             'titulo' => 'Población Pontevedra 2020',
             'breadcrumb' => ['Csv', 'Población Pontevedra 2020'],
-            'seccion' => '/poblacionPontevedra2020'
+            //'seccion' => '/poblacionPontevedra2020'
         ];
         $model = new CsvModel('../app/Data/poblacion_pontevedra_2020_totales.csv');
         $vars['data'] = $model->getPoblacion();
@@ -123,7 +146,7 @@ class CsvController extends BaseController
         $vars = [
             'titulo' => 'Añadir Población',
             'breadcrumb' => ['Csv', 'Añadir Población'],
-            'seccion' => '/añadirPoblacion',
+            //'seccion' => '/añadirPoblacion',
             'sexos' => self::SEXOS
         ];
         $this->view->showViews(array('templates/header.view.php', 'addCsv.view.php', 'templates/footer.view.php'), $vars);
@@ -132,40 +155,33 @@ class CsvController extends BaseController
     //formulario para añadir una fila al fichero
     public function addRow(): void
     {
+        try {
+            $vars = [];
+            $errores = $this->checkDatosMunicipio($_POST);
+            if (count($errores) < 0) {
+                $registro = [$_POST['nombre'], $_POST['sexo'], $_POST['periodo'], $_POST['total']];
+                $model = new CsvModel('../app/Data/poblacion_pontevedra.csv');
+                $resultado = $model->addMunicipio($registro);
+                if ($resultado) {
+                    header('Location: /historicoPoblacionPontevedra');
+                    die();
+                } else {
+                    $errores['municipio'] = '';
+                }
+            }
+        } catch (\ErrorException $e) {
+            $errores['municipio'] = $e->getMessage();
+        }
+
         $vars = [
             'titulo' => 'Añadir Población',
             'breadcrumb' => ['Csv', 'Añadir Población'],
-            'seccion' => '/añadirPoblacion',
+            //'seccion' => '/añadirPoblacion',
             'sexos' => self::SEXOS
         ];
-        $model = new CsvModel('../app/Data/poblacion_pontevedra.csv');
-        $vars['data'] = $model->getPoblacion();
 
-        if (isset($_POST['submit'])) {
-            $errores = $this->checkDatosMunicipio($_POST['submit']);
-
-            if (count($errores) < 0) {
-                //Metemos los datos si no hay elementos
-                if ($this->checkDatoRepetido($_POST['submit'])) {
-                    $registro = [$_POST['nombre'], $_POST['sexo'], $_POST['periodo'], $_POST['total']];
-
-                    $resultado = $model->addMunicipio($registro);
-                    try {
-                        if ($resultado) {
-                            header('Location: /historicoPoblacionPontevedra');
-                            die();
-                        } else {
-                            $errores['municipio'] = '';
-                        }
-                    } catch () {
-                        $errores['municipio'] = 
-                    }
-
-                }
-            }
-        }
         $vars['errores'] = $errores;
-        $vars['input'] = filter_var($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+        $vars['input'] = filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
         $this->view->showViews(array('templates/header.view.php', 'addCsv.view.php', 'templates/footer.view.php'), $vars);
     }
 
