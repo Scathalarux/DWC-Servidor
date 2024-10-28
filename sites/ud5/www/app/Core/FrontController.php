@@ -3,6 +3,7 @@
 namespace Com\Daw2\Core;
 
 use Com\Daw2\Controllers\CsvController;
+use Com\Daw2\Controllers\UserController;
 use Steampixel\Route;
 
 class FrontController
@@ -76,6 +77,22 @@ class FrontController
             'get'
         );
 
+        Route::add(
+            '/usuarios/new',
+            function () {
+                $controlador = new UserController();
+                $controlador->showAnadirUser();
+            },
+            'get'
+        );
+        Route::add(
+            '/usuarios/new',
+            function () {
+                $controlador = new UserController();
+                $controlador->doAnadirUser();
+            },
+            'post'
+        );
 
         /*Route::add(
             '/anagrama',
@@ -112,6 +129,7 @@ class FrontController
             },
             'post'
         );*/
+
 
         Route::add(
             '/demo-proveedores',

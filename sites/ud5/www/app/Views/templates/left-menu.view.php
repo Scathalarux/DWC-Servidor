@@ -66,6 +66,13 @@
                         <p>Añadir Municipio</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="/usuarios/new"
+                       class="nav-link <?php echo '/usuarios/new' ? 'active' : ''; ?>">
+                        <i class="fas fa-table nav-icon"></i>
+                        <p>Nuevo usuario</p>
+                    </a>
+                </li>
             </ul>
         </li>
     </ul>
