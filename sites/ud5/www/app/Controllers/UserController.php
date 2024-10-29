@@ -23,12 +23,13 @@ class UserController extends BaseController
 
     public function doAnadirUser(): void
     {
-
         $data = [];
         $errores = $this->checkUser($_POST);
 
-        if (count($errores) < 0) {
+        if (count($errores) === 0) {
             $data['exito'] = true;
+        } else {
+            $data['exito'] = false;
         }
 
         $data = [
@@ -57,7 +58,7 @@ class UserController extends BaseController
         //comprobamos errores en el email
         if (empty($datos['email'])) {
             $errores['email'] = "El email es requerido";
-        }elseif (!filter_var($datos['email'], FILTER_VALIDATE_EMAIL)){
+        } elseif (!filter_var($datos['email'], FILTER_VALIDATE_EMAIL)) {
             $errores['email'] = "El email no es valido";
         }
 
@@ -66,7 +67,7 @@ class UserController extends BaseController
             $errores['tipo_suscripcion'] = "El tipo de suscripcion solo puede ser 'free', 'silver' o 'gold'";
         }
 
-        if($datos['tipo_suscripcion'] === 'gold' || $datos['tipo_suscripcion'] === 'silver') {
+        if ($datos['tipo_suscripcion'] === 'gold' || $datos['tipo_suscripcion'] === 'silver') {
             //Comprobamos errores en el número de la tarjeta
             if (!filter_var($datos['numTarjeta'], FILTER_VALIDATE_INT)) {
                 $errores['numTarjeta'] = "El número de la tarjeta no es valido";
@@ -74,7 +75,6 @@ class UserController extends BaseController
                 $errores['numTarjeta'] = "El número de la tarjeta debe estar compuesto por 16 dígitos";
             }
         }
-
         return $errores;
     }
 }
