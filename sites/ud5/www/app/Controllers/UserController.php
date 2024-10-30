@@ -23,15 +23,13 @@ class UserController extends BaseController
 
     public function doAnadirUser(): void
     {
+        /**
+         * No hace falta una comprobacion de si está recibiendo algo por POST
+         * ya que a través del router ya hacemos esta comprobación
+         * (llamar a aesta función si recibe algo por post)
+        */
+
         $data = [];
-        $errores = $this->checkUser($_POST);
-
-        if (count($errores) === 0) {
-            $data['exito'] = true;
-        } else {
-            $data['exito'] = false;
-        }
-
         $data = [
             'titulo' => "Añadir usuario",
             'breadcrumb' => array('Usuarios', 'Nuevo usuario'),
@@ -39,6 +37,12 @@ class UserController extends BaseController
             'tipo_suscripcion' => self::TIPO_SUSCRIPCION
         ];
 
+        $errores = $this->checkUser($_POST);
+        if (count($errores) === 0) {
+            $data['exito'] = true;
+        } else {
+            $data['exito'] = false;
+        }
         $data['errores'] = $errores;
         $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
         $this->view->showViews(array('templates/header.view.php', 'user.view.php', 'templates/footer.view.php'), $data);
@@ -49,9 +53,9 @@ class UserController extends BaseController
         $errores = [];
 
         //Comprobamos errores en el nombre de usuario
-        if (mb_strlen(trim($datos['nombre'])) < 1) {
+        if (mb_strlen($datos['nombre']) < 1) {
             $errores['nombre'] = "El nombre es requerido";
-        } elseif (!preg_match('/[0-9]*[\p{L}_]/iu', $datos['nombre'])) {
+        } elseif (!preg_match('/^[\p{L}\p{N}_]+$/iu', $datos['nombre'])) {
             $errores['nombre'] = "El nombre solo puede contener letras, números y '_'";
         }
 
@@ -64,16 +68,25 @@ class UserController extends BaseController
 
         //Comprobamos errores en el tipo de suscripción
         if (!in_array($datos['tipo_suscripcion'], self::TIPO_SUSCRIPCION)) {
-            $errores['tipo_suscripcion'] = "El tipo de suscripcion solo puede ser 'free', 'silver' o 'gold'";
+            $errores['tipo_suscripcion'] = "Selecciona un tipo de suscripcion válido";
         }
 
-        if ($datos['tipo_suscripcion'] === 'gold' || $datos['tipo_suscripcion'] === 'silver') {
-            //Comprobamos errores en el número de la tarjeta
+
+        if (!empty($datos['numTarjeta'])) {
             if (!filter_var($datos['numTarjeta'], FILTER_VALIDATE_INT)) {
                 $errores['numTarjeta'] = "El número de la tarjeta no es valido";
             } elseif (mb_strlen((string)$datos['numTarjeta']) !== 16) {
                 $errores['numTarjeta'] = "El número de la tarjeta debe estar compuesto por 16 dígitos";
             }
+        } else {
+            //Comprobamos errores en el número de la tarjeta
+            if (in_array($datos['tipo_suscripcion'], ['gold','silver'])) {
+                $errores['numTarjeta'] = "La suscripción requiere introducir un número de tarjeta";
+            }
+        }
+
+        if (!isset($data['acepto'])) {
+            $errores['terminos'] = "Debe aceptar los términos y condiciones";
         }
         return $errores;
     }

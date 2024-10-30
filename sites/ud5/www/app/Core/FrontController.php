@@ -4,6 +4,8 @@ namespace Com\Daw2\Core;
 
 use Com\Daw2\Controllers\CsvController;
 use Com\Daw2\Controllers\UserController;
+use Com\Daw2\Controllers\UsuariosController;
+use Com\Daw2\Models\UsuarioModel;
 use Steampixel\Route;
 
 class FrontController
@@ -92,6 +94,15 @@ class FrontController
                 $controlador->doAnadirUser();
             },
             'post'
+        );
+
+        Route::add(
+            '/test-model',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->doConnection();
+            },
+            'get'
         );
 
         /*Route::add(

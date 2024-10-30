@@ -1,18 +1,12 @@
 <!--Inicio HTML -->
-<?php if (isset($exito)) { ?>
-<div class="row">
-    <div class="col-12">
-        <?php if ($exito) { ?>
-        <div class="alert alert-success">
-            <p>Se ha añadido el usuario correctamente!</p>
+<?php if (isset($exito)$$$exito) { ?>
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-success">
+                <p>Se ha añadido el usuario correctamente!</p>
+            </div>
         </div>
-        <?php } else { ?>
-        <div class="alert alert-danger">
-            <p>No se ha podido añadir el usuario</p>
-        </div>
-        <?php } ?>
     </div>
-</div>
 <?php } ?>
 <div class="row">
     <div class="col-12">
@@ -30,7 +24,7 @@
                             <div class="mb-3">
                                 <label for="nombre">Nombre usuario:</label>
                                 <input type="text" class="form-control" name="nombre" id="nombre"
-                                       value="<?php echo $input['nombre']  ?>"/>
+                                       value="<?php echo $input['nombre'] ?>"/>
                                 <p class="text-danger"><?php echo $errores['nombre'] ?? '' ?></p>
                             </div>
                         </div>
@@ -38,7 +32,7 @@
                             <div class="mb-3">
                                 <label for="email">Email usuario:</label>
                                 <input type="email" class="form-control" name="email" id="email"
-                                       value="<?php echo $input['email']  ?>"/>
+                                       value="<?php echo $input['email'] ?>"/>
                                 <p class="text-danger"><?php echo $errores['email'] ?? '' ?></p>
                             </div>
                         </div>
@@ -47,7 +41,10 @@
                                 <label for="tipo_suscripcion">Suscripción:</label>
                                 <select name="tipo_suscripcion" class="form-control form-select">
                                     <?php foreach ($tipo_suscripcion as $suscripcion) { ?>
-                                        <option value="<?php echo $suscripcion ?>" <?php echo (isset($_POST['tipo_suscripcion']) && $_POST['tipo_suscripcion'] === $suscripcion) ? 'selected' : ''; ?>><?php echo $suscripcion ?></option>
+                                        <option value="<?php echo $suscripcion ?>"
+                                            <?php echo (isset($_POST['tipo_suscripcion'])
+                                                && $_POST['tipo_suscripcion'] === $suscripcion) ? 'selected' : ''; ?>>
+                                            <?php echo ucfirst($suscripcion) ?></option>
                                     <?php } ?>
                                 </select>
                                 <p class="text-danger"><?php echo $errores['tipo_suscripcion'] ?? '' ?></p>
@@ -57,7 +54,9 @@
                             <div class="mb-3">
                                 <label for="numTarjeta">Número tarjeta:</label>
                                 <input type="number" class="form-control" name="numTarjeta" id="numTarjeta"
-                                       value="<?php echo $input['numTarjeta']  ?>" <?php echo (isset($_POST['suscripcion']) && $_POST['suscripcion'] === ('gold' || 'silver')) ? 'required' : '' ?>/>
+                                       value="<?php echo $input['numTarjeta'] ?>"
+                                    <?php echo (isset($_POST['suscripcion'])
+                                        && $_POST['suscripcion'] === ('gold' || 'silver')) ? 'required' : '' ?>/>
                                 <p class="text-danger"><?php echo $errores['numTarjeta'] ?? '' ?></p>
                             </div>
                         </div>
@@ -66,6 +65,7 @@
                                 <label for="terminos">Aceptar los términos</label>
                                 <input type="checkbox" class="form-control" name="terminos" id="terminos"
                                        value="" <?php echo isset($_POST['terminos']) ? 'required' : '' ?>/>
+                                <p class="text-danger"><?php echo $errores['terminos'] ?? '' ?></p>
                             </div>
                         </div>
                     </div>
