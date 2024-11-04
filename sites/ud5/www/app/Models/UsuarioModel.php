@@ -4,19 +4,26 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Models;
 
+use Com\Daw2\Core\BaseDbModel;
 use PDO;
 use PDOException;
 
-class UsuarioModel
+class UsuarioModel extends BaseDbModel
 {
-    public function __construct($_ENV['db.host']->$host)
+    private const BASE_QUERY = "SELECT u.* , ar.nombre_rol, ac.country_name
+                                    FROM usuario u 
+                                    JOIN aux_rol ar on u.id_rol = ar.id_rol 
+                                    LEFT JOIN aux_countries ac on u.id_country = ac.id";
+    /*//Ya no lo necesitaríamos al extender el BaseDbModel
+     * public function __construct()
     {
-        /*//Creamos las variables
-        $host = "mysql";
-        $db = "ud5";
-        $user = "admin";
-        $pass = "daw2pass";
-        $charset = "utf8mb4";*/
+        //Creamos las variables
+        $host = $_ENV['db.host'];
+        $db = $_ENV['db.schema'];
+        $user = $_ENV['db.user'];
+        $pass = $_ENV['db.pass'];
+        $charset = $_ENV['db.charset'];
+        $emulated = $_ENV['db.emulated'];
 
         //Creamos el DSN
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -25,7 +32,7 @@ class UsuarioModel
         $options = [
           PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
           PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-          PDO::ATTR_EMULATE_PREPARES => false
+          PDO::ATTR_EMULATE_PREPARES => $emulated
         ];
 
         try {
@@ -33,5 +40,25 @@ class UsuarioModel
         } catch (PDOException $e) {
             throw new \PDOException($e->getMessage(), (int)$e->getCode());
         }
+    }*/
+    public function getAllUsuarios(): array
+    {
+        $stmt = $this->pdo->query(self::BASE_QUERY);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getUsuariosBySalario(): array
+    {
+        $stmt = $this->pdo->query(self::BASE_QUERY . " ORDER BY u.salarioBruto DESC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getUsuariosStandard(): array
+    {
+        $stmt = $this->pdo->query(self::BASE_QUERY . " WHERE ar.nombre_rol = 'standard'");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getUsuarioByName($name)
+    {
+        $stmt = $this->pdo->query(self::BASE_QUERY . " WHERE u.username LIKE '$name%'");
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

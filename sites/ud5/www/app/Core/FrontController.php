@@ -97,10 +97,34 @@ class FrontController
         );
 
         Route::add(
-            '/test-model',
+            '/allUsers',
             function () {
                 $controlador = new UsuariosController();
-                $controlador->doConnection();
+                $controlador->doAllUsuarios();
+            },
+            'get'
+        );
+        Route::add(
+            '/usersBySalario',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->doOrderUsuarioSalario();
+            },
+            'get'
+        );
+        Route::add(
+            '/standardUsers',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->doStandardUsers();
+            },
+            'get'
+        );
+        Route::add(
+            '/usersByName',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->doUsersByName();
             },
             'get'
         );
