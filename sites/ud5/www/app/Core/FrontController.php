@@ -100,7 +100,15 @@ class FrontController
             '/allUsers',
             function () {
                 $controlador = new UsuariosController();
-                $controlador->doAllUsuarios();
+                $controlador->showAllUsuarios();
+            },
+            'get'
+        );
+        Route::add(
+            '/filteredUsers',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->doFilterUsuarios();
             },
             'get'
         );
@@ -108,7 +116,7 @@ class FrontController
             '/usersBySalario',
             function () {
                 $controlador = new UsuariosController();
-                $controlador->doOrderUsuarioSalario();
+                $controlador->showOrderUsuarioSalario();
             },
             'get'
         );
@@ -116,7 +124,7 @@ class FrontController
             '/standardUsers',
             function () {
                 $controlador = new UsuariosController();
-                $controlador->doStandardUsers();
+                $controlador->showStandardUsers();
             },
             'get'
         );
@@ -124,7 +132,7 @@ class FrontController
             '/usersByName',
             function () {
                 $controlador = new UsuariosController();
-                $controlador->doUsersByName();
+                $controlador->showUsersByName();
             },
             'get'
         );

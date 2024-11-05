@@ -10,7 +10,7 @@ use Com\Daw2\Models\UsuarioModel;
 
 class UsuariosController extends BaseController
 {
-    public function doAllUsuarios()
+    public function showAllUsuarios()
     {
         $data = [];
         $data = [
@@ -19,19 +19,34 @@ class UsuariosController extends BaseController
             'seccion' => '/allUsers'
             ];
         $model = new UsuarioModel();
-        $usuarios = $model->getAllUsuarios();
+        $data['usuarios'] = $this->calcularNeto($model->getAllUsuarios());
+        $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
+    }
+    private function calcularNeto(array $usuarios): array
+    {
         foreach ($usuarios as &$usuario) {
             $salarioBruto = new Decimal($usuario['salarioBruto']);
             $retencion = new Decimal($usuario['retencionIRPF']);
-            $usuario['salarioNeto'] =  $salarioBruto - ($salarioBruto * $retencion / new Decimal('100', 2)) ;
+            $salarioNeto = $salarioBruto - ($salarioBruto * $retencion / new Decimal('100', 2)) ;
+            $usuario['salarioNeto'] = $salarioNeto->toFixed(2, true, Decimal::ROUND_HALF_UP);
         }
-        $data['usuarios'] = $usuarios;
+        return $usuarios;
+    }
 
-
+    public function doFilterUsuarios()
+    {
+        $data = [];
+        $data = [
+            'titulo' => 'Todos los usuarios',
+            'breadcrumb' => array('Usuarios', 'Todos los usuarios'),
+            'seccion' => '/allUsers'
+        ];
+        $model = new UsuarioModel();
+        $data['usuarios'] = $this->calcularNeto($model->getAllUsuarios());
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 
-    public function doOrderUsuarioSalario()
+    public function showOrderUsuarioSalario()
     {
 
         $data = [];
@@ -41,12 +56,12 @@ class UsuariosController extends BaseController
             'seccion' => '/usersBySalario'
         ];
         $model = new UsuarioModel();
-        $data['usuarios'] = $model->getUsuariosBySalario();
+        $data['usuarios'] = $this->calcularNeto($model->getUsuariosBySalario());
 
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 
-    public function doStandardUsers()
+    public function showStandardUsers()
     {
         $data = [];
         $data = [
@@ -55,12 +70,13 @@ class UsuariosController extends BaseController
             'seccion' => '/standardUsers'
         ];
         $model = new UsuarioModel();
-        $data['usuarios'] = $model->getUsuariosStandard();
+        $data['usuarios'] = $this->calcularNeto($model->getUsuariosStandard());
+
 
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 
-    public function doUsersByName()
+    public function showUsersByName()
     {
         $name = "Carlos";
         $data = [];
@@ -70,7 +86,8 @@ class UsuariosController extends BaseController
             'seccion' => '/usersByName'
         ];
         $model = new UsuarioModel();
-        $data['usuarios'] = $model->getUsuarioByName($name);
+        $data['usuarios'] = $this->calcularNeto($model->getUsuarioByName($name));
+
 
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
