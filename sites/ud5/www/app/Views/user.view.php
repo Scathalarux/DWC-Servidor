@@ -1,5 +1,5 @@
 <!--Inicio HTML -->
-<?php if (isset($exito)$$$exito) { ?>
+<?php if (isset($exito)&& $exito) { ?>
     <div class="row">
         <div class="col-12">
             <div class="alert alert-success">

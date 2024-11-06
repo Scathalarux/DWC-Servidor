@@ -44,7 +44,7 @@ class UserController extends BaseController
             $data['exito'] = false;
         }
         $data['errores'] = $errores;
-        $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+        $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $this->view->showViews(array('templates/header.view.php', 'user.view.php', 'templates/footer.view.php'), $data);
     }
 

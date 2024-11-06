@@ -105,7 +105,7 @@ class FrontController
             'get'
         );
         Route::add(
-            '/filteredUsers',
+            '/users-filter',
             function () {
                 $controlador = new UsuariosController();
                 $controlador->doFilterUsuarios();

@@ -181,7 +181,7 @@ class CsvController extends BaseController
         ];
 
         $vars['errores'] = $errores;
-        $vars['input'] = filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+        $vars['input'] = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $this->view->showViews(array('templates/header.view.php', 'addCsv.view.php', 'templates/footer.view.php'), $vars);
     }
 
