@@ -56,10 +56,10 @@ class UsuarioModel extends BaseDbModel
         $stmt = $this->pdo->query(self::BASE_QUERY . " WHERE ar.nombre_rol LIKE 'standard'");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getUsuarioByName(): array
+    public function getUsuariosCarlos(): array
     {
         $stmt = $this->pdo->query(self::BASE_QUERY . " WHERE u.username LIKE 'Carlos%'");
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getUsuariosByUsername(string $username): array
     {
@@ -73,10 +73,10 @@ class UsuarioModel extends BaseDbModel
         $stmt->execute(['id_rol' => $rol]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getUsuariosBySalario(int $salario): array
+    public function getUsuariosBySalario(int $salarioMinimo, int $salarioMaximo): array
     {
-        $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.salarioBruto = :salarioBruto");
-        $stmt->execute(['salarioBruto' => $salario]);
+        $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.salarioBruto BETWEEN :salarioMinimo AND :salarioMaximo");
+        $stmt->execute(['salarioMinimo' => $salarioMinimo, 'salarioMaximo' => $salarioMaximo]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getUsuariosByCotizacion(int $cotizacion): array

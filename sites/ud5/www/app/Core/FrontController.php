@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Com\Daw2\Core;
 
 use Com\Daw2\Controllers\CsvController;
 use Com\Daw2\Controllers\UserController;
 use Com\Daw2\Controllers\UsuariosController;
+use Com\Daw2\Core\Controllers\UsuarController;
 use Com\Daw2\Models\UsuarioModel;
 use Steampixel\Route;
 

@@ -13,41 +13,39 @@
                     <div class="row">
                         <div class="col-12 col-lg-6">
                             <div class="form-group">
-                                <label for="nombre">Nombre usuario:</label>
-                                <input type="text" class="form-control" name="nombre" id="nombre"
-                                       value="<?php echo isset($input['nombre']) ?>"/>
+                                <label for="username">Nombre usuario:</label>
+                                <input type="text" class="form-control" name="username" id="username"
+                                       value="<?php echo isset($input['username']) ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="form-group">
                                 <label for="id_rol">Tipo usuario:</label>
-                                <select id="id_rol" name="id_rol" class="form-control">
+                                <select name="id_rol" class="form-control">
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) { ?>
-                                    <option value="<?php echo $rol['id_rol'] ?>"
-                                        <?php echo (isset($input['id_rol']) && $rol['id_rol'] == $input['id_rol']) ? 'selected' : ''; ?>>
+                                    <option value="<?php echo $rol['id_rol']; ?>"
+                                        <?php echo isset($input['id_rol']) && $rol['id_rol'] === $input['id_rol'] ? 'selected' : ''; ?>>
                                         <?php echo ucfirst($rol['nombre_rol']) ?></option>
                                     <?php }?>
                                 </select>
-                                <input type="text" class="form-control" name="id_rol" id="id_rol"
-                                       value="<?php echo isset($input['id_rol']) ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
                                 <label for="salarioMinimo">Salario Bruto mínimo:</label>
                                 <input type="number" class="form-control" name="salarioMinimo" id="salarioMinimo"
-                                       value="<?php echo isset($input['salarioBruto']) ?>"/>
+                                       value="<?php echo isset($input['salarioMinimo']) ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
                             <label for="salarioMaximo">Salario Bruto máximo:</label>
                             <input type="number" class="form-control" name="salarioMaximo" id="salarioMaximo"
-                                   value="<?php echo isset($input['salarioBruto']) ?>"/>
+                                   value="<?php echo isset($input['salarioMaximo']) ?>"/>
                         </div>
                         </div>
-                        <div class="col-12 col-lg-6">
+                        <div class="col-12 col-lg-4">
                             <div class="form-group">
                                 <label for="cotizacion">Cotizacion:</label>
                                 <input type="number" class="form-control" name="cotizacion" id="cotizacion"

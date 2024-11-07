@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Com\Daw2\Controllers;
 
-use Com\Daw2\Models\AuxRolModel;
-use Decimal\Decimal;
 use Com\Daw2\Core\BaseController;
+use Com\Daw2\Models\AuxRolModel;
 use Com\Daw2\Models\UsuarioModel;
+use Decimal\Decimal;
 
 class UsuariosController extends BaseController
 {
@@ -45,15 +43,15 @@ class UsuariosController extends BaseController
         //obtenemos el modelo de la tabla usuarios
         $model = new UsuarioModel();
         //obtenemos el modelo y los datos de la tabla aux_rol
-        $rolModel = new AuxRolModel();
-        $data['roles'] = $rolModel->getAll();
+        $auxRolModel = new AuxRolModel();
+        $data['roles'] = $auxRolModel->getAll();
 
-        if (!empty($_GET['nombre'])) {
-            $usuarios = $model->getUsuariosByUsername($_GET['nombre']);
+        if (!empty($_GET['username'])) {
+            $usuarios = $model->getUsuariosByUsername($_GET['username']);
         } elseif (!empty($_GET['id_rol'])) {
-            $usuarios = $model->getUsuariosByRol((int)$_GET['tipoUsuario']);
-        } elseif (!empty($_GET['salarioBruto'])) {
-            $usuarios = $model->getUsuariosBySalario((int)$_GET['salarioBruto']);
+            $usuarios = $model->getUsuariosByRol((int)$_GET['id_rol']);
+        } elseif (!empty($_GET['salarioMinimo']) && !empty($_GET['salarioMaximo'])) {
+            $usuarios = $model->getUsuariosBySalario((int)$_GET['salarioMinimo'], (int)$_GET['salarioMaximo']);
         } elseif (!empty($_GET['cotizacion'])) {
             $usuarios = $model->getUsuariosByCotizacion((int)$_GET['cotizacion']);
         } else {
@@ -98,7 +96,7 @@ class UsuariosController extends BaseController
 
     public function showUsersByName()
     {
-        $name = "Carlos";
+
         $data = [];
         $data = [
             'titulo' => 'Usuarios según nombre',
@@ -106,7 +104,7 @@ class UsuariosController extends BaseController
             'seccion' => '/usersByName'
         ];
         $model = new UsuarioModel();
-        $data['usuarios'] = $this->calcularNeto($model->getUsuarioByName($name));
+        $data['usuarios'] = $this->calcularNeto($model->getUsuariosCarlos());
 
 
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
