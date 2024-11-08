@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Com\Daw2\Models;
 
 use Com\Daw2\Core\BaseDbModel;
+use Decimal\Decimal;
 use PDO;
 use PDOException;
 
@@ -73,8 +74,9 @@ class UsuarioModel extends BaseDbModel
         $stmt->execute(['id_rol' => $rol]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getUsuariosBySalario(int $salarioMinimo, int $salarioMaximo): array
+    public function getUsuariosBySalario(?Decimal $salarioMinimo, ?Decimal $salarioMaximo): array
     {
+
         $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.salarioBruto BETWEEN :salarioMinimo AND :salarioMaximo");
         $stmt->execute(['salarioMinimo' => $salarioMinimo, 'salarioMaximo' => $salarioMaximo]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -34,14 +34,14 @@
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
                                 <label for="salarioMinimo">Salario Bruto mínimo:</label>
-                                <input type="number" class="form-control" name="salarioMinimo" id="salarioMinimo"
+                                <input type="text" class="form-control" name="salarioMinimo" id="salarioMinimo"
                                        value="<?php echo isset($input['salarioMinimo']) ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
                             <label for="salarioMaximo">Salario Bruto máximo:</label>
-                            <input type="number" class="form-control" name="salarioMaximo" id="salarioMaximo"
+                            <input type="text" class="form-control" name="salarioMaximo" id="salarioMaximo"
                                    value="<?php echo isset($input['salarioMaximo']) ?>"/>
                         </div>
                         </div>
