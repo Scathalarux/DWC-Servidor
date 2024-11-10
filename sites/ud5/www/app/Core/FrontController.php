@@ -135,7 +135,7 @@ class FrontController
             '/usersByName',
             function () {
                 $controlador = new UsuariosController();
-                $controlador->showUsersByName();
+                $controlador->showUsersCarlos();
             },
             'get'
         );

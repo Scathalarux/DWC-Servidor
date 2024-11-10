@@ -15,7 +15,7 @@
                             <div class="form-group">
                                 <label for="username">Nombre usuario:</label>
                                 <input type="text" class="form-control" name="username" id="username"
-                                       value="<?php echo isset($input['username']) ?>"/>
+                                       value="<?php echo $input['username'] ?? ''; ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-6">
@@ -33,35 +33,50 @@
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                                <label for="salarioMinimo">Salario Bruto mínimo:</label>
-                                <input type="text" class="form-control" name="salarioMinimo" id="salarioMinimo"
-                                       value="<?php echo isset($input['salarioMinimo']) ?>"/>
+                                <label for="salarioBruto">Salario Bruto:</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" name="salarioMinimo" id="salarioMinimo" value="<?php echo $input['salarioMinimo'] ?? ''; ?>" placeholder="Mí­nimo" />
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" name="salarioMaximo" id="salarioMaximo" value="<?php echo $input['salarioMaximo'] ?? ''; ?>" placeholder="Máximo" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                            <label for="salarioMaximo">Salario Bruto máximo:</label>
-                            <input type="text" class="form-control" name="salarioMaximo" id="salarioMaximo"
-                                   value="<?php echo isset($input['salarioMaximo']) ?>"/>
-                        </div>
+                                <label for="cotizacion">Cotización:</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" name="cotizacionMinimo" id="cotizacionMinimo" value="<?php echo $input['cotizacionMinimo'] ?? ''; ?>" placeholder="Mí­nimo" />
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" name="cotizacionMaximo" id="cotizacionMaximo" value="<?php echo $input['cotizacionMinimo'] ?? ''; ?>" placeholder="Máximo" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                                <label for="cotizacion">Cotizacion:</label>
-                                <input type="number" class="form-control" name="cotizacion" id="cotizacion"
-                                       value="<?php echo isset($input['cotizacion']) ?>"/>
+                                <label for="id_country">País:</label>
+                                <select name="id_country" id="id_country" class="form-control select2" data-placeholder="Países" multiple>
+                                    <?php foreach ($countries as $country) { ?>
+                                        <option value="<?php echo $country['id']; ?>">
+                                            <?php echo ucfirst($country['country_name']) ?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="col-12 text-right">
+                                <a href="<?php echo $_ENV['host.folder']; ?>users-filter" value="" name="reiniciar"
+                                   class="btn btn-danger">Reiniciar filtros</a>
+                                <input type="submit" value="Aplicar filtros" name="enviar" class="btn btn-primary ml-2"/>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                    </div>
-                    <div class="card-footer">
-                        <div class="col-12 text-right">
-                            <a href="<?php echo $_ENV['host.folder']; ?>users-filter" value="" name="reiniciar"
-                               class="btn btn-danger">Reiniciar filtros</a>
-                            <input type="submit" value="Aplicar filtros" name="enviar" class="btn btn-primary ml-2"/>
-                        </div>
-                    </div>
+                </div>
             </form>
         </div>
     </div>

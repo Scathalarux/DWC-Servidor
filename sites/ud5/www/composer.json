@@ -1,20 +1,21 @@
 {
-    "name": "com/daw2",
-    "description": "Framework DAw2",
-    "type": "project",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Com\\Daw2\\": "app/"
-        }
-    },
-    "require": {
-        "steampixel/simple-php-router": "^0.7.1",
-        "vlucas/phpdotenv": "^5.5",
-        "ext-pdo": "*",
-      "ext-decimal": "*"
-    },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "^3.9.2"
+  "name": "com/daw2",
+  "description": "Framework DAw2",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Com\\Daw2\\": "app/"
     }
+  },
+  "require": {
+    "steampixel/simple-php-router": "^0.7.1",
+    "vlucas/phpdotenv": "^5.5",
+    "ext-pdo": "*",
+    "ext-decimal": "*"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.9.2",
+    "vendor-autoload.php": "*"
+  }
 }

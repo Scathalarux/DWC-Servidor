@@ -12,7 +12,12 @@ use Decimal\Decimal;
 
 class UsuariosController extends BaseController
 {
-    public function showAllUsuarios()
+    /**
+     * Función que obtiene todos los usuarios del modelo y se los manda a la vista
+     * @return void
+     * @throws \Exception
+     */
+    public function showAllUsuarios(): void
     {
         $data = [];
         $data = [
@@ -25,6 +30,11 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 
+    /**
+     * Función que calcula el salario neto de un usuario partiendo de su salario Bruto y retencion de IRPF
+     * @param array $usuarios conjunto de usuarios a los que calcularle el salario neto
+     * @return array conjunto de usuarios con el salario neto calculado y añadido
+     */
     private function calcularNeto(array $usuarios): array
     {
         foreach ($usuarios as &$usuario) {
@@ -36,6 +46,12 @@ class UsuariosController extends BaseController
         return $usuarios;
     }
 
+    /**
+     * Función que filtra a los usuarios según lo que le introduce el cliente, obteniendo los latos de los modelos y
+     * enviandoselos a la vista
+     * @return void
+     * @throws \Exception
+     */
     public function doFilterUsuarios(): void
     {
         $data = [];
@@ -64,8 +80,16 @@ class UsuariosController extends BaseController
             $salarioMinimo = (!empty($_GET['salarioMinimo']) && filter_var($_GET['salarioMinimo'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['salarioMinimo']) : null;
             $salarioMaximo = (!empty($_GET['salarioMaximo']) && filter_var($_GET['salarioMaximo'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['salarioMaximo']) : null;
             $usuarios = $model->getUsuariosBySalario($salarioMinimo, $salarioMaximo);
-        } elseif (!empty($_GET['cotizacion'])) {
-            $usuarios = $model->getUsuariosByCotizacion((int)$_GET['cotizacion']);
+        } elseif (
+            (!empty($_GET['cotizacionMinima']) && filter_var($_GET['cotizacionMinima'], FILTER_VALIDATE_FLOAT))
+            || (!empty($_GET['cotizacionMaxima']) && filter_var($_GET['cotizacionMaxima'], FILTER_VALIDATE_FLOAT))
+        ) {
+            $cotizacionMinima = !empty($_GET['cotizacionMinima']) && filter_var($_GET['cotizacionMinima'], FILTER_VALIDATE_FLOAT) ? new Decimal($_GET['cotizacionMinima']) : null;
+            $cotizacionMaxima = !empty($_GET['cotizacionMaxima']) && filter_var($_GET['cotizacionMaxima'], FILTER_VALIDATE_FLOAT) ? new Decimal($_GET['cotizacionMaxima']) : null;
+            $usuarios = $model->getUsuariosByCotizacion($cotizacionMinima, $cotizacionMaxima);
+        } elseif (!empty($_GET['id_country'])) {
+            $paises = explode(',', $_GET['id_country']);
+            $usuarios = $model->getUsuariosByPais($paises);
         } else {
             $usuarios = $model->getAllUsuarios();
         }
@@ -76,7 +100,12 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'usuariosFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 
-    public function showOrderUsuarioSalario()
+    /**
+     * Función que obtiene los usuarios ordenados por salario y se los manda a la vista
+     * @return void
+     * @throws \Exception
+     */
+    public function showOrderUsuarioSalario(): void
     {
 
         $data = [];
@@ -91,7 +120,12 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 
-    public function showStandardUsers()
+    /**
+     * Función que obtiene los usuarios de tipo 'standard' del modelo y se los manda a la vista
+     * @return void
+     * @throws \Exception
+     */
+    public function showStandardUsers(): void
     {
         $data = [];
         $data = [
@@ -106,7 +140,12 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 
-    public function showUsersByName()
+    /**
+     * Función que obtiene los usuarios que tienen en el nombre 'Carlos' y se los envia a la vista
+     * @return void
+     * @throws \Exception
+     */
+    public function showUsersCarlos(): void
     {
 
         $data = [];

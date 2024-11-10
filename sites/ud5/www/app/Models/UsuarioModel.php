@@ -42,49 +42,155 @@ class UsuarioModel extends BaseDbModel
             throw new \PDOException($e->getMessage(), (int)$e->getCode());
         }
     }*/
+    /**
+     * Función que devuelve el conjunto de usuarios
+     * @return array conjunto de usuarios
+     */
     public function getAllUsuarios(): array
     {
         $stmt = $this->pdo->query(self::BASE_QUERY);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Función que devuelve el conjunto de usuarios ordenados de forma descendente según salario
+     * @return array conjunto de usuarios ordenados
+     */
     public function getUsuariosSalario(): array
     {
         $stmt = $this->pdo->query(self::BASE_QUERY . " ORDER BY u.salarioBruto DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Función que devuelve el conjunto de usuarios que son de tipo 'standard'
+     * @return array conjunto de usuarios tipo 'standard'
+     */
     public function getUsuariosStandard(): array
     {
         $stmt = $this->pdo->query(self::BASE_QUERY . " WHERE ar.nombre_rol LIKE 'standard'");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Función que devuelve el conjunto de usuarios que contienen en el username 'carlos'
+     * @return array conjunto de ususarios
+     */
     public function getUsuariosCarlos(): array
     {
         $stmt = $this->pdo->query(self::BASE_QUERY . " WHERE u.username LIKE 'Carlos%'");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Función que devuelve el conjunto de usuarios tras filtrarlos por username
+     * @param string $username nombre que se usa como filtro
+     * @return array conjunto de usuarios que contiene el nombre en el username
+     */
     public function getUsuariosByUsername(string $username): array
     {
         $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.username LIKE :username");
         $stmt->execute(['username' => "%$username%"]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Función que devuelve el conjunto de usuarios tras filtrarlos por su rol
+     * @param int $rol rol que tiene asociado el usuario
+     * @return array conjunto de usuarios del rol indicado
+     */
     public function getUsuariosByRol(int $rol): array
     {
         $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.id_rol = :id_rol");
         $stmt->execute(['id_rol' => $rol]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Función que devuelve el conjunto de usuarios tras filtrarlos por salario mínimo y/o máximo
+     * @param Decimal|null $salarioMinimo salario mínimo
+     * @param Decimal|null $salarioMaximo salario maximo
+     * @return array conjunto de usuarios que tienen un salario dentro de lo indicado
+     */
     public function getUsuariosBySalario(?Decimal $salarioMinimo, ?Decimal $salarioMaximo): array
     {
+        //Condiciones a aplicar en la sentencia
+        $condiciones = [];
+        //variables para pasar al prepared statement
+        $vars = [];
 
-        $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.salarioBruto BETWEEN :salarioMinimo AND :salarioMaximo");
-        $stmt->execute(['salarioMinimo' => $salarioMinimo, 'salarioMaximo' => $salarioMaximo]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //Comprobamos qué datos nos pasan y vamos añadiendo condiciones y variables según lo introducido
+        if (!is_null($salarioMinimo)) {
+            $condiciones[] =  "u.salarioBruto >= :salarioMinimo";
+            $vars['salarioMinimo'] = $salarioMinimo;
+        }
+        if (!is_null($salarioMaximo)) {
+            $condiciones[] =  "u.salarioBruto <= :salarioMaximo";
+            $vars['salarioMaximo'] = $salarioMaximo;
+        }
+        //Si se han introducido condiciones o no, ejecutamos la sentencia pertinente
+        if (!empty($condiciones)) {
+            $sql = self::BASE_QUERY . " WHERE " . implode(" AND ", $condiciones);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($vars);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            return $this->getAllUsuarios();
+        }
     }
-    public function getUsuariosByCotizacion(int $cotizacion): array
+
+    /**
+     * Función que devuelve el conjunto de usuarios tras filtrarlos por retención de IRPF
+     *  mínima y/o máxima
+     * @param int|null $cotizacionMinima cotización mínima
+     * @param int|null $cotizaciónMaxima cotización máxima
+     * @return array conjunto de usuarios que tienen una retención dentro de los valores indicados
+     */
+    public function getUsuariosByCotizacion(?int $cotizacionMinima, ?int $cotizacionMaxima): array
     {
-        $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.retencionIRPF = :retencionIRPF");
-        $stmt->execute(['retencionIRPF' => $cotizacion]);
+        //Condiciones a aplicar en la sentencia
+        $condiciones = [];
+        //variables para pasar al prepared statement
+        $vars = [];
+
+        //Comprobamos qué datos nos pasan y vamos añadiendo condiciones y variables según lo introducido
+        if (!is_null($cotizacionMinima)) {
+            $condiciones[] =  "u.retencionIRPF >= :cotizacionMinimo";
+            $vars['cotizacionMinimo'] = $cotizacionMinima;
+        }
+        if (!is_null($cotizacionMaxima)) {
+            $condiciones[] =  "u.retencionIRPF <= :cotizacionMaximo";
+            $vars['cotizacionMaximo'] = $cotizacionMaxima;
+        }
+        //Si se han introducido condiciones o no, ejecutamos la sentencia pertinente
+        if (!empty($condiciones)) {
+            $sql = self::BASE_QUERY . " WHERE " . implode(" AND ", $condiciones);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($vars);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            return $this->getAllUsuarios();
+        }
+    }
+
+    /**
+     * Función que devuelve el conjunto de usuarios tras filtrarlos por paises
+     * @param array $id_paises conjunto de id de los paises por los que se quiere filtrar
+     * @return array conjunto de usuarios que tienen como pais alguno de los paises indicados
+     */
+    public function getUsuariosByPais(array $id_paises): array
+    {
+        //variables para pasar al prepared statement
+        $vars = [];
+        $i = 1;
+        //nos recorremos el conjunto de id de paises recibidos como parametros y le añadimos un índice
+        foreach ($id_paises as $id_pais) {
+            $vars[':id_country' . $i] = $id_pais;
+            $i++;
+        }
+        $sql = self::BASE_QUERY . " WHERE u.id_country IN ( " . implode(",", array_keys($vars)) . ")";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($vars);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
