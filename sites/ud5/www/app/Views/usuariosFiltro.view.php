@@ -52,7 +52,7 @@
                                         <input type="text" class="form-control" name="cotizacionMinimo" id="cotizacionMinimo" value="<?php echo $input['cotizacionMinimo'] ?? ''; ?>" placeholder="Mí­nimo" />
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="cotizacionMaximo" id="cotizacionMaximo" value="<?php echo $input['cotizacionMinimo'] ?? ''; ?>" placeholder="Máximo" />
+                                        <input type="text" class="form-control" name="cotizacionMaximo" id="cotizacionMaximo" value="<?php echo $input['cotizacionMaximo'] ?? ''; ?>" placeholder="Máximo" />
                                     </div>
                                 </div>
                             </div>
@@ -60,9 +60,9 @@
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
                                 <label for="id_country">País:</label>
-                                <select name="id_country" id="id_country" class="form-control select2" data-placeholder="Países" multiple>
+                                <select name="id_country[]" id="id_country" class="form-control select2" data-placeholder="Países" multiple>
                                     <?php foreach ($countries as $country) { ?>
-                                        <option value="<?php echo $country['id']; ?>">
+                                        <option value="<?php echo $country['id']; ?>" <?php echo (isset($input['id_country']) &&in_array($country['id'],$input['id_country'])) ? 'selected': ''; ?>>
                                             <?php echo ucfirst($country['country_name']) ?></option>
                                     <?php }?>
                                 </select>

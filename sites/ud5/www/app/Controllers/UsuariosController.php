@@ -69,6 +69,8 @@ class UsuariosController extends BaseController
         $auxCountriesModel = new AuxCountriesModel();
         $data['countries'] = $auxCountriesModel->getAll();
 
+/*
+        //Función para pasar los filtros de forma individual, no varios filtros a la vez
         if (!empty($_GET['username'])) {
             $usuarios = $model->getUsuariosByUsername($_GET['username']);
         } elseif (!empty($_GET['id_rol'])) {
@@ -88,11 +90,13 @@ class UsuariosController extends BaseController
             $cotizacionMaxima = !empty($_GET['cotizacionMaxima']) && filter_var($_GET['cotizacionMaxima'], FILTER_VALIDATE_FLOAT) ? new Decimal($_GET['cotizacionMaxima']) : null;
             $usuarios = $model->getUsuariosByCotizacion($cotizacionMinima, $cotizacionMaxima);
         } elseif (!empty($_GET['id_country'])) {
-            $paises = explode(',', $_GET['id_country']);
-            $usuarios = $model->getUsuariosByPais($paises);
+            $usuarios = $model->getUsuariosByPais((array)$_GET['id_country']);
         } else {
             $usuarios = $model->getAllUsuarios();
-        }
+        }*/
+
+        //Alternativa simple para multiples filtros
+        $usuarios = $model->getUsuariosFiltered($_GET);
 
         $data['input'] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['usuarios'] = $this->calcularNeto($usuarios);

@@ -121,11 +121,11 @@ class UsuarioModel extends BaseDbModel
 
         //Comprobamos qué datos nos pasan y vamos añadiendo condiciones y variables según lo introducido
         if (!is_null($salarioMinimo)) {
-            $condiciones[] =  "u.salarioBruto >= :salarioMinimo";
+            $condiciones[] = "u.salarioBruto >= :salarioMinimo";
             $vars['salarioMinimo'] = $salarioMinimo;
         }
         if (!is_null($salarioMaximo)) {
-            $condiciones[] =  "u.salarioBruto <= :salarioMaximo";
+            $condiciones[] = "u.salarioBruto <= :salarioMaximo";
             $vars['salarioMaximo'] = $salarioMaximo;
         }
         //Si se han introducido condiciones o no, ejecutamos la sentencia pertinente
@@ -155,11 +155,11 @@ class UsuarioModel extends BaseDbModel
 
         //Comprobamos qué datos nos pasan y vamos añadiendo condiciones y variables según lo introducido
         if (!is_null($cotizacionMinima)) {
-            $condiciones[] =  "u.retencionIRPF >= :cotizacionMinimo";
+            $condiciones[] = "u.retencionIRPF >= :cotizacionMinimo";
             $vars['cotizacionMinimo'] = $cotizacionMinima;
         }
         if (!is_null($cotizacionMaxima)) {
-            $condiciones[] =  "u.retencionIRPF <= :cotizacionMaximo";
+            $condiciones[] = "u.retencionIRPF <= :cotizacionMaximo";
             $vars['cotizacionMaximo'] = $cotizacionMaxima;
         }
         //Si se han introducido condiciones o no, ejecutamos la sentencia pertinente
@@ -188,9 +188,85 @@ class UsuarioModel extends BaseDbModel
             $vars[':id_country' . $i] = $id_pais;
             $i++;
         }
-        $sql = self::BASE_QUERY . " WHERE u.id_country IN ( " . implode(",", array_keys($vars)) . ")";
+        $sql = self::BASE_QUERY . " WHERE id_country IN ( " . implode(',', array_keys($vars)) . ")";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Función que filtra por varios campos y muestra los usuarios correspondientes
+     * @param array $data datos a filtrar
+     * @return array usuarios obtenidos con los filtros requeridos
+     */
+    public function getUsuariosFiltered(array $data): array
+    {
+        $condiciones = [];
+        $vars = [];
+
+        //comprobamos el usuario
+        if (!empty($data['username'])) {
+            $condiciones[] = "u.username LIKE :username";
+            $username= $data['username'];
+            $vars['username'] = "%$username%";
+        }
+        if (!empty($data['id_rol'])) {
+           $condiciones[]="u.id_rol = :id_rol";
+           $vars['id_rol'] = $data['id_rol'];
+        }
+
+        //Comprobamos salario minimo
+        if (!empty($data['salarioMinimo']) && filter_var($_GET['salarioMinimo'], FILTER_VALIDATE_FLOAT)) {
+            $salarioMinimo = new Decimal($data['salarioMinimo']);
+            $condiciones[] = "u.salarioBruto >= :salarioMinimo";
+            $vars['salarioMinimo'] = $salarioMinimo;
+        }
+
+        //comprobamos salario maximo
+        if (!empty($data['salarioMaximo']) && filter_var($_GET['salarioMaximo'], FILTER_VALIDATE_FLOAT)) {
+            $salarioMaximo = new Decimal($data['salarioMaximo']);
+            $condiciones[] = "u.salarioBruto <= :salarioMaximo";
+            $vars['salarioMaximo'] = $salarioMaximo;
+        }
+
+        //comprobamos cotización minima
+        if (!empty($data['cotizacionMinima']) && filter_var($_GET['cotizacionMinima'], FILTER_VALIDATE_FLOAT)) {
+            $cotizacionMinima = new Decimal($data['cotizacionMinima']);
+            $condiciones[] = "u.retencionIRPF >= :cotizacionMinima";
+            $vars['cotizacionMinima'] = $cotizacionMinima;
+        }
+
+        //comprobamos cotización maxima
+        if (!empty($data['cotizacionMaxima']) && filter_var($_GET['cotizacionMaxima'], FILTER_VALIDATE_FLOAT)) {
+            $cotizacionMaxima = new Decimal($data['cotizacionMaxima']);
+            $condiciones[] = "u.retencionIRPF <= :cotizacionMaxima";
+            $vars['cotizacionMaxima'] = $cotizacionMaxima;
+        }
+
+        //Comprobamos el pais
+        if (!empty($data['id_country'])) {
+            $varsCountry = [];
+            $i = 1;
+            foreach ((array)$data['id_country'] as $id_pais) {
+                $varsCountry[':id_country' . $i] = $id_pais;
+                $i++;
+            }
+            $condiciones[]="u.id_country IN ( " . implode(',', array_keys($varsCountry)) . ")";
+            $vars = array_merge($vars, $varsCountry);
+
+        }
+
+        //si hay filtros los procesamos
+        if (!empty($condiciones)) {
+            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $condiciones);
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($vars);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }else{
+            //si no hay filtros mostramos todos los usuarios
+            $stmt = $this->pdo->query(self::BASE_QUERY);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
     }
 }
