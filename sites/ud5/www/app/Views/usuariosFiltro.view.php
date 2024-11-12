@@ -94,24 +94,13 @@
                 <div class="card-body" id="card_table">
                     <table id="tabladatos" class="table table-striped datatable">
                         <thead>
-                        <div class="col-4 col-lg-4">
-                            <label for="order">Ordenar por:</label>
-                            <select name="order" id="order" class="form-control select2">
-                                <option value="1"><a href="<?php echo $_ENV['host.folder']; ?>users-filter">Nombre usuario</a></option>
-                                <option value="2"><a href="<?php echo $_ENV['host.folder']; ?>users-filter">Salario bruto</a></option>
-                                <option value="3"><a href="<?php echo $_ENV['host.folder']; ?>users-filter">Retención IRPF</a></option>
-                                <option value="4"><a href="<?php echo $_ENV['host.folder']; ?>users-filter">Salario neto</a></option>
-                                <option value="5"><a href="<?php echo $_ENV['host.folder']; ?>users-filter">Rol</a></option>
-                                <option value="6"><a href="<?php echo $_ENV['host.folder']; ?>users-filter">País</a></option>
-                            </select>
-                        </div>
                         <tr>
-                            <th>Nombre usuario</th>
-                            <th>Salario Bruto</th>
-                            <th>Retención IRPF</th>
-                            <th>Salario Neto</th>
-                            <th>Rol</th>
-                            <th>País</th>
+                            <th><a href="<?php echo http_build_query($_GET); ?>">Nombre usuario</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=salarioBruto">Salario Bruto</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=retencionIRPF">Retención IRPF</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=salarioNeto">Salario Neto</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=nombre_rol">Rol</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=country_name">País</a></th>
                         </tr>
                         </thead>
                         <tbody>

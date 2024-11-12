@@ -255,9 +255,19 @@ class UsuarioModel extends BaseDbModel
             $vars = array_merge($vars, $varsCountry);
         }
 
+        if (!empty($data['order'])) {
+            //Introducimos los posibles campos a filtrar
+            $orders = ['username', 'salarioBruto', 'retencionIRPF', 'salarioNeto', 'nombre_rol', 'country_name'];
+
+            //Comprobamos si se quiere ordenar por un campo
+            $vars['order'] = $orders[$data['order']];
+        }
+        //comprobamos si la ordenación es ascendente o descendente
+        /*$asc == true ? $sort = 'ASC' : $sort = 'DESC';*/
+
         //si hay filtros los procesamos
         if (!empty($condiciones)) {
-            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $condiciones);
+            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $condiciones) . " ORDER BY :order";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($vars);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -268,10 +278,10 @@ class UsuarioModel extends BaseDbModel
         }
     }
 
-    public function getUsuariosOrderBy(string $field, $asc = true): array
+/*    public function getUsuariosOrderBy(string $field, $asc = true): array
     {
         //Introducimos los posibles campos a filtrar
-        $orders = ['username', 'salarioBruto', 'retencionIRPF', 'salarioNeto', 'nombre_rol','country_name'];
+        $orders = ['username', 'salarioBruto', 'retencionIRPF', 'salarioNeto', 'nombre_rol', 'country_name'];
         //comprobamos que los filtros introducidos estén dentro de los campos anteriores
         if (in_array($field, $orders)) {
             $orderBy = $field;
@@ -283,5 +293,5 @@ class UsuarioModel extends BaseDbModel
 
         //ejecutamos la sentencia para realizar la ordenación
         $query = $this->pdo->prepare(  . " ORDER BY $orderBy $direction");
-    }
+    }*/
 }

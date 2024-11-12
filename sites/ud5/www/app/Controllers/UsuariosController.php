@@ -70,11 +70,6 @@ class UsuariosController extends BaseController
         $data['countries'] = $auxCountriesModel->getAll();
 
 
-        //Crear enlace en la cabecera
-        $cget = $_GET;
-        unset($cget['order']);
-        http_build_query($cget) . $_GET['order'];
-
         /*
                 //Función para pasar los filtros de forma individual, no varios filtros a la vez
                 if (!empty($_GET['username'])) {
