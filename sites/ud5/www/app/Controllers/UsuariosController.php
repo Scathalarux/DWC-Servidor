@@ -69,34 +69,43 @@ class UsuariosController extends BaseController
         $auxCountriesModel = new AuxCountriesModel();
         $data['countries'] = $auxCountriesModel->getAll();
 
-/*
-        //Función para pasar los filtros de forma individual, no varios filtros a la vez
-        if (!empty($_GET['username'])) {
-            $usuarios = $model->getUsuariosByUsername($_GET['username']);
-        } elseif (!empty($_GET['id_rol'])) {
-            $usuarios = $model->getUsuariosByRol((int)$_GET['id_rol']);
-        } elseif (
-            (!empty($_GET['salarioMinimo']) && filter_var($_GET['salarioMinimo'], FILTER_VALIDATE_FLOAT))
-            || (!empty($_GET['salarioMaximo']) && filter_var($_GET['salarioMaximo'], FILTER_VALIDATE_FLOAT))
-        ) {
-            $salarioMinimo = (!empty($_GET['salarioMinimo']) && filter_var($_GET['salarioMinimo'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['salarioMinimo']) : null;
-            $salarioMaximo = (!empty($_GET['salarioMaximo']) && filter_var($_GET['salarioMaximo'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['salarioMaximo']) : null;
-            $usuarios = $model->getUsuariosBySalario($salarioMinimo, $salarioMaximo);
-        } elseif (
-            (!empty($_GET['cotizacionMinima']) && filter_var($_GET['cotizacionMinima'], FILTER_VALIDATE_FLOAT))
-            || (!empty($_GET['cotizacionMaxima']) && filter_var($_GET['cotizacionMaxima'], FILTER_VALIDATE_FLOAT))
-        ) {
-            $cotizacionMinima = !empty($_GET['cotizacionMinima']) && filter_var($_GET['cotizacionMinima'], FILTER_VALIDATE_FLOAT) ? new Decimal($_GET['cotizacionMinima']) : null;
-            $cotizacionMaxima = !empty($_GET['cotizacionMaxima']) && filter_var($_GET['cotizacionMaxima'], FILTER_VALIDATE_FLOAT) ? new Decimal($_GET['cotizacionMaxima']) : null;
-            $usuarios = $model->getUsuariosByCotizacion($cotizacionMinima, $cotizacionMaxima);
-        } elseif (!empty($_GET['id_country'])) {
-            $usuarios = $model->getUsuariosByPais((array)$_GET['id_country']);
-        } else {
-            $usuarios = $model->getAllUsuarios();
-        }*/
+
+        //Crear enlace en la cabecera
+        $cget = $_GET;
+        unset($cget['order']);
+        http_build_query($cget) . $_GET['order'];
+
+        /*
+                //Función para pasar los filtros de forma individual, no varios filtros a la vez
+                if (!empty($_GET['username'])) {
+                    $usuarios = $model->getUsuariosByUsername($_GET['username']);
+                } elseif (!empty($_GET['id_rol'])) {
+                    $usuarios = $model->getUsuariosByRol((int)$_GET['id_rol']);
+                } elseif (
+                    (!empty($_GET['salarioMinimo']) && filter_var($_GET['salarioMinimo'], FILTER_VALIDATE_FLOAT))
+                    || (!empty($_GET['salarioMaximo']) && filter_var($_GET['salarioMaximo'], FILTER_VALIDATE_FLOAT))
+                ) {
+                    $salarioMinimo = (!empty($_GET['salarioMinimo']) && filter_var($_GET['salarioMinimo'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['salarioMinimo']) : null;
+                    $salarioMaximo = (!empty($_GET['salarioMaximo']) && filter_var($_GET['salarioMaximo'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['salarioMaximo']) : null;
+                    $usuarios = $model->getUsuariosBySalario($salarioMinimo, $salarioMaximo);
+                } elseif (
+                    (!empty($_GET['cotizacionMinima']) && filter_var($_GET['cotizacionMinima'], FILTER_VALIDATE_FLOAT))
+                    || (!empty($_GET['cotizacionMaxima']) && filter_var($_GET['cotizacionMaxima'], FILTER_VALIDATE_FLOAT))
+                ) {
+                    $cotizacionMinima = !empty($_GET['cotizacionMinima']) && filter_var($_GET['cotizacionMinima'], FILTER_VALIDATE_FLOAT) ? new Decimal($_GET['cotizacionMinima']) : null;
+                    $cotizacionMaxima = !empty($_GET['cotizacionMaxima']) && filter_var($_GET['cotizacionMaxima'], FILTER_VALIDATE_FLOAT) ? new Decimal($_GET['cotizacionMaxima']) : null;
+                    $usuarios = $model->getUsuariosByCotizacion($cotizacionMinima, $cotizacionMaxima);
+                } elseif (!empty($_GET['id_country'])) {
+                    $usuarios = $model->getUsuariosByPais((array)$_GET['id_country']);
+                } else {
+                    $usuarios = $model->getAllUsuarios();
+                }*/
+
 
         //Alternativa simple para multiples filtros
         $usuarios = $model->getUsuariosFiltered($_GET);
+
+
 
         $data['input'] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['usuarios'] = $this->calcularNeto($usuarios);

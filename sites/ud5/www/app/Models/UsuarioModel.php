@@ -207,12 +207,12 @@ class UsuarioModel extends BaseDbModel
         //comprobamos el usuario
         if (!empty($data['username'])) {
             $condiciones[] = "u.username LIKE :username";
-            $username= $data['username'];
+            $username = $data['username'];
             $vars['username'] = "%$username%";
         }
         if (!empty($data['id_rol'])) {
-           $condiciones[]="u.id_rol = :id_rol";
-           $vars['id_rol'] = $data['id_rol'];
+            $condiciones[] = "u.id_rol = :id_rol";
+            $vars['id_rol'] = $data['id_rol'];
         }
 
         //Comprobamos salario minimo
@@ -251,9 +251,8 @@ class UsuarioModel extends BaseDbModel
                 $varsCountry[':id_country' . $i] = $id_pais;
                 $i++;
             }
-            $condiciones[]="u.id_country IN ( " . implode(',', array_keys($varsCountry)) . ")";
+            $condiciones[] = "u.id_country IN ( " . implode(',', array_keys($varsCountry)) . ")";
             $vars = array_merge($vars, $varsCountry);
-
         }
 
         //si hay filtros los procesamos
@@ -262,11 +261,27 @@ class UsuarioModel extends BaseDbModel
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($vars);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }else{
+        } else {
             //si no hay filtros mostramos todos los usuarios
             $stmt = $this->pdo->query(self::BASE_QUERY);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
+    }
 
+    public function getUsuariosOrderBy(string $field, $asc = true): array
+    {
+        //Introducimos los posibles campos a filtrar
+        $orders = ['username', 'salarioBruto', 'retencionIRPF', 'salarioNeto', 'nombre_rol','country_name'];
+        //comprobamos que los filtros introducidos estén dentro de los campos anteriores
+        if (in_array($field, $orders)) {
+            $orderBy = $field;
+        } else {
+            $orderBy = 'username';
+        }
+        //Introducimos el sentido de la ordenación
+        $direction = $asc ? 'ASC' : 'DESC';
+
+        //ejecutamos la sentencia para realizar la ordenación
+        $query = $this->pdo->prepare(  . " ORDER BY $orderBy $direction");
     }
 }
