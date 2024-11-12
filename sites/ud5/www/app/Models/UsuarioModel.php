@@ -260,7 +260,7 @@ class UsuarioModel extends BaseDbModel
             $orders = ['username', 'salarioBruto', 'retencionIRPF', 'salarioNeto', 'nombre_rol', 'country_name'];
 
             //Comprobamos si se quiere ordenar por un campo
-            $vars['order'] = $orders[$data['order']];
+            $vars['order'] = $orders[$data['order'] - 1];
         }
         //comprobamos si la ordenación es ascendente o descendente
         /*$asc == true ? $sort = 'ASC' : $sort = 'DESC';*/

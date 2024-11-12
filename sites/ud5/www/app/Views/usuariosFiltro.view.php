@@ -95,12 +95,12 @@
                     <table id="tabladatos" class="table table-striped datatable">
                         <thead>
                         <tr>
-                            <th><a href="<?php echo http_build_query($_GET); ?>">Nombre usuario</a></th>
-                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=salarioBruto">Salario Bruto</a></th>
-                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=retencionIRPF">Retención IRPF</a></th>
-                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=salarioNeto">Salario Neto</a></th>
-                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=nombre_rol">Rol</a></th>
-                            <th><a href="<?php echo $_ENV['host.folder']; ?>users-filter?order=country_name">País</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . http_build_query($_GET) . '&&order=1'; ?>">Nombre usuario</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . http_build_query($_GET) . '&&order=2';?>">Salario Bruto</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . http_build_query($_GET) . '&&order=3';?>">Retención IRPF</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . http_build_query($_GET) . '&&order=4';?>">Salario Neto</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . http_build_query($_GET) . '&&order=5';?>">Rol</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . http_build_query($_GET) . '&&order=6';?>">País</a></th>
                         </tr>
                         </thead>
                         <tbody>
