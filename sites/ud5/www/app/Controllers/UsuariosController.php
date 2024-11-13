@@ -97,9 +97,18 @@ class UsuariosController extends BaseController
                 }*/
 
 
+        //obtenermos la ordenacion
+        $order = $this->getOrder();
+        $data['order'] = $order;
         //Alternativa simple para multiples filtros
-        $usuarios = $model->getUsuariosFiltered($_GET);
-
+        $usuarios = $model->getUsuariosFiltered($_GET, $order);
+        //mantenemos los filtros
+        $copiaGet = $_GET;
+        unset($copiaGet['order']);
+        $data['copiaGet'] = http_build_query($copiaGet);
+        if (!empty($data['copiaGet'])) {
+            $data['copiaGet'] .= '&';
+        }
 
 
         $data['input'] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -107,6 +116,18 @@ class UsuariosController extends BaseController
 
         $this->view->showViews(array('templates/header.view.php', 'usuariosFiltro.view.php', 'templates/footer.view.php'), $data);
     }
+
+    public function getOrder(): int
+    {
+        //comprobamos la ordenacion
+        if (!empty($_GET['order']) && filter_var($_GET['order'], FILTER_VALIDATE_INT)) {
+            if (abs((int)$_GET['order']) > 0 && abs((int)$_GET['order']) <= count(UsuarioModel::ORDER_COLUMNS)) {
+                return (int)$_GET['order'];
+            }
+        }
+            return UsuarioModel::ORDER_DEFAULT;
+    }
+
 
     /**
      * Función que obtiene los usuarios ordenados por salario y se los manda a la vista

@@ -15,6 +15,10 @@ class UsuarioModel extends BaseDbModel
                                     FROM usuario u 
                                     JOIN aux_rol ar on u.id_rol = ar.id_rol 
                                     LEFT JOIN aux_countries ac on u.id_country = ac.id";
+
+    public const ORDER_COLUMNS = ['username', 'salarioBruto', 'retencionIRPF', 'nombre_rol', 'country_name'];
+    public const ORDER_DEFAULT = 1;
+
     /*//Ya no lo necesitaríamos al extender el BaseDbModel
      * public function __construct()
     {
@@ -199,7 +203,7 @@ class UsuarioModel extends BaseDbModel
      * @param array $data datos a filtrar
      * @return array usuarios obtenidos con los filtros requeridos
      */
-    public function getUsuariosFiltered(array $data): array
+    public function getUsuariosFiltered(array $data, int $order): array
     {
         $condiciones = [];
         $vars = [];
@@ -255,43 +259,29 @@ class UsuarioModel extends BaseDbModel
             $vars = array_merge($vars, $varsCountry);
         }
 
-        if (!empty($data['order'])) {
-            //Introducimos los posibles campos a filtrar
-            $orders = ['username', 'salarioBruto', 'retencionIRPF', 'salarioNeto', 'nombre_rol', 'country_name'];
-
-            //Comprobamos si se quiere ordenar por un campo
-            $vars['order'] = $orders[$data['order'] - 1];
-        }
+        //introducimos un valor correcto para la columna para ordenar
+        $order = abs($order);
         //comprobamos si la ordenación es ascendente o descendente
-        /*$asc == true ? $sort = 'ASC' : $sort = 'DESC';*/
+        $sentido = ($order < 0) ? 'DESC' : 'ASC';
 
         //si hay filtros los procesamos
         if (!empty($condiciones)) {
-            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $condiciones) . " ORDER BY :order";
+            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $condiciones) . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido;
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($vars);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             //si no hay filtros mostramos todos los usuarios
-            $stmt = $this->pdo->query(self::BASE_QUERY);
+            $stmt = $this->pdo->query(self::BASE_QUERY . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
 
-/*    public function getUsuariosOrderBy(string $field, $asc = true): array
+    public function getMaxPages(): int
     {
-        //Introducimos los posibles campos a filtrar
-        $orders = ['username', 'salarioBruto', 'retencionIRPF', 'salarioNeto', 'nombre_rol', 'country_name'];
-        //comprobamos que los filtros introducidos estén dentro de los campos anteriores
-        if (in_array($field, $orders)) {
-            $orderBy = $field;
-        } else {
-            $orderBy = 'username';
-        }
-        //Introducimos el sentido de la ordenación
-        $direction = $asc ? 'ASC' : 'DESC';
+        //calculamos cuantos registros hay
+        //dividimos entre 25 (tamaño de cada página) y nos quedamos con el ceil
 
-        //ejecutamos la sentencia para realizar la ordenación
-        $query = $this->pdo->prepare(  . " ORDER BY $orderBy $direction");
-    }*/
+        return $maxPages;
+    }
 }
