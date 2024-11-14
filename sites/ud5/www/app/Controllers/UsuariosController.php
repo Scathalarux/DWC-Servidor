@@ -12,6 +12,10 @@ use Decimal\Decimal;
 
 class UsuariosController extends BaseController
 {
+    public const DEFAULT_PAGE = 1;
+    public const DEFAULT_SIZE_PAGE = 25;
+
+
     /**
      * Función que obtiene todos los usuarios del modelo y se los manda a la vista
      * @return void
@@ -100,8 +104,10 @@ class UsuariosController extends BaseController
         //obtenermos la ordenacion
         $order = $this->getOrder();
         $data['order'] = $order;
+
         //Alternativa simple para multiples filtros
-        $usuarios = $model->getUsuariosFiltered($_GET, $order);
+/*        $usuarios = $model->getUsuariosFiltered($_GET, $order);*/
+
         //mantenemos los filtros
         $copiaGet = $_GET;
         unset($copiaGet['order']);
@@ -110,6 +116,15 @@ class UsuariosController extends BaseController
             $data['copiaGet'] .= '&';
         }
 
+        //Obtenemos el valor del número máximo de páginas que se podrán mostrar
+        $data['maxPages'] = $model->getMaxPages($_GET);
+        //Obtenemos la página en la que está
+        $page = $this->getPage($data['maxPages']);
+        $data['page'] = $page;
+        var_dump($page);
+
+        //Usuarios obtenidos con los filtros, la ordenación y el tamaño del listado
+        $usuarios = $model->getUsuersFilteredPage($_GET, $order, self::DEFAULT_SIZE_PAGE, $page);
 
         $data['input'] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['usuarios'] = $this->calcularNeto($usuarios);
@@ -117,6 +132,10 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'usuariosFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 
+    /**
+     * Función que a través de la elección del usuario, se indica qué columna es por la que debemos ordenar
+     * @return int número que indica la columna por la que realizar la ordenación
+     */
     public function getOrder(): int
     {
         //comprobamos la ordenacion
@@ -125,7 +144,18 @@ class UsuariosController extends BaseController
                 return (int)$_GET['order'];
             }
         }
-            return UsuarioModel::ORDER_DEFAULT;
+        return UsuarioModel::ORDER_DEFAULT;
+    }
+
+    public function getPage(int $maxPages): int
+    {
+        if (!empty($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT)) {
+            if ((((int)$_GET['page']) > 0) && ((int)$_GET['page'] <= $maxPages)) {
+                return (int)$_GET['page'];
+            }
+        } else {
+            return self::DEFAULT_PAGE;
+        }
     }
 
 

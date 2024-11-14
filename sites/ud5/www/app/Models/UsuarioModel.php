@@ -16,6 +16,11 @@ class UsuarioModel extends BaseDbModel
                                     JOIN aux_rol ar on u.id_rol = ar.id_rol 
                                     LEFT JOIN aux_countries ac on u.id_country = ac.id";
 
+    private const BASE_COUNT_PAGES = "SELECT COUNT(*) 
+                                    FROM usuario u
+                                    JOIN aux_rol ar on u.id_rol = ar.id_rol 
+                                    LEFT JOIN aux_countries ac on u.id_country = ac.id";
+
     public const ORDER_COLUMNS = ['username', 'salarioBruto', 'retencionIRPF', 'nombre_rol', 'country_name'];
     public const ORDER_DEFAULT = 1;
 
@@ -199,11 +204,11 @@ class UsuarioModel extends BaseDbModel
     }
 
     /**
-     * Función que filtra por varios campos y muestra los usuarios correspondientes
-     * @param array $data datos a filtrar
-     * @return array usuarios obtenidos con los filtros requeridos
+     * Función que a través de los datos recibidos como parámetros, construye una condiciones y las variables asociadas para la creación de la query
+     * @param array $data conjunto de datos a pocesar
+     * @return array conjunto de condiciones y variables para la query
      */
-    public function getUsuariosFiltered(array $data, int $order): array
+    public function getFiltrosQuery(array $data): array
     {
         $condiciones = [];
         $vars = [];
@@ -259,16 +264,32 @@ class UsuarioModel extends BaseDbModel
             $vars = array_merge($vars, $varsCountry);
         }
 
-        //introducimos un valor correcto para la columna para ordenar
-        $order = abs($order);
+        $resultado['condiciones'] = $condiciones;
+        $resultado['vars'] = $vars;
+
+        return $resultado;
+    }
+
+    /**
+     * Función que filtra por varios campos y muestra los usuarios correspondientes
+     * @param array $data datos a filtrar
+     * @return array usuarios obtenidos con los filtros requeridos
+     */
+    public function getUsuariosFiltered(array $data, int $order): array
+    {
+        //Obtenemos las condiciones (filtros) y las variables asociadas
+        $filtrosQuery = $this->getFiltrosQuery($data);
+
         //comprobamos si la ordenación es ascendente o descendente
         $sentido = ($order < 0) ? 'DESC' : 'ASC';
+        //introducimos un valor correcto para la columna para ordenar
+        $order = abs($order);
 
         //si hay filtros los procesamos
-        if (!empty($condiciones)) {
-            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $condiciones) . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido;
+        if (!empty($filtrosQuery['condiciones'])) {
+            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']) . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido;
             $stmt = $this->pdo->prepare($query);
-            $stmt->execute($vars);
+            $stmt->execute($filtrosQuery['vars']);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             //si no hay filtros mostramos todos los usuarios
@@ -277,11 +298,54 @@ class UsuarioModel extends BaseDbModel
         }
     }
 
-    public function getMaxPages(): int
+    public function getMaxPages(array $data): int
     {
+        //Obtenemos las condiciones (filtros) y las variables asociadas
+        $filtrosQuery = $this->getFiltrosQuery($data);
+
         //calculamos cuantos registros hay
+        //si hay filtros los procesamos
+        if (!empty($filtrosQuery['condiciones'])) {
+            $query = self::BASE_COUNT_PAGES . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']);
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($filtrosQuery['vars']);
+            $numFilas = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
+        } else {
+            //si no hay filtros mostramos todos los usuarios
+            $stmt = $this->pdo->query(self::BASE_COUNT_PAGES);
+            $numFilas = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
+        }
         //dividimos entre 25 (tamaño de cada página) y nos quedamos con el ceil
+        $maxPages = (int)ceil($numFilas / 25);
 
         return $maxPages;
+    }
+
+    /**
+     * Función que muestra los resultados según los filtros introducidos por cada página
+     * @param array $data filtros introducidos por el usuario
+     * @return array conjunto de usuarios a mostrar
+     */
+    public function getUsuersFilteredPage(array $data, int $order, int $sizePage, int $page): array
+    {
+        //Obtenemos las condiciones (filtros) y las variables asociadas
+        $filtrosQuery = $this->getFiltrosQuery($data);
+
+        //comprobamos si la ordenación es ascendente o descendente
+        $sentido = ($order < 0) ? 'DESC' : 'ASC';
+        //introducimos un valor correcto para la columna para ordenar
+        $order = abs($order);
+
+        //si hay filtros los procesamos
+        if (!empty($filtrosQuery['condiciones'])) {
+            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']) . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido . " LIMIT " . ($page - 1) . ',' . $sizePage;
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($filtrosQuery['vars']);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            //si no hay filtros mostramos todos los usuarios
+            $stmt = $this->pdo->query(self::BASE_QUERY . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido . " LIMIT " . ($page - 1) . ',' . $sizePage);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 }
