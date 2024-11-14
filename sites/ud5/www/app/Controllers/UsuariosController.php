@@ -14,6 +14,7 @@ class UsuariosController extends BaseController
 {
     public const DEFAULT_PAGE = 1;
     public const DEFAULT_SIZE_PAGE = 25;
+    public const ORDER_DEFAULT = 1;
 
 
     /**
@@ -108,20 +109,22 @@ class UsuariosController extends BaseController
         //Alternativa simple para multiples filtros
 /*        $usuarios = $model->getUsuariosFiltered($_GET, $order);*/
 
-        //mantenemos los filtros
-        $copiaGet = $_GET;
-        unset($copiaGet['order']);
-        $data['copiaGet'] = http_build_query($copiaGet);
-        if (!empty($data['copiaGet'])) {
-            $data['copiaGet'] .= '&';
-        }
-
         //Obtenemos el valor del número máximo de páginas que se podrán mostrar
         $data['maxPages'] = $model->getMaxPages($_GET);
         //Obtenemos la página en la que está
         $page = $this->getPage($data['maxPages']);
         $data['page'] = $page;
         var_dump($page);
+
+        //mantenemos los filtros
+        $copiaGet = $_GET;
+        unset($copiaGet['order']);
+        unset($copiaGet['page']);
+        $data['copiaGet'] = http_build_query($copiaGet);
+        if (!empty($data['copiaGet'])) {
+            $data['copiaGet'] .= '&';
+        }
+
 
         //Usuarios obtenidos con los filtros, la ordenación y el tamaño del listado
         $usuarios = $model->getUsuersFilteredPage($_GET, $order, self::DEFAULT_SIZE_PAGE, $page);
@@ -144,18 +147,17 @@ class UsuariosController extends BaseController
                 return (int)$_GET['order'];
             }
         }
-        return UsuarioModel::ORDER_DEFAULT;
+        return self::ORDER_DEFAULT;
     }
 
     public function getPage(int $maxPages): int
     {
         if (!empty($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT)) {
-            if ((((int)$_GET['page']) > 0) && ((int)$_GET['page'] <= $maxPages)) {
+            if (((int)$_GET['page'] > 0) && ((int)$_GET['page'] <= $maxPages)) {
                 return (int)$_GET['page'];
             }
-        } else {
-            return self::DEFAULT_PAGE;
         }
+            return self::DEFAULT_PAGE;
     }
 
 

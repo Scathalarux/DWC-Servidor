@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Models;
 
+use Com\Daw2\Controllers\UsuariosController;
 use Com\Daw2\Core\BaseDbModel;
 use Decimal\Decimal;
 use PDO;
@@ -22,7 +23,7 @@ class UsuarioModel extends BaseDbModel
                                     LEFT JOIN aux_countries ac on u.id_country = ac.id";
 
     public const ORDER_COLUMNS = ['username', 'salarioBruto', 'retencionIRPF', 'nombre_rol', 'country_name'];
-    public const ORDER_DEFAULT = 1;
+
 
     /*//Ya no lo necesitaríamos al extender el BaseDbModel
      * public function __construct()
@@ -344,7 +345,7 @@ class UsuarioModel extends BaseDbModel
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             //si no hay filtros mostramos todos los usuarios
-            $stmt = $this->pdo->query(self::BASE_QUERY . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido . " LIMIT " . ($page - 1) . ',' . $sizePage);
+            $stmt = $this->pdo->query(self::BASE_QUERY . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido . " LIMIT " . (($page - 1) * UsuariosController::DEFAULT_SIZE_PAGE) . ',' . $sizePage);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
