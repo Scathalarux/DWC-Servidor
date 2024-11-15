@@ -109,31 +109,32 @@
                         <thead>
                         <tr>
                             <th>
-                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . '&page=' . $page . 'order=' . (($order == 1) ? '-' : ''); ?>1">Nombre
-                                    usuario</a><?php if (abs($order) == 1) {
+                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 1) ? '-' : ''); ?>1">Nombre
+                                    usuario</a>
+                                    <?php if (abs($order) == 1) {
                                         ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
-                                               } ?></th>
+                                    } ?></th>
                             <th>
-                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . '&page=' . $page . 'order=' . (($order == 2) ? '-' : ''); ?>2">Salario
+                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 2) ? '-' : ''); ?>2">Salario
                                     Bruto</a><?php if (abs($order) == 2) {
                                         ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
                                              } ?></th>
                             <th>
-                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . '&page=' . $page . 'order=' . (($order == 3) ? '-' : ''); ?>3">Retención
+                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 3) ? '-' : ''); ?>3">Retención
                                     IRPF</a><?php if (abs($order) == 3) {
                                         ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
                                             } ?></th>
                             <th>Salario Neto</th>
                             <th>
-                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . '&page=' . $page . 'order=' . (($order == 4) ? '-' : ''); ?>4">Rol</a><?php if (abs($order) == 4) {
+                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 4) ? '-' : ''); ?>4">Rol</a><?php if (abs($order) == 4) {
                                     ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
                                          } ?></th>
                             <th>
-                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . '&page=' . $page . 'order=' . (($order == 5) ? '-' : ''); ?>5">País</a><?php if (abs($order) == 5) {
+                                <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 5) ? '-' : ''); ?>5">País</a><?php if (abs($order) == 5) {
                                     ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
                                          } ?></th>

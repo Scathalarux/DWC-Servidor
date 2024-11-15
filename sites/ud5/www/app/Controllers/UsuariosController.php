@@ -114,7 +114,6 @@ class UsuariosController extends BaseController
         //Obtenemos la página en la que está
         $page = $this->getPage($data['maxPages']);
         $data['page'] = $page;
-        var_dump($page);
 
         //mantenemos los filtros
         $copiaGet = $_GET;

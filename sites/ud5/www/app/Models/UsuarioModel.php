@@ -299,6 +299,11 @@ class UsuarioModel extends BaseDbModel
         }
     }
 
+    /**
+     * Función que calcula el número máximo de paginas que habrá con los datos y filtros disponibles
+     * @param array $data conjunto de filtros obtenidos
+     * @return int número de páginas máximas a mostrar
+     */
     public function getMaxPages(array $data): int
     {
         //Obtenemos las condiciones (filtros) y las variables asociadas
