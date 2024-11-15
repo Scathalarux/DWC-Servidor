@@ -332,7 +332,7 @@ class UsuarioModel extends BaseDbModel
      * @param array $data filtros introducidos por el usuario
      * @return array conjunto de usuarios a mostrar
      */
-    public function getUsuersFilteredPage(array $data, int $order, int $sizePage, int $page): array
+    public function getUsersFilteredPage(array $data, int $order, int $sizePage, int $page): array
     {
         //Obtenemos las condiciones (filtros) y las variables asociadas
         $filtrosQuery = $this->getFiltrosQuery($data);

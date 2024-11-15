@@ -126,7 +126,7 @@ class UsuariosController extends BaseController
 
 
         //Usuarios obtenidos con los filtros, la ordenación y el tamaño del listado
-        $usuarios = $model->getUsuersFilteredPage($_GET, $order, self::DEFAULT_SIZE_PAGE, $page);
+        $usuarios = $model->getUsersFilteredPage($_GET, $order, self::DEFAULT_SIZE_PAGE, $page);
 
         $data['input'] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['usuarios'] = $this->calcularNeto($usuarios);
