@@ -110,7 +110,7 @@ class UsuariosController extends BaseController
 /*        $usuarios = $model->getUsuariosFiltered($_GET, $order);*/
 
         //Obtenemos el valor del número máximo de páginas que se podrán mostrar
-        $data['maxPages'] = $model->getMaxPages($_GET);
+        $data['maxPages'] = $model->getMaxPages($_GET, self::DEFAULT_SIZE_PAGE);
         //Obtenemos la página en la que está
         $page = $this->getPage($data['maxPages']);
         $data['page'] = $page;
@@ -149,6 +149,10 @@ class UsuariosController extends BaseController
         return self::ORDER_DEFAULT;
     }
 
+    /**
+     * @param int $maxPages
+     * @return int
+     */
     public function getPage(int $maxPages): int
     {
         if (!empty($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT)) {
@@ -156,7 +160,7 @@ class UsuariosController extends BaseController
                 return (int)$_GET['page'];
             }
         }
-            return self::DEFAULT_PAGE;
+        return self::DEFAULT_PAGE;
     }
 
 

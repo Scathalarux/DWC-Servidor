@@ -304,7 +304,7 @@ class UsuarioModel extends BaseDbModel
      * @param array $data conjunto de filtros obtenidos
      * @return int número de páginas máximas a mostrar
      */
-    public function getMaxPages(array $data): int
+    public function getMaxPages(array $data, int $sizePages): int
     {
         //Obtenemos las condiciones (filtros) y las variables asociadas
         $filtrosQuery = $this->getFiltrosQuery($data);
@@ -315,14 +315,15 @@ class UsuarioModel extends BaseDbModel
             $query = self::BASE_COUNT_PAGES . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']);
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($filtrosQuery['vars']);
-            $numFilas = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
         } else {
             //si no hay filtros mostramos todos los usuarios
             $stmt = $this->pdo->query(self::BASE_COUNT_PAGES);
-            $numFilas = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
         }
-        //dividimos entre 25 (tamaño de cada página) y nos quedamos con el ceil
-        $maxPages = (int)ceil($numFilas / 25);
+
+        $numFilas = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
+
+        //dividimos entre el tamaño de cada página y nos quedamos con el ceil
+        $maxPages = (int)ceil($numFilas / $sizePages);
 
         return $maxPages;
     }
