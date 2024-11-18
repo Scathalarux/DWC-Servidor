@@ -12,15 +12,14 @@ use PDOException;
 
 class UsuarioModel extends BaseDbModel
 {
-    private const BASE_QUERY = "SELECT u.* , ar.nombre_rol, ac.country_name
-                                    FROM usuario u 
-                                    JOIN aux_rol ar on u.id_rol = ar.id_rol 
-                                    LEFT JOIN aux_countries ac on u.id_country = ac.id";
+    private const BASE_QUERY = "SELECT u.* , ar.nombre_rol, ac.country_name " . self::FROM;
 
-    private const BASE_COUNT_PAGES = "SELECT COUNT(*) 
-                                    FROM usuario u
-                                    JOIN aux_rol ar on u.id_rol = ar.id_rol 
-                                    LEFT JOIN aux_countries ac on u.id_country = ac.id";
+    private const BASE_COUNT_PAGES = "SELECT COUNT(*) " . self::FROM;
+
+
+    private const FROM = "FROM usuario u
+                          JOIN aux_rol ar on u.id_rol = ar.id_rol 
+                          LEFT JOIN aux_countries ac on u.id_country = ac.id";
 
     public const ORDER_COLUMNS = ['username', 'salarioBruto', 'retencionIRPF', 'nombre_rol', 'country_name'];
 
@@ -320,7 +319,7 @@ class UsuarioModel extends BaseDbModel
             $stmt = $this->pdo->query(self::BASE_COUNT_PAGES);
         }
 
-        $numFilas = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
+        $numFilas = $stmt->fetchColumn(0);
 
         //dividimos entre el tamaño de cada página y nos quedamos con el ceil
         $maxPages = (int)ceil($numFilas / $sizePages);
@@ -343,16 +342,28 @@ class UsuarioModel extends BaseDbModel
         //introducimos un valor correcto para la columna para ordenar
         $order = abs($order);
 
+        //Calculamos el offset
+        $offset = ($page - 1) * $sizePage;
+
         //si hay filtros los procesamos
         if (!empty($filtrosQuery['condiciones'])) {
-            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']) . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido . " LIMIT " . ($page - 1) . ',' . $sizePage;
+            $query = self::BASE_QUERY
+                . " WHERE " . implode(" AND ", $filtrosQuery['condiciones'])
+                . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido
+                . " LIMIT " . $offset . ',' . $sizePage;
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($filtrosQuery['vars']);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             //si no hay filtros mostramos todos los usuarios
-            $stmt = $this->pdo->query(self::BASE_QUERY . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido . " LIMIT " . (($page - 1) * UsuariosController::DEFAULT_SIZE_PAGE) . ',' . $sizePage);
+            $stmt = $this->pdo->query(self::BASE_QUERY
+                . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido
+                . " LIMIT " . $offset . ',' . $sizePage);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
+    }
+
+    public function addUsuario(array $data): void
+    {
     }
 }

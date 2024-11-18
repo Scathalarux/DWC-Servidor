@@ -107,7 +107,7 @@ class UsuariosController extends BaseController
         $data['order'] = $order;
 
         //Alternativa simple para multiples filtros
-/*        $usuarios = $model->getUsuariosFiltered($_GET, $order);*/
+        /*        $usuarios = $model->getUsuariosFiltered($_GET, $order);*/
 
         //Obtenemos el valor del número máximo de páginas que se podrán mostrar
         $data['maxPages'] = $model->getMaxPages($_GET, self::DEFAULT_SIZE_PAGE);
@@ -117,8 +117,12 @@ class UsuariosController extends BaseController
 
         //mantenemos los filtros
         $copiaGet = $_GET;
-        unset($copiaGet['order']);
         unset($copiaGet['page']);
+        $data['copiaGetPage'] = http_build_query($copiaGet);
+        if (!empty($data['copiaGetPage'])) {
+            $data['copiaGetPage'] .= '&';
+        }
+        unset($copiaGet['order']);
         $data['copiaGet'] = http_build_query($copiaGet);
         if (!empty($data['copiaGet'])) {
             $data['copiaGet'] .= '&';
@@ -223,5 +227,112 @@ class UsuariosController extends BaseController
 
 
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function showAddUsuario(): void
+    {
+        $data = [];
+        $data = [
+            'titulo' => 'Añadir Usuario',
+            'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Añadir usuario')
+        ];
+        //obtenemos el modelo de la tabla usuarios
+        $model = new UsuarioModel();
+        //obtenemos el modelo y los datos de la tabla aux_rol
+        $auxRolModel = new AuxRolModel();
+        $roles = $auxRolModel->getAll();
+        $data['roles'] = $roles;
+
+        //obtenemos el modelo y los datos de la tabla aux_countries
+        $auxCountriesModel = new AuxCountriesModel();
+        $countries = $auxCountriesModel->getAll();
+        $data['countries'] = $countries;
+
+        $this->view->showViews(array('templates/header.view.php', 'addUsuario.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function addUsuario(): void
+    {
+        $data = [];
+        $data = [
+            'titulo' => 'Añadir Usuario',
+            'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Añadir usuario')
+        ];
+        //obtenemos el modelo de la tabla usuarios
+        $model = new UsuarioModel();
+        //obtenemos el modelo y los datos de la tabla aux_rol
+        $auxRolModel = new AuxRolModel();
+        $roles = $auxRolModel->getAll();
+        $data['roles'] = $roles;
+
+        //obtenemos el modelo y los datos de la tabla aux_countries
+        $auxCountriesModel = new AuxCountriesModel();
+        $countries = $auxCountriesModel->getAll();
+        $data['countries'] = $countries;
+
+        //Validamos los datos
+        $errores = $this->checkFormAddUsuario($_POST, $roles, $countries, $model);
+
+        //Saneamos el input
+        $data['input'] = filter_var($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        if (!empty($errores)) {
+            $data['errores'] = $errores;
+        } else {
+            //realizamos la llamada a la query para añadirlo
+            
+        }
+
+        $this->view->showViews(array('templates/header.view.php', 'addUsuario.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function checkFormAddUsuario(array $datos, array $roles, array $countries, UsuarioModel $model): array
+    {
+        $errores = [];
+
+        //Username
+        if (!empty($datos['usernameNew'])) {
+            if (!preg_match('/[\p{L}\p{N}_]/iu', $datos['usernameNew'])) {
+                $errores['usernameNew'] = "El nombre debe contener letras, números o '_'";
+            }
+
+            if (mb_strlen(trim($datos['usernameNew'])) > 50 || mb_strlen(trim($datos['usernameNew'])) < 3) {
+                $errores['usernameNew'] = "El nombre debe teñer un tamaño entre 3 y 50 caracteres";
+            }
+
+            if ($model->getUsuariosByUsername($datos['usernameNew']) !== null) {
+                $errores['usernameNew'] = "El nombre ya existe en la base de datos";
+            }
+        }
+
+        //Id-rol
+        if (!empty($datos['id_rolNew'])) {
+            if (!in_array($datos['id_rolNew'], $roles)) {
+                $errores['id_rolNew'] = "El texto introducido no corresponde con un rol";
+            }
+        }
+
+        //SalarioBruto
+        if (!empty($datos['salarioBrutoNew'])) {
+            if ($datos['salarioBrutoNew'] < 600) {
+                $errores['salarioBrutoNew'] = "El salario debe ser mayor o igual a 600€";
+            }
+        }
+
+        //retencionIRFP
+        if (!empty($datos['cotizacionNew'])) {
+            if ($datos['cotizacionNew'] < 18 || $datos['cotizacionNew'] > 30) {
+                $errores['cotizacionNew'] = "La cotización debe estar entre el 18 y 30%";
+            }
+        }
+
+        //pais
+        if (!empty($datos['id_countryNew'])) {
+            if (!in_array($datos['id_countryNew'], $countries)) {
+                $errores['id_countryNew'] = "El texto introducido no corresponde con un pais";
+            }
+        }
+
+        return $errores;
     }
 }

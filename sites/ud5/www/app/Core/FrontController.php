@@ -116,6 +116,22 @@ class FrontController
             'get'
         );
         Route::add(
+            '/users-filter/new',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->showAddUsuario();
+            },
+            'get'
+        );
+        Route::add(
+            '/users-filter/new',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->addUsuario();
+            },
+            'psot'
+        );
+        Route::add(
             '/usersBySalario',
             function () {
                 $controlador = new UsuariosController();
