@@ -96,7 +96,7 @@ class UsuarioModel extends BaseDbModel
      * @param string $username nombre que se usa como filtro
      * @return array conjunto de usuarios que contiene el nombre en el username
      */
-    public function getUsuariosByUsername(string $username): array
+    public function getUsuariosByUsername(string $username): bool|array
     {
         $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.username LIKE :username");
         $stmt->execute(['username' => "%$username%"]);

@@ -129,7 +129,7 @@ class FrontController
                 $controlador = new UsuariosController();
                 $controlador->addUsuario();
             },
-            'psot'
+            'post'
         );
         Route::add(
             '/usersBySalario',

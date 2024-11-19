@@ -248,7 +248,7 @@ class UsuariosController extends BaseController
         $countries = $auxCountriesModel->getAll();
         $data['countries'] = $countries;
 
-        $this->view->showViews(array('templates/header.view.php', 'addUsuario.view.php', 'templates/footer.view.php'), $data);
+        $this->view->showViews(array('templates/header.view.php', 'addUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 
     public function addUsuario(): void
@@ -270,9 +270,11 @@ class UsuariosController extends BaseController
         $countries = $auxCountriesModel->getAll();
         $data['countries'] = $countries;
 
+
         if (!empty($_POST)) {
             //Validamos los datos
             $resultado = $this->checkFormAddUsuario($_POST, $roles, $countries, $model);
+
 
             //Saneamos el input
             $data['input'] = filter_var($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -286,7 +288,7 @@ class UsuariosController extends BaseController
                 }
             }
         }
-        $this->view->showViews(array('templates/header.view.php', 'addUsuario.view.php', 'templates/footer.view.php'), $data);
+        $this->view->showViews(array('templates/header.view.php', 'addUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 
     public function checkFormAddUsuario(array $datos, array $roles, array $countries, UsuarioModel $model): array
@@ -296,19 +298,23 @@ class UsuariosController extends BaseController
 
         //Username
         if (!empty($datos['username'])) {
+            //letras, numeros y _
             if (!preg_match('/[\p{L}\p{N}_]/iu', $datos['username'])) {
                 $errores['username'] = "El nombre debe contener letras, números o '_'";
             }
 
+            //entre 3 y 50
             if (mb_strlen(trim($datos['username'])) > 50 || mb_strlen(trim($datos['username'])) < 3) {
                 $errores['username'] = "El nombre debe teñer un tamaño entre 3 y 50 caracteres";
             }
 
-            if ($model->getUsuariosByUsername($datos['username']) !== null) {
+            //que no esté ya en la bbdd
+            if (!empty($model->getUsuariosByUsername($datos['username']))) {
                 $errores['username'] = "El nombre ya existe en la base de datos";
             }
+
             $data[':username'] = $datos['username'];
-        }else{
+        } else {
             $errores['username'] = "El nombre es obligatorio";
         }
 
@@ -318,8 +324,6 @@ class UsuariosController extends BaseController
                 $errores['salarioBruto'] = "El salario debe ser mayor o igual a 600€";
             }
             $data[':salarioBruto'] = $datos['salarioBruto'];
-        }else{
-            $errores['salarioBruto'] = "El salario es obligatorio";
         }
 
         //retencionIRFP
@@ -328,34 +332,39 @@ class UsuariosController extends BaseController
                 $errores['cotizacion'] = "La cotización debe estar entre el 18 y 30%";
             }
             $data[':retencionIRPF'] = $datos['cotizacion'];
-        }else{
-            $errores['retencionIRPF'] = "La cotización es obligatoria";
         }
 
         //Id-rol
         if (!empty($datos['id_rol'])) {
-            if (!in_array($datos['id_rol'], $roles)) {
+            if (!key_exists($datos['id_rol'], $roles)) {
                 $errores['id_rol'] = "El texto introducido no corresponde con un rol";
             }
             $data[':id_rol'] = $datos['id_rol'];
-        }else{
+        } else {
             $errores['id_rol'] = "El rol es obligatorio";
         }
 
         //pais
         if (!empty($datos['id_country'])) {
-            if (!in_array($datos['id_country'], $countries)) {
+            if (!key_exists(implode(',', $datos['id_country']), $countries)) {
                 $errores['id_country'] = "El texto introducido no corresponde con un pais";
             }
             $data[':id_country'] = $datos['id_country'];
-        }else{
+        } else {
             $errores['id_country'] = "El pais es obligatorio";
         }
+
         //situacion activa o no
-        $data[':activo'] = $datos['activo'];
+        if (!isset($data['activo'])) {
+            $data[':activo'] = 0;
+        } else {
+            $data[':activo'] = 1;
+        }
+
 
         $result['errores'] = $errores;
         $result['data'] = $data;
+
         return $result;
     }
 }
