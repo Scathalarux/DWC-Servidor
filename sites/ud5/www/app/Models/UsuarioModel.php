@@ -363,7 +363,15 @@ class UsuarioModel extends BaseDbModel
         }
     }
 
-    public function addUsuario(array $data): void
+    public function addUsuario(array $data): bool
     {
+        $variables = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
+
+            $query = "INSERT INTO usuario ("
+                . implode(", ", $variables) . ") VALUES ("
+                . implode(", ", array_keys($data)) . ")";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($data);
+            return is_array($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 }

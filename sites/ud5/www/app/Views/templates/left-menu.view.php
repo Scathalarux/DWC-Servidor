@@ -29,6 +29,13 @@
                 </li>
             </ul>
         </li>
+<!--        <li class="nav-item">
+            <a href="/usuarios/new"
+               class="nav-link <?php /*echo '/usuarios/new' ? 'active' : ''; */?>">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Nuevo usuario</p>
+            </a>
+        </li>-->
         <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'historicoPoblacionPontevedra', $_ENV['host.folder'] . 'poblacionGruposEdad', $_ENV['host.folder'] . 'poblacionPontevedra2020']) ? 'menu-open' : ''; ?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-file-excel"></i>
@@ -67,13 +74,6 @@
                     </a>
                 </li>
             </ul>
-        </li>
-        <li class="nav-item">
-            <a href="/usuarios/new"
-               class="nav-link <?php echo '/usuarios/new' ? 'active' : ''; ?>">
-                <i class="fas fa-table nav-icon"></i>
-                <p>Nuevo usuario</p>
-            </a>
         </li>
         <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'allUsers', $_ENV['host.folder'] . 'usersBySalario', $_ENV['host.folder'] . 'standardUsers',$_ENV['host.folder'] . 'usersByName',$_ENV['host.folder'] . 'users-filter']) ? 'menu-open' : ''; ?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
@@ -119,6 +119,13 @@
                         <p>Usuarios filtros</p>
                     </a>
                 </li>
+<!--                <li class="nav-item">
+                    <a href="<?php /*echo $_ENV['host.folder']*/?>users-filter/new"
+                       class="nav-link <?php /*echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'users-filter/new' ? 'active' : ''; */?>">
+                        <i class="fas fa-table nav-icon"></i>
+                        <p>Añadir nuevo usuario</p>
+                    </a>
+                </li>-->
             </ul>
         </li>
     </ul>

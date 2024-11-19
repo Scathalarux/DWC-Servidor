@@ -270,69 +270,92 @@ class UsuariosController extends BaseController
         $countries = $auxCountriesModel->getAll();
         $data['countries'] = $countries;
 
-        //Validamos los datos
-        $errores = $this->checkFormAddUsuario($_POST, $roles, $countries, $model);
+        if (!empty($_POST)) {
+            //Validamos los datos
+            $resultado = $this->checkFormAddUsuario($_POST, $roles, $countries, $model);
 
-        //Saneamos el input
-        $data['input'] = filter_var($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            //Saneamos el input
+            $data['input'] = filter_var($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-        if (!empty($errores)) {
-            $data['errores'] = $errores;
-        } else {
-            //realizamos la llamada a la query para añadirlo
-            
+            if (!empty($resultado['errores'])) {
+                $data['errores'] = $resultado['errores'];
+            } else {
+                //realizamos la llamada a la query para añadirlo
+                if ($model->addUsuario($resultado['data'])) {
+                    $this->view->showViews(array('templates/header.view.php', 'usuariosFiltro.view.php', 'templates/footer.view.php'), $data);
+                }
+            }
         }
-
         $this->view->showViews(array('templates/header.view.php', 'addUsuario.view.php', 'templates/footer.view.php'), $data);
     }
 
     public function checkFormAddUsuario(array $datos, array $roles, array $countries, UsuarioModel $model): array
     {
         $errores = [];
+        $data = [];
 
         //Username
-        if (!empty($datos['usernameNew'])) {
-            if (!preg_match('/[\p{L}\p{N}_]/iu', $datos['usernameNew'])) {
-                $errores['usernameNew'] = "El nombre debe contener letras, números o '_'";
+        if (!empty($datos['username'])) {
+            if (!preg_match('/[\p{L}\p{N}_]/iu', $datos['username'])) {
+                $errores['username'] = "El nombre debe contener letras, números o '_'";
             }
 
-            if (mb_strlen(trim($datos['usernameNew'])) > 50 || mb_strlen(trim($datos['usernameNew'])) < 3) {
-                $errores['usernameNew'] = "El nombre debe teñer un tamaño entre 3 y 50 caracteres";
+            if (mb_strlen(trim($datos['username'])) > 50 || mb_strlen(trim($datos['username'])) < 3) {
+                $errores['username'] = "El nombre debe teñer un tamaño entre 3 y 50 caracteres";
             }
 
-            if ($model->getUsuariosByUsername($datos['usernameNew']) !== null) {
-                $errores['usernameNew'] = "El nombre ya existe en la base de datos";
+            if ($model->getUsuariosByUsername($datos['username']) !== null) {
+                $errores['username'] = "El nombre ya existe en la base de datos";
             }
-        }
-
-        //Id-rol
-        if (!empty($datos['id_rolNew'])) {
-            if (!in_array($datos['id_rolNew'], $roles)) {
-                $errores['id_rolNew'] = "El texto introducido no corresponde con un rol";
-            }
+            $data[':username'] = $datos['username'];
+        }else{
+            $errores['username'] = "El nombre es obligatorio";
         }
 
         //SalarioBruto
-        if (!empty($datos['salarioBrutoNew'])) {
-            if ($datos['salarioBrutoNew'] < 600) {
-                $errores['salarioBrutoNew'] = "El salario debe ser mayor o igual a 600€";
+        if (!empty($datos['salarioBruto'])) {
+            if ($datos['salarioBruto'] < 600) {
+                $errores['salarioBruto'] = "El salario debe ser mayor o igual a 600€";
             }
+            $data[':salarioBruto'] = $datos['salarioBruto'];
+        }else{
+            $errores['salarioBruto'] = "El salario es obligatorio";
         }
 
         //retencionIRFP
-        if (!empty($datos['cotizacionNew'])) {
-            if ($datos['cotizacionNew'] < 18 || $datos['cotizacionNew'] > 30) {
-                $errores['cotizacionNew'] = "La cotización debe estar entre el 18 y 30%";
+        if (!empty($datos['cotizacion'])) {
+            if ($datos['cotizacion'] < 18 || $datos['cotizacion'] > 30) {
+                $errores['cotizacion'] = "La cotización debe estar entre el 18 y 30%";
             }
+            $data[':retencionIRPF'] = $datos['cotizacion'];
+        }else{
+            $errores['retencionIRPF'] = "La cotización es obligatoria";
+        }
+
+        //Id-rol
+        if (!empty($datos['id_rol'])) {
+            if (!in_array($datos['id_rol'], $roles)) {
+                $errores['id_rol'] = "El texto introducido no corresponde con un rol";
+            }
+            $data[':id_rol'] = $datos['id_rol'];
+        }else{
+            $errores['id_rol'] = "El rol es obligatorio";
         }
 
         //pais
-        if (!empty($datos['id_countryNew'])) {
-            if (!in_array($datos['id_countryNew'], $countries)) {
-                $errores['id_countryNew'] = "El texto introducido no corresponde con un pais";
+        if (!empty($datos['id_country'])) {
+            if (!in_array($datos['id_country'], $countries)) {
+                $errores['id_country'] = "El texto introducido no corresponde con un pais";
             }
+            $data[':id_country'] = $datos['id_country'];
+        }else{
+            $errores['id_country'] = "El pais es obligatorio";
         }
+        //situacion activa o no
+        $data[':activo'] = $datos['activo'];
 
-        return $errores;
+        $result['errores'] = $errores;
+        $result['data'] = $data;
+        return $result;
     }
 }
