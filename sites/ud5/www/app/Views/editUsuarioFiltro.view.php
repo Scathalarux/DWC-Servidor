@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card shadow mb-4">
-            <form method="post" action="<?php echo $_ENV['host.folder']; ?>users-filter/new">
+            <form method="post" action="<?php echo $_ENV['host.folder'] . 'users-filter/edit/' . $username; ?>">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary"><?php echo $titulo ?></h6>
                 </div>
@@ -13,8 +13,7 @@
                             <div class="form-group">
                                 <label for="username">Nombre usuario:</label>
                                 <input type="text" class="form-control" name="username" id="username"
-                                       value="<?php echo $input['username'] ?? ''; ?>" minlength="3" maxlength="50" required/>
-                                <p class="text-danger"><?php echo $errores['username'] ?? '';?></p>
+                                       value="<?php echo $input['username'] ?? ''; ?>" minlength="3" maxlength="50" />
                             </div>
                         </div>
                         <div class="col-12 col-lg-6">
@@ -28,27 +27,24 @@
                                             <?php echo ucfirst($rol['nombre_rol']) ?></option>
                                     <?php } ?>
                                 </select>
-                                <p class="text-danger"><?php echo $errores['id_rol'] ?? '';?></p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">
                             <div class="form-group">
                                 <label for="salarioBruto">Salario Bruto:</label>
-                                        <input type="text" class="form-control" name="salarioBruto"
-                                               id="salarioBruto"
-                                               value="<?php echo $input['salarioBruto'] ?? ''; ?>"
-                                        />
-                                <p class="text-danger"><?php echo $errores['salarioBruto'] ?? '';?></p>
+                                <input type="text" class="form-control" name="salarioBruto"
+                                       id="salarioBruto"
+                                       value="<?php echo $input['salarioBruto'] ?? ''; ?>"
+                                />
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">
                             <div class="form-group">
                                 <label for="cotizacion">Cotización:</label>
-                                        <input type="text" class="form-control" name="cotizacion"
-                                               id="cotizacion"
-                                               value="<?php echo $input['cotizacion'] ?? ''; ?>"
-                                        />
-                                <p class="text-danger"><?php echo $errores['cotizacion'] ?? '';?></p>
+                                <input type="text" class="form-control" name="cotizacion"
+                                       id="cotizacion"
+                                       value="<?php echo $input['cotizacion'] ?? ''; ?>"
+                                />
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">
@@ -61,7 +57,6 @@
                                             <?php echo ucfirst($country['country_name']) ?></option>
                                     <?php } ?>
                                 </select>
-                                <p class="text-danger"><?php echo $errores['id_country'] ?? '';?></p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">

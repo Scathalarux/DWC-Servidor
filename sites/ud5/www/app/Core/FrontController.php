@@ -132,6 +132,22 @@ class FrontController
             'post'
         );
         Route::add(
+            '/users-filter/edit/([\p{L}\p{N}_]{3,50})',
+            function ($username) {
+                $controlador = new UsuariosController();
+                $controlador->showEditUsuario($username);
+            },
+            'get'
+        );
+        /*Route::add(
+            '/users-filter/edit/([\p{L}\p{N}_]{3,50})',
+            function ($username) {
+                $controlador = new UsuariosController();
+                $controlador->doEditUsuario($username);
+            },
+            'post'
+        );*/
+        Route::add(
             '/usersBySalario',
             function () {
                 $controlador = new UsuariosController();

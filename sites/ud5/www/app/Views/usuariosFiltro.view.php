@@ -148,6 +148,7 @@
                                     ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
                                          } ?></th>
+                            <th>Opciones</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -155,10 +156,13 @@
                             <tr class="<?php echo !($usuario['activo']) ? 'table-danger' : '' ?>">
                                 <td><?php echo $usuario['username']; ?></td>
                                 <td><?php echo number_format($usuario['salarioBruto'], 2, ',', '.') ?></td>
-                                <td><?php echo number_format($usuario['retencionIRPF']) . '%' ?></td>
+                                <td><?php echo number_format($usuario['retencionIRPF'], 2) ?>%</td>
                                 <td><?php echo str_replace([',', '.', '_'], ['_', ',', '.'], $usuario['salarioNeto']) ?></td>
                                 <td><?php echo $usuario['nombre_rol'] ?></td>
                                 <td><?php echo $usuario['country_name'] ?></td>
+                                <td>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/edit/' . $usuario['username']?>" target="_blank" class="btn btn-warning ml-1" data-toggle="tooltip" data-placement="top" title="Editar Usuario"><i class="fas fa-edit"></i></a>
+                                </td>
                             </tr>
                         <?php } ?>
 

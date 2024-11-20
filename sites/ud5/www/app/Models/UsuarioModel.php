@@ -367,11 +367,14 @@ class UsuarioModel extends BaseDbModel
     {
         $variables = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
 
-            $query = "INSERT INTO usuario ("
-                . implode(", ", $variables) . ") VALUES ("
-                . implode(", ", array_keys($data)) . ")";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute($data);
-            return is_array($stmt->fetchAll(PDO::FETCH_ASSOC));
+        $query = "INSERT INTO usuario ("
+            . implode(", ", $variables) . ") VALUES ("
+            . implode(", ", array_keys($data)) . ")";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute($data);
+    }
+
+    public function editUsuario(string $username){
+
     }
 }

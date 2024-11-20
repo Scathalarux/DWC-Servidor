@@ -9,6 +9,7 @@ use Com\Daw2\Models\AuxCountriesModel;
 use Com\Daw2\Models\AuxRolModel;
 use Com\Daw2\Models\UsuarioModel;
 use Decimal\Decimal;
+use Exception;
 
 class UsuariosController extends BaseController
 {
@@ -20,7 +21,7 @@ class UsuariosController extends BaseController
     /**
      * Función que obtiene todos los usuarios del modelo y se los manda a la vista
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function showAllUsuarios(): void
     {
@@ -55,7 +56,7 @@ class UsuariosController extends BaseController
      * Función que filtra a los usuarios según lo que le introduce el cliente, obteniendo los latos de los modelos y
      * enviandoselos a la vista
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function doFilterUsuarios(): void
     {
@@ -171,7 +172,7 @@ class UsuariosController extends BaseController
     /**
      * Función que obtiene los usuarios ordenados por salario y se los manda a la vista
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function showOrderUsuarioSalario(): void
     {
@@ -191,7 +192,7 @@ class UsuariosController extends BaseController
     /**
      * Función que obtiene los usuarios de tipo 'standard' del modelo y se los manda a la vista
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function showStandardUsers(): void
     {
@@ -211,7 +212,7 @@ class UsuariosController extends BaseController
     /**
      * Función que obtiene los usuarios que tienen en el nombre 'Carlos' y se los envia a la vista
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function showUsersCarlos(): void
     {
@@ -229,31 +230,29 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 
-    public function showAddUsuario(): void
+    public function showAddUsuario(array $input = [], array $errors = []): void
     {
-        $data = [];
         $data = [
             'titulo' => 'Añadir Usuario',
             'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Añadir usuario')
         ];
-        //obtenemos el modelo de la tabla usuarios
-        $model = new UsuarioModel();
+
         //obtenemos el modelo y los datos de la tabla aux_rol
         $auxRolModel = new AuxRolModel();
-        $roles = $auxRolModel->getAll();
-        $data['roles'] = $roles;
+        $data['roles'] = $auxRolModel->getAll();
 
         //obtenemos el modelo y los datos de la tabla aux_countries
         $auxCountriesModel = new AuxCountriesModel();
-        $countries = $auxCountriesModel->getAll();
-        $data['countries'] = $countries;
+        $data['countries'] = $auxCountriesModel->getAll();
+
+        $data['input'] = $input;
+        $data['errors'] = $errors;
 
         $this->view->showViews(array('templates/header.view.php', 'addUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 
     public function addUsuario(): void
     {
-        $data = [];
         $data = [
             'titulo' => 'Añadir Usuario',
             'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Añadir usuario')
@@ -284,7 +283,8 @@ class UsuariosController extends BaseController
             } else {
                 //realizamos la llamada a la query para añadirlo
                 if ($model->addUsuario($resultado['data'])) {
-                    $this->view->showViews(array('templates/header.view.php', 'usuariosFiltro.view.php', 'templates/footer.view.php'), $data);
+                    header('Location: /users-filter');
+                } else {
                 }
             }
         }
@@ -299,7 +299,7 @@ class UsuariosController extends BaseController
         //Username
         if (!empty($datos['username'])) {
             //letras, numeros y _
-            if (!preg_match('/[\p{L}\p{N}_]/iu', $datos['username'])) {
+            if (!preg_match('/^[\p{L}\p{N}_]{3,50}$/iu', $datos['username'])) {
                 $errores['username'] = "El nombre debe contener letras, números o '_'";
             }
 
@@ -309,7 +309,8 @@ class UsuariosController extends BaseController
             }
 
             //que no esté ya en la bbdd
-            if (!empty($model->getUsuariosByUsername($datos['username']))) {
+            //es mejor utilizar '!== []' que emplear '!empty' para saber si está vacio (sin comprobar variable, castear)
+            if ($model->getUsuariosByUsername($datos['username']) !== []) {
                 $errores['username'] = "El nombre ya existe en la base de datos";
             }
 
@@ -320,25 +321,48 @@ class UsuariosController extends BaseController
 
         //SalarioBruto
         if (!empty($datos['salarioBruto'])) {
-            if ($datos['salarioBruto'] < 600) {
-                $errores['salarioBruto'] = "El salario debe ser mayor o igual a 600€";
+            if (filter_var($datos['salarioBruto'], FILTER_VALIDATE_FLOAT) === false) {
+                $errores['salarioBruto'] = "El salario debe ser decimal";
+            } else {
+                if ($datos['salarioBruto'] < 600) {
+                    $errores['salarioBruto'] = "El salario debe ser mayor o igual a 600€";
+                }
+
+                $salarioBrutoDecimal = new Decimal($datos['salarioBruto']);
+                if ($salarioBrutoDecimal - $datos['salarioBruto']->round(2) !== 0) {
+                    $errores['salarioBruto'] = "El salario debe tener 2 cifras decimales";
+                }
+                $data[':salarioBruto'] = $datos['salarioBruto'];
             }
-            $data[':salarioBruto'] = $datos['salarioBruto'];
         }
 
         //retencionIRFP
         if (!empty($datos['cotizacion'])) {
-            if ($datos['cotizacion'] < 18 || $datos['cotizacion'] > 30) {
-                $errores['cotizacion'] = "La cotización debe estar entre el 18 y 30%";
+            if (filter_var($datos['cotizacion'], FILTER_VALIDATE_FLOAT) === false) {
+                $errores['cotizacion'] = "La cotización debe ser decimal";
+            } else {
+                if ($datos['cotizacion'] < 0) {
+                    $errores['cotizacion'] = "La cotización debe estar entre el 18 y 30%";
+                }
+
+                $cotizacionDecimal = new Decimal($datos['cotizacion']);
+                if ($cotizacionDecimal - $datos['cotizacion']->round(2) !== 0) {
+                    $errores['cotizacion'] = "La cotización debe tener 2 cifras decimales";
+                }
+
+                $data[':retencionIRPF'] = $datos['cotizacion'];
             }
-            $data[':retencionIRPF'] = $datos['cotizacion'];
         }
 
         //Id-rol
         if (!empty($datos['id_rol'])) {
-            if (!key_exists($datos['id_rol'], $roles)) {
-                $errores['id_rol'] = "El texto introducido no corresponde con un rol";
+            if (
+                (filter_var($datos['id_rol'], FILTER_VALIDATE_INT) === false)
+                || (!key_exists($datos['id_rol'], $roles))
+            ) {
+                $errores['id_rol'] = "Rol no valido";
             }
+
             $data[':id_rol'] = $datos['id_rol'];
         } else {
             $errores['id_rol'] = "El rol es obligatorio";
@@ -346,8 +370,11 @@ class UsuariosController extends BaseController
 
         //pais
         if (!empty($datos['id_country'])) {
-            if (!key_exists(implode(',', $datos['id_country']), $countries)) {
-                $errores['id_country'] = "El texto introducido no corresponde con un pais";
+            if (
+                (filter_var($datos['id_country'], FILTER_VALIDATE_INT) === false)
+                || (!key_exists($datos['id_country'], $countries))
+            ) {
+                $errores['id_country'] = "Pais no válido";
             }
             $data[':id_country'] = $datos['id_country'];
         } else {
@@ -355,16 +382,33 @@ class UsuariosController extends BaseController
         }
 
         //situacion activa o no
-        if (!isset($data['activo'])) {
-            $data[':activo'] = 0;
-        } else {
-            $data[':activo'] = 1;
-        }
-
+        $data[':activo'] = isset($data['activo']);
 
         $result['errores'] = $errores;
         $result['data'] = $data;
 
         return $result;
+    }
+
+    public function showEditUsuario(string $username): void
+    {
+
+        $data = [
+            'titulo' => 'Editar Usuario',
+            'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Editar usuario'),
+            'username' => $username
+        ];
+
+        $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function doEditUsuario(string $username): void
+    {
+        $data = [
+            'titulo' => 'Editar Usuario',
+            'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Editar usuario'),
+            'username' => $username
+        ];
+        $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 }
