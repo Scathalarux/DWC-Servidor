@@ -102,6 +102,12 @@ class UsuarioModel extends BaseDbModel
         $stmt->execute(['username' => "%$username%"]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getUsuarioUsername(string $username): bool|array
+    {
+        $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.username = :username");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     /**
      * Función que devuelve el conjunto de usuarios tras filtrarlos por su rol
@@ -374,7 +380,18 @@ class UsuarioModel extends BaseDbModel
         return $stmt->execute($data);
     }
 
-    public function editUsuario(string $username){
+    public function editUsuario(array $data): bool
+    {
+        $variables = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
 
+        $query = "UPDATE usuario SET"
+            . $variables[0] . array_keys($data)[0] . ', '
+            . $variables[1] . array_keys($data)[1] . ', '
+            . $variables[2] . array_keys($data)[2] . ', '
+            . $variables[3] . array_keys($data)[3] . ', '
+            . $variables[4] . array_keys($data)[4] . ', ';
+
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute($data);
     }
 }

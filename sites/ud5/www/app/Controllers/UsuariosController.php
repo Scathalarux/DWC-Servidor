@@ -291,6 +291,39 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'addUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 
+    public function showEditUsuario(string $username): void
+    {
+
+        $data = [
+            'titulo' => 'Editar Usuario',
+            'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Editar usuario'),
+            'username' => $username
+        ];
+
+        $model = new UsuarioModel();
+        //obtenemos el modelo y los datos de la tabla aux_rol
+        $auxRolModel = new AuxRolModel();
+        $roles = $auxRolModel->getAll();
+        $data['roles'] = $roles;
+
+        //obtenemos el modelo y los datos de la tabla aux_countries
+        $auxCountriesModel = new AuxCountriesModel();
+        $countries = $auxCountriesModel->getAll();
+        $data['countries'] = $countries;
+
+        $usuario = $model->getUsuarioUsername($username);
+
+        if (empty($usuario)) {
+            $data['noExisteUsuario'] = "El nombre de usuario $username no existe";
+/*            header('Location: /users-filter');*/
+        } else {
+            $data['usuario'] = $usuario[0];
+        }
+
+
+        $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
+    }
+
     public function checkFormAddUsuario(array $datos, array $roles, array $countries, UsuarioModel $model): array
     {
         $errores = [];
@@ -310,7 +343,7 @@ class UsuariosController extends BaseController
 
             //que no esté ya en la bbdd
             //es mejor utilizar '!== []' que emplear '!empty' para saber si está vacio (sin comprobar variable, castear)
-            if ($model->getUsuariosByUsername($datos['username']) !== []) {
+            if ($model->getUsuarioUsername($datos['username']) !== []) {
                 $errores['username'] = "El nombre ya existe en la base de datos";
             }
 
@@ -329,7 +362,7 @@ class UsuariosController extends BaseController
                 }
 
                 $salarioBrutoDecimal = new Decimal($datos['salarioBruto']);
-                if ($salarioBrutoDecimal - $datos['salarioBruto']->round(2) !== 0) {
+                if ($salarioBrutoDecimal - $salarioBrutoDecimal->round(2) != 0) {
                     $errores['salarioBruto'] = "El salario debe tener 2 cifras decimales";
                 }
                 $data[':salarioBruto'] = $datos['salarioBruto'];
@@ -346,7 +379,7 @@ class UsuariosController extends BaseController
                 }
 
                 $cotizacionDecimal = new Decimal($datos['cotizacion']);
-                if ($cotizacionDecimal - $datos['cotizacion']->round(2) !== 0) {
+                if ($cotizacionDecimal - $cotizacionDecimal->round(2) != 0) {
                     $errores['cotizacion'] = "La cotización debe tener 2 cifras decimales";
                 }
 
@@ -390,18 +423,6 @@ class UsuariosController extends BaseController
         return $result;
     }
 
-    public function showEditUsuario(string $username): void
-    {
-
-        $data = [
-            'titulo' => 'Editar Usuario',
-            'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Editar usuario'),
-            'username' => $username
-        ];
-
-        $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
-    }
-
     public function doEditUsuario(string $username): void
     {
         $data = [
@@ -409,6 +430,56 @@ class UsuariosController extends BaseController
             'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Editar usuario'),
             'username' => $username
         ];
+
+        //obtenemos el modelo de la tabla usuarios
+        $model = new UsuarioModel();
+        //obtenemos el modelo y los datos de la tabla aux_rol
+        $auxRolModel = new AuxRolModel();
+        $roles = $auxRolModel->getAll();
+        $data['roles'] = $roles;
+
+        //obtenemos el modelo y los datos de la tabla aux_countries
+        $auxCountriesModel = new AuxCountriesModel();
+        $countries = $auxCountriesModel->getAll();
+        $data['countries'] = $countries;
+
+        $data['usuario'] = $model->getUsuarioUsername($username);
+
+        if (!empty($_POST)) {
+            //Validamos los datos
+            $resultado = $this->checkFormAddUsuario($_POST, $roles, $countries, $model);
+
+
+
+            if (!empty($resultado['errores'])) {
+                $data['errores'] = $resultado['errores'];
+                $insertData = $_POST;
+                $insertData['activo'] = isset($insertData['activo']) ? 1 : 0;
+                foreach ($insertData as $key => $value) {
+                    if (empty($value)) {
+                        $insertData[$key] = null;
+                    }
+                }
+                $model = new UsuarioModel();
+                if ($model->addUsuario($insertData)) {
+                    header('Location: /usuarios-filtro');
+                } else {
+                    $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $resultado['errores']['username'] = 'No se ha podido realizar el guardado';
+                    $this->showAddUsuario($input, $resultado['errores']['username']);
+                }
+            } else {
+                //realizamos la llamada a la query para añadirlo
+                if ($model->editUsuario($resultado['data'])) {
+                    header('Location: /users-filter');
+                } else {
+                    //Saneamos el input
+                    $input = filter_var($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $this->showAddUsuario($input, $resultado['errores']);
+                }
+            }
+        }
+
         $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 }

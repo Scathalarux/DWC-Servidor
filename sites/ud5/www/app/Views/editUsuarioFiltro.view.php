@@ -1,3 +1,15 @@
+<!--No he ha encontrado el usuario-->
+<?php if (isset($noExisteUsuario)) { ?>
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo $noExisteUsuario ?></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } else { ?>
 <div class="row">
     <div class="col-12">
         <div class="card shadow mb-4">
@@ -13,7 +25,9 @@
                             <div class="form-group">
                                 <label for="username">Nombre usuario:</label>
                                 <input type="text" class="form-control" name="username" id="username"
-                                       value="<?php echo $input['username'] ?? ''; ?>" minlength="3" maxlength="50" />
+                                       value="<?php echo $usuario['username'] ?? ''; ?>" minlength="3" maxlength="50" />
+                                <p class="text-danger"><?php echo $errores['username'] ?? '';?></p>
+
                             </div>
                         </div>
                         <div class="col-12 col-lg-6">
@@ -23,10 +37,11 @@
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) { ?>
                                         <option value="<?php echo $rol['id_rol']; ?>"
-                                            <?php echo isset($input['id_rol']) && $rol['id_rol'] === $input['id_rol'] ? 'selected' : ''; ?>>
+                                            <?php echo isset($usuario['id_rol']) && $rol['id_rol'] === $usuario['id_rol'] ? 'selected' : ''; ?>>
                                             <?php echo ucfirst($rol['nombre_rol']) ?></option>
                                     <?php } ?>
                                 </select>
+                                <p class="text-danger"><?php echo $errores['id_rol'] ?? '';?></p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">
@@ -34,8 +49,10 @@
                                 <label for="salarioBruto">Salario Bruto:</label>
                                 <input type="text" class="form-control" name="salarioBruto"
                                        id="salarioBruto"
-                                       value="<?php echo $input['salarioBruto'] ?? ''; ?>"
+                                       value="<?php echo $usuario['salarioBruto'] ?? ''; ?>"
                                 />
+                                <p class="text-danger"><?php echo $errores['salarioBruto'] ?? '';?></p>
+
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">
@@ -43,8 +60,10 @@
                                 <label for="cotizacion">Cotización:</label>
                                 <input type="text" class="form-control" name="cotizacion"
                                        id="cotizacion"
-                                       value="<?php echo $input['cotizacion'] ?? ''; ?>"
+                                       value="<?php echo $usuario['retencionIRPF'] ?? ''; ?> "
                                 />
+                                <p class="text-danger"><?php echo $errores['cotizacion'] ?? '';?></p>
+
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">
@@ -53,15 +72,17 @@
                                 <select name="id_country[]" id="id_country" class="form-control select2"
                                         data-placeholder="Países" required>
                                     <?php foreach ($countries as $country) { ?>
-                                        <option value="<?php echo $country['id']; ?>" <?php echo (isset($input['id_country']) && in_array($country['id'], $input['id_country'])) ? 'selected' : ''; ?>>
+                                        <option value="<?php echo $country['id']; ?>" <?php echo (isset($usuario['id_country']) && ($country['id'] === $usuario['id_country'])) ? 'selected' : ''; ?>>
                                             <?php echo ucfirst($country['country_name']) ?></option>
                                     <?php } ?>
                                 </select>
+                                <p class="text-danger"><?php echo $errores['id_country'] ?? '';?></p>
+
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="activo" id="activo"/>
+                                <input type="checkbox" class="form-check-input" name="activo" id="activo" <?php echo $usuario['activo'] ? "checked" : ""; ?>/>
                                 <label for="activo">Activo</label>
                             </div>
                         </div>
@@ -79,3 +100,4 @@
         </div>
     </div>
 </div>
+<?php } ?>
