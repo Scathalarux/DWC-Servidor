@@ -230,13 +230,35 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 
+    /**
+     * Función que muestra la interfaz para poder añadir un usuario
+     * @param array $input
+     * @param array $errors
+     * @return void
+     * @throws Exception
+     */
     public function showAddUsuario(array $input = [], array $errors = []): void
     {
-        $data = [
+        $data = $this->getCommonData();
+        $data += [
             'titulo' => 'Añadir Usuario',
             'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Añadir usuario')
         ];
 
+
+        $data['input'] = $input;
+        $data['errors'] = $errors;
+
+        $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    /**
+     * Función que obtiene los roles y los paises de la base de datos
+     * @return array conjunto de roles y paises
+     */
+    public function getCommonData(): array
+    {
+        $data = [];
         //obtenemos el modelo y los datos de la tabla aux_rol
         $auxRolModel = new AuxRolModel();
         $data['roles'] = $auxRolModel->getAll();
@@ -244,112 +266,73 @@ class UsuariosController extends BaseController
         //obtenemos el modelo y los datos de la tabla aux_countries
         $auxCountriesModel = new AuxCountriesModel();
         $data['countries'] = $auxCountriesModel->getAll();
-
-        $data['input'] = $input;
-        $data['errors'] = $errors;
-
-        $this->view->showViews(array('templates/header.view.php', 'addUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
+        return $data;
     }
 
+    /**
+     * Función que añade un usuario a la base de datos
+     * @return void
+     */
     public function addUsuario(): void
     {
-        $data = [
-            'titulo' => 'Añadir Usuario',
-            'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Añadir usuario')
-        ];
-        //obtenemos el modelo de la tabla usuarios
-        $model = new UsuarioModel();
-        //obtenemos el modelo y los datos de la tabla aux_rol
-        $auxRolModel = new AuxRolModel();
-        $roles = $auxRolModel->getAll();
-        $data['roles'] = $roles;
-
-        //obtenemos el modelo y los datos de la tabla aux_countries
-        $auxCountriesModel = new AuxCountriesModel();
-        $countries = $auxCountriesModel->getAll();
-        $data['countries'] = $countries;
-
-
         if (!empty($_POST)) {
-            //Validamos los datos
-            $resultado = $this->checkFormAddUsuario($_POST, $roles, $countries, $model);
+            $errores = $this->checkFormUsuario($_POST);
 
-
-            //Saneamos el input
-            $data['input'] = filter_var($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-            if (!empty($resultado['errores'])) {
-                $data['errores'] = $resultado['errores'];
-            } else {
+            if ($errores !== []) {
+                $insertData = $_POST;
+                //añadimos un elemento para saber si el usuario está activo o no
+                $insertData['activo'] = isset($_POST['activo']) ? 1 : 0;
+                //controlamos que pueda haber valores null (salario y retencionIRPF)
+                foreach ($insertData as $key => $value) {
+                    if (empty($value)) {
+                        $insertData[$key] = null;
+                    }
+                }
+                //obtenemos el modelo de la tabla usuarios
+                $model = new UsuarioModel();
                 //realizamos la llamada a la query para añadirlo
-                if ($model->addUsuario($resultado['data'])) {
+                if ($model->addUsuario($insertData)) {
                     header('Location: /users-filter');
                 } else {
+                    $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $errores['username'] = "No se ha podido realizar el guardado";
+                    $this->showAddUsuario($input, $errores);
                 }
+            } else {
+                $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $this->showAddUsuario($input, $errores);
             }
         }
-        $this->view->showViews(array('templates/header.view.php', 'addUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 
-    public function showEditUsuario(string $username): void
-    {
-
-        $data = [
-            'titulo' => 'Editar Usuario',
-            'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Editar usuario'),
-            'username' => $username
-        ];
-
-        $model = new UsuarioModel();
-        //obtenemos el modelo y los datos de la tabla aux_rol
-        $auxRolModel = new AuxRolModel();
-        $roles = $auxRolModel->getAll();
-        $data['roles'] = $roles;
-
-        //obtenemos el modelo y los datos de la tabla aux_countries
-        $auxCountriesModel = new AuxCountriesModel();
-        $countries = $auxCountriesModel->getAll();
-        $data['countries'] = $countries;
-
-        $usuario = $model->getUsuarioUsername($username);
-
-        if (empty($usuario)) {
-            $data['noExisteUsuario'] = "El nombre de usuario $username no existe";
-/*            header('Location: /users-filter');*/
-        } else {
-            $data['usuario'] = $usuario[0];
-        }
-
-
-        $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
-    }
-
-    public function checkFormAddUsuario(array $datos, array $roles, array $countries, UsuarioModel $model): array
+    /**
+     * Función que comprueba que estén correctos los datos recibidos por el formulario y genera un arrray de errores en
+     * caso de haberlos
+     * @param array $datos datos a comprobar
+     * @param string $oldUsername nombre anterior del usuario
+     * @return array conjunto de errores encontrados
+     */
+    public function checkFormUsuario(array $datos, string $oldUsername = ''): array
     {
         $errores = [];
-        $data = [];
 
         //Username
-        if (!empty($datos['username'])) {
-            //letras, numeros y _
-            if (!preg_match('/^[\p{L}\p{N}_]{3,50}$/iu', $datos['username'])) {
-                $errores['username'] = "El nombre debe contener letras, números o '_'";
-            }
+        if ($oldUsername === '' || $oldUsername != $datos['username']) {
+            if (empty($datos['username'])) {
+                $errores['username'] = "El nombre es obligatorio";
+            } else {
+                //letras, numeros y _
+                if (!preg_match('/^[\p{L}\p{N}_]{3,50}$/iu', $datos['username'])) {
+                    $errores['username'] = "El nombre debe contener letras, números o '_', y tamaño entre 3 y 50 caracteres";
+                }
 
-            //entre 3 y 50
-            if (mb_strlen(trim($datos['username'])) > 50 || mb_strlen(trim($datos['username'])) < 3) {
-                $errores['username'] = "El nombre debe teñer un tamaño entre 3 y 50 caracteres";
+                //que no esté ya en la bbdd
+                //es mejor utilizar '!== []' que emplear '!empty' para saber si está vacio (sin comprobar variable, castear)
+                $model = new UsuarioModel();
+                if (!is_null($model->getUsuarioUsername($datos['username']))) {
+                    $errores['username'] = "El nombre ya existe en la base de datos";
+                }
             }
-
-            //que no esté ya en la bbdd
-            //es mejor utilizar '!== []' que emplear '!empty' para saber si está vacio (sin comprobar variable, castear)
-            if ($model->getUsuarioUsername($datos['username']) !== []) {
-                $errores['username'] = "El nombre ya existe en la base de datos";
-            }
-
-            $data[':username'] = $datos['username'];
-        } else {
-            $errores['username'] = "El nombre es obligatorio";
         }
 
         //SalarioBruto
@@ -363,9 +346,8 @@ class UsuariosController extends BaseController
 
                 $salarioBrutoDecimal = new Decimal($datos['salarioBruto']);
                 if ($salarioBrutoDecimal - $salarioBrutoDecimal->round(2) != 0) {
-                    $errores['salarioBruto'] = "El salario debe tener 2 cifras decimales";
+                    $errores['salarioBruto'] = "El salario solo puede tener 2 cifras decimales";
                 }
-                $data[':salarioBruto'] = $datos['salarioBruto'];
             }
         }
 
@@ -380,106 +362,98 @@ class UsuariosController extends BaseController
 
                 $cotizacionDecimal = new Decimal($datos['cotizacion']);
                 if ($cotizacionDecimal - $cotizacionDecimal->round(2) != 0) {
-                    $errores['cotizacion'] = "La cotización debe tener 2 cifras decimales";
+                    $errores['cotizacion'] = "La cotización solo puede tener 2 cifras decimales";
                 }
-
-                $data[':retencionIRPF'] = $datos['cotizacion'];
             }
         }
 
         //Id-rol
         if (!empty($datos['id_rol'])) {
-            if (
-                (filter_var($datos['id_rol'], FILTER_VALIDATE_INT) === false)
-                || (!key_exists($datos['id_rol'], $roles))
-            ) {
+            if (filter_var($datos['id_rol'], FILTER_VALIDATE_INT) === false) {
                 $errores['id_rol'] = "Rol no valido";
+            } else {
+                $auxRolModel = new AuxRolModel();
+                $rol = $auxRolModel->find($datos['id_rol']);
+                if (is_null($rol)) {
+                    $errores['id_rol'] = "Rol no valido";
+                }
             }
-
-            $data[':id_rol'] = $datos['id_rol'];
         } else {
             $errores['id_rol'] = "El rol es obligatorio";
         }
 
         //pais
         if (!empty($datos['id_country'])) {
-            if (
-                (filter_var($datos['id_country'], FILTER_VALIDATE_INT) === false)
-                || (!key_exists($datos['id_country'], $countries))
-            ) {
+            if (filter_var($datos['id_country'], FILTER_VALIDATE_INT) === false) {
                 $errores['id_country'] = "Pais no válido";
+            } else {
+                $auxCountriesModel = new AuxCountriesModel();
+                $country = $auxCountriesModel->find($datos['id_country']);
+                if (is_null($country)) {
+                    $errores['id_country'] = "País no valido";
+                }
             }
-            $data[':id_country'] = $datos['id_country'];
         } else {
             $errores['id_country'] = "El pais es obligatorio";
         }
 
-        //situacion activa o no
-        $data[':activo'] = isset($data['activo']);
-
-        $result['errores'] = $errores;
-        $result['data'] = $data;
-
-        return $result;
+        return $errores;
     }
 
-    public function doEditUsuario(string $username): void
+    public function showEditUsuario(string $username, array $input = [], array $errores = []): void
     {
-        $data = [
+        $model = new UsuarioModel();
+        $usuario = $model->getUsuarioUsername($username);
+        if (is_null($usuario)) {
+            header('Location: /users-filter');
+        }
+        $data = $this->getCommonData();
+        $data += [
             'titulo' => 'Editar Usuario',
             'breadcrumb' => array('Usuarios', 'Listado de usuarios', 'Editar usuario'),
             'username' => $username
         ];
 
+        $data['input'] = ($input === []) ? $usuario : $input;
+        $data['errors'] = $errores;
+
+
+        $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function doEditUsuario(string $username): void
+    {
         //obtenemos el modelo de la tabla usuarios
         $model = new UsuarioModel();
-        //obtenemos el modelo y los datos de la tabla aux_rol
-        $auxRolModel = new AuxRolModel();
-        $roles = $auxRolModel->getAll();
-        $data['roles'] = $roles;
-
-        //obtenemos el modelo y los datos de la tabla aux_countries
-        $auxCountriesModel = new AuxCountriesModel();
-        $countries = $auxCountriesModel->getAll();
-        $data['countries'] = $countries;
-
-        $data['usuario'] = $model->getUsuarioUsername($username);
-
+        $usuario = $model->getUsuarioUsername($username);
+        if (is_null($usuario)) {
+            header('Location: /users-filter');
+        }
         if (!empty($_POST)) {
-            //Validamos los datos
-            $resultado = $this->checkFormAddUsuario($_POST, $roles, $countries, $model);
+            $errores = $this->checkFormUsuario($_POST);
 
-
-
-            if (!empty($resultado['errores'])) {
-                $data['errores'] = $resultado['errores'];
+            if ($errores !== []) {
                 $insertData = $_POST;
-                $insertData['activo'] = isset($insertData['activo']) ? 1 : 0;
+                //añadimos un elemento para saber si el usuario está activo o no
+                $insertData['activo'] = isset($_POST['activo']) ? 1 : 0;
+                //controlamos que pueda haber valores null (salario y retencionIRPF)
                 foreach ($insertData as $key => $value) {
                     if (empty($value)) {
                         $insertData[$key] = null;
                     }
                 }
-                $model = new UsuarioModel();
-                if ($model->addUsuario($insertData)) {
-                    header('Location: /usuarios-filtro');
-                } else {
-                    $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                    $resultado['errores']['username'] = 'No se ha podido realizar el guardado';
-                    $this->showAddUsuario($input, $resultado['errores']['username']);
-                }
-            } else {
                 //realizamos la llamada a la query para añadirlo
-                if ($model->editUsuario($resultado['data'])) {
+                if ($model->editUsuario($insertData, $username)) {
                     header('Location: /users-filter');
                 } else {
-                    //Saneamos el input
-                    $input = filter_var($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                    $this->showAddUsuario($input, $resultado['errores']);
+                    $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $errores['username'] = "No se ha podido realizar el guardado";
+                    $this->showEditUsuario($username, $input, $errores);
                 }
+            } else {
+                $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $this->showEditUsuario($username, $input, $errores);
             }
         }
-
-        $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
     }
 }

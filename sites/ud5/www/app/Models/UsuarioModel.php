@@ -106,7 +106,7 @@ class UsuarioModel extends BaseDbModel
     {
         $stmt = $this->pdo->prepare(self::BASE_QUERY . " WHERE u.username = :username");
         $stmt->execute(['username' => $username]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -371,27 +371,25 @@ class UsuarioModel extends BaseDbModel
 
     public function addUsuario(array $data): bool
     {
-        $variables = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
-
-        $query = "INSERT INTO usuario ("
-            . implode(", ", $variables) . ") VALUES ("
-            . implode(", ", array_keys($data)) . ")";
-        $stmt = $this->pdo->prepare($query);
+        $stmt = $this->pdo->prepare('Insert into usuario (username, salarioBruto, retencionIRPF, activo, id_rol, id_country)
+                                    values (:username, :salarioBruto, :retencionIRPF, :activo, :id_rol, :id_country)');
         return $stmt->execute($data);
     }
 
-    public function editUsuario(array $data): bool
+    public function editUsuario(array $dataUsuario, string $oldUsername): bool
     {
-        $variables = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
+        $sql = "UPDATE usuario SET username=:username, salarioBruto=:salarioBruto, retencionIRPF=:retencionIRPF, activo=:activo, id_rol=:id_rol, id_country=:id_country WHERE username=:oldUsername";
+        $stmt = $this->pdo->prepare($sql);
+        $dataUsuario['oldUsername'] = $oldUsername;
+        return $stmt->execute($dataUsuario);
+    }
 
-        $query = "UPDATE usuario SET"
-            . $variables[0] . array_keys($data)[0] . ', '
-            . $variables[1] . array_keys($data)[1] . ', '
-            . $variables[2] . array_keys($data)[2] . ', '
-            . $variables[3] . array_keys($data)[3] . ', '
-            . $variables[4] . array_keys($data)[4] . ', ';
-
-        $stmt = $this->pdo->prepare($query);
-        return $stmt->execute($data);
+    public function deleteUsuario(string $username): bool
+    {
+        $sql = "DELETE FROM usuario WHERE username=:username";
+        $stmt = $this->pdo->prepare($sql);
+        $vars['username'] = $username;
+        $executed = $stmt->execute($vars);
+        return ($executed && $stmt->rowCount() === 1);
     }
 }

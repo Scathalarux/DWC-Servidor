@@ -162,8 +162,8 @@
                                 <td><?php echo $usuario['nombre_rol'] ?></td>
                                 <td><?php echo $usuario['country_name'] ?></td>
                                 <td>
-                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/edit/' . $usuario['username']?>" target="_blank" class="btn btn-warning ml-1" data-toggle="tooltip" data-placement="top" title="Editar Usuario"><i class="fas fa-edit"></i></a>
-                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/delete/' . $usuario['username']?>" target="_blank" class="btn btn-danger ml-1" data-toggle="tooltip" data-placement="top" title="Borrar Usuario"><i class="fas fa-trash"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/edit/' . $usuario['username']?>" class="btn btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Editar Usuario"><i class="fas fa-edit"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/delete/' . $usuario['username']?>" class="btn btn-danger ml-1" data-toggle="tooltip" data-placement="top" title="Borrar Usuario"><i class="fas fa-trash"></i></a>
 
                                 </td>
                             </tr>
