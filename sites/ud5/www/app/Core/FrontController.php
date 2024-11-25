@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Core;
 
+use Com\Daw2\Controllers\PreferenciasUsuario;
 use Com\Daw2\Controllers\CsvController;
 use Com\Daw2\Controllers\UserController;
 use Com\Daw2\Controllers\UsuariosController;
@@ -15,6 +16,10 @@ class FrontController
 {
     public static function main()
     {
+        /*Inicializa o retoma una sesión entre el usuario y el servidor para que los valores
+        guardados en $_SESSION sean accesibles en el código */
+        session_start();
+
         Route::add(
             '/',
             function () {
@@ -144,6 +149,22 @@ class FrontController
             function ($username) {
                 $controlador = new UsuariosController();
                 $controlador->doEditUsuario($username);
+            },
+            'post'
+        );
+        Route::add(
+            '/preferenciasUsuario',
+            function () {
+                $controlador = new PreferenciasUsuario();
+                $controlador->showPreferenciasUsuario();
+            },
+            'get'
+        );
+        Route::add(
+            '/preferenciasUsuario',
+            function () {
+                $controlador = new PreferenciasUsuario();
+                $controlador->doPreferenciasUsuario();
             },
             'post'
         );

@@ -40,10 +40,10 @@
     }
     ?>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed <?php echo isset($_COOKIE['theme']) && $_COOKIE['theme'] == "oscuro" ? "dark-mode" : ""; ?>">
 <div class="wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <nav class="main-header navbar navbar-expand <?php echo isset($_COOKIE['theme']) && $_COOKIE['theme'] == "claro" ? "navbar-white navbar-light" : "navbar-dark" ?>">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item">
@@ -84,7 +84,7 @@
                     <img src="assets/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">Usuario</a>
+                    <a href="#" class="d-block"><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : "Usuario"; ?></a>
                 </div>
             </div>
             <?php

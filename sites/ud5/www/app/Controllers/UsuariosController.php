@@ -456,4 +456,9 @@ class UsuariosController extends BaseController
             }
         }
     }
+
+    /*public function deleteUsuario(string $username): bool
+    {
+    }*/
+
 }
