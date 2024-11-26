@@ -1,4 +1,20 @@
-
+<?php if (isset($_SESSION['delete'])) { ?>
+<div class="row">
+    <?php if (isset($_SESSION['delete']['username'])) { ?>
+        <div class="col-12 ">
+            <div class="alert alert-<?php echo $_SESSION['delete']['username'] ? 'success' : 'danger' ?>">
+                <h6 class="m-4 font-weight-bold text-white"><?php echo $_SESSION['delete']['messageUser'] ?? "" ?></h6>
+            </div>
+        </div>
+    <?php }
+    if (isset($_SESSION['delete']['operation'])){ ?>
+    <div class="col-12 ">
+        <div class="alert alert-<?php echo $_SESSION['delete']['operation'] ? 'success' : 'danger' ?>">
+            <h6 class="m-4 font-weight-bold text-white"><?php echo $_SESSION['delete']['messageOperation'] ?? "" ?></h6>
+        </div>
+    </div>
+</div>
+<?php }} ?>
 <!--Filtros-->
 <div class="row">
     <div class="col-12">
@@ -108,7 +124,7 @@
                     </div>
                     <div class="col-6">
                         <div class="m-0 font-weight-bold justify-content-end">
-                            <a href="<?php echo $_ENV['host.folder'] . 'users-filter/new'?>"
+                            <a href="<?php echo $_ENV['host.folder'] . 'users-filter/new' ?>"
                                class="btn btn-primary ml-1 float-right"> Nuevo
                                 Usuario <i class="fas fa-plus-circle"></i></a>
                         </div>
@@ -122,33 +138,33 @@
                             <th>
                                 <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 1) ? '-' : ''); ?>1">Nombre
                                     usuario</a>
-                                    <?php if (abs($order) == 1) {
-                                        ?><i
+                                <?php if (abs($order) == 1) {
+                                    ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
-                                    } ?></th>
+                                } ?></th>
                             <th>
                                 <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 2) ? '-' : ''); ?>2">Salario
                                     Bruto</a><?php if (abs($order) == 2) {
-                                        ?><i
+                                    ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
-                                             } ?></th>
+                                } ?></th>
                             <th>
                                 <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 3) ? '-' : ''); ?>3">Retención
                                     IRPF</a><?php if (abs($order) == 3) {
-                                        ?><i
+                                    ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
-                                            } ?></th>
+                                } ?></th>
                             <th>Salario Neto</th>
                             <th>
                                 <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 4) ? '-' : ''); ?>4">Rol</a><?php if (abs($order) == 4) {
                                     ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
-                                         } ?></th>
+                                } ?></th>
                             <th>
                                 <a href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGet . 'page=' . $page . '&order=' . (($order == 5) ? '-' : ''); ?>5">País</a><?php if (abs($order) == 5) {
                                     ?><i
                                     class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php
-                                         } ?></th>
+                                } ?></th>
                             <th>Opciones</th>
                         </tr>
                         </thead>
@@ -162,8 +178,12 @@
                                 <td><?php echo $usuario['nombre_rol'] ?></td>
                                 <td><?php echo $usuario['country_name'] ?></td>
                                 <td>
-                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/edit/' . $usuario['username']?>" class="btn btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Editar Usuario"><i class="fas fa-edit"></i></a>
-                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/delete/' . $usuario['username']?>" class="btn btn-danger ml-1" data-toggle="tooltip" data-placement="top" title="Borrar Usuario"><i class="fas fa-trash"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/edit/' . $usuario['username'] ?>"
+                                       class="btn btn-success ml-1" data-toggle="tooltip" data-placement="top"
+                                       title="Editar Usuario"><i class="fas fa-edit"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/delete/' . $usuario['username'] ?>"
+                                       class="btn btn-danger ml-1" data-toggle="tooltip" data-placement="top"
+                                       title="Borrar Usuario"><i class="fas fa-trash"></i></a>
 
                                 </td>
                             </tr>
@@ -176,42 +196,44 @@
                     <nav aria-label="Navegacion por paginas">
                         <ul class="pagination justify-content-center">
                             <?php if ($page > 1) { ?>
-                            <li class="page-item">
-                                <a class="page-link"
-                                   href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=1'?>"
-                                   aria-label="First">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">First</span>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link"
-                                   href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=' . ($page - 1) ?>"
-                                   aria-label="Previous">
-                                    <span aria-hidden="true">&lt;</span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                            </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=1' ?>"
+                                       aria-label="First">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">First</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=' . ($page - 1) ?>"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&lt;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
                             <?php } ?>
                             <li class="page-item active">
                                 <a class="page-link"
-                                   href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=' . $page?>"><?php echo $page; ?></a>
+                                   href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=' . $page ?>"><?php echo $page; ?></a>
                             </li>
                             <?php if ($page < $maxPages) { ?>
-                            <li class="page-item">
-                                <a class="page-link" href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=' . ($page + 1) ?>" aria-label="Next">
-                                    <span aria-hidden="true">&gt;</span>
-                                    <span class="sr-only">Next</span>
-                            </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link"
-                                   href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=' . $maxPages ?>"
-                                   aria-label="Last">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    <span class="sr-only">Last</span>
-                                </a>
-                            </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=' . ($page + 1) ?>"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&gt;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="<?php echo $_ENV['host.folder'] . 'users-filter?' . $copiaGetPage . 'page=' . $maxPages ?>"
+                                       aria-label="Last">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Last</span>
+                                    </a>
+                                </li>
 
                             <?php } ?>
                         </ul>

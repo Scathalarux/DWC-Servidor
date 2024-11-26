@@ -23,12 +23,12 @@ class PreferenciasUsuario extends BaseController
             'titulo' => 'Preferencias Usuario',
             'temas' => ['claro', 'oscuro']
         ];
-        if (isset($_POST['theme-button'])) {
+/*        if (isset($_POST['theme-button'])) {
             if (!isset($_POST['tema'])) {
                 $data['temaElegido'] = $_POST['tema'];
                 setcookie("theme", $data['temaElegido'], time() + (86400 * 365));
             }
-        }
+        }*/
         if (isset($_POST['username-button'])) {
             if (!isset($_POST['username']) && mb_strlen($_POST['username']) > 0 && mb_strlen($_POST['username']) <= 50) {
                 $_SESSION['username'] = htmlspecialchars($_POST['username']);

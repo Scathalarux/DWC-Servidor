@@ -129,6 +129,10 @@ class UsuariosController extends BaseController
             $data['copiaGet'] .= '&';
         }
 
+        //Comprobamos si hay mensaje de error/exito a través de la sesión
+        if (isset($_SESSION['delete']['message'])) {
+            $data
+        }
 
         //Usuarios obtenidos con los filtros, la ordenación y el tamaño del listado
         $usuarios = $model->getUsersFilteredPage($_GET, $order, self::DEFAULT_SIZE_PAGE, $page);
@@ -457,8 +461,27 @@ class UsuariosController extends BaseController
         }
     }
 
-    /*public function deleteUsuario(string $username): bool
+    public function deleteUsuario(string $username): void
     {
-    }*/
+        $model = new UsuarioModel();
+        $usuario = $model->getUsuarioUsername($username);
+        //Usuario correcto
+        if (is_null($usuario) || $usuario === false) {
+            $_SESSION['flash']['messageType'] = false;
+            $_SESSION['flash']['message'] = "El usuario no existe";
+        } else {
+            $_SESSION['flash']['username'] = true;
+            //Operacion correcta
+            if ($model->deleteUsuario($username)) {
+                $_SESSION['flash']['messageType'] = true;
+                $_SESSION['flash']['message'] = "Operación realizada correctamente";
+            } else {
+                $_SESSION['flash']['messageType'] = false;
+                $_SESSION['flash']['message'] = "No se ha podido realizar la operación correctamente";
+            }
+        }
 
+
+        header('Location: /users-filter');
+    }
 }

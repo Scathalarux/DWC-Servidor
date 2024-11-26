@@ -153,6 +153,15 @@ class FrontController
             'post'
         );
         Route::add(
+            '/users-filter/delete/([\p{L}\p{N}_]{3,50})',
+            function ($username) {
+                $controlador = new UsuariosController();
+                $controlador->deleteUsuario($username);
+            },
+            'get'
+        );
+
+        Route::add(
             '/preferenciasUsuario',
             function () {
                 $controlador = new PreferenciasUsuario();
