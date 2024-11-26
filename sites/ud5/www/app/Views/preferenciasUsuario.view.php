@@ -12,14 +12,8 @@ declare(strict_types=1);
                     <h6 class="m-0 font-weight-bold text-primary">Cambiar Tema</h6>
                 </div>
                 <div class="col-12 col-lg-6 m-3">
-                <label for="tema">Tema:</label>
-                <select name="tema" id="tema" class="form-control select2"
-                        data-placeholder="Tema" required>
-                    <?php foreach ($temas as $tema) { ?>
-                        <option value="<?php echo $tema; ?>" <?php echo (isset($input['tema']) && $tema == $input['tema']) ? 'selected' : ''; ?>>
-                            <?php echo ucfirst($tema) ?></option>
-                    <?php } ?>
-                </select>
+                    <input type="checkbox" class="form-check-input" id="tema" name="tema"  <?php echo (isset($_COOKIE['theme']) && $_COOKIE['theme']) ? 'checked' : ''; ?>>
+                    <label for="tema">Tema Oscuro</label>
                 </div>
                 <div class="card-footer">
                     <div class="col-12 text-right">
@@ -42,7 +36,7 @@ declare(strict_types=1);
                 </div>
                 <div class="card-footer">
                     <div class="col-12 text-right">
-                        <input type="submit" value="Aplicar tema" name="username-button" class="btn btn-primary ml-2"/>
+                        <input type="submit" value="Aplicar nombre" name="username-button" class="btn btn-primary ml-2"/>
                     </div>
                 </div>
             </form>

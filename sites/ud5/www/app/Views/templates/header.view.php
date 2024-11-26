@@ -7,7 +7,8 @@
     <title>AdminLTE 3 | Dashboard</title>
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
@@ -40,10 +41,10 @@
     }
     ?>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed <?php echo isset($_COOKIE['theme']) && $_COOKIE['theme'] == "oscuro" ? "dark-mode" : ""; ?>">
+<body class="hold-transition sidebar-mini layout-fixed <?php echo isset($_COOKIE['theme']) && $_COOKIE['theme'] ? "dark-mode" : ""; ?>">
 <div class="wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand <?php echo isset($_COOKIE['theme']) && $_COOKIE['theme'] == "claro" ? "navbar-white navbar-light" : "navbar-dark" ?>">
+    <nav class="main-header navbar navbar-expand <?php echo isset($_COOKIE['theme']) && $_COOKIE['theme'] ? "navbar-dark" : "navbar-white navbar-light"; ?>">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item">
@@ -72,7 +73,8 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a href="/" class="brand-link">
-            <img src="assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <img src="assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                 style="opacity: .8">
             <span class="brand-text font-weight-light">DWES App</span>
         </a>
 
@@ -84,7 +86,8 @@
                     <img src="assets/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block"><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : "Usuario"; ?></a>
+                    <a href="#"
+                       class="d-block"><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : "Usuario"; ?></a>
                 </div>
             </div>
             <?php
@@ -107,19 +110,19 @@
                     <?php
 
                     if (isset($breadcrumb) && is_array($breadcrumb)) {
-                        ?>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <?php
+                    ?>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <?php
 
-                                foreach ($breadcrumb as $b) {
-                                    ?>
-                                    <li class="breadcrumb-item"><?php echo $b; ?></li>
-                                    <?php
-                                }?>
-                            </ol>
-                        </div><!-- /.col -->
-                        <?php
+                            foreach ($breadcrumb as $b) {
+                            ?>
+                            <li class="breadcrumb-item"><?php echo $b; ?></li>
+                            <?php
+                            } ?>
+                        </ol>
+                    </div><!-- /.col -->
+                    <?php
                     }
                     ?>
                 </div><!-- /.row -->

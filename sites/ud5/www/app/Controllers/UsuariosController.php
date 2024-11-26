@@ -129,10 +129,6 @@ class UsuariosController extends BaseController
             $data['copiaGet'] .= '&';
         }
 
-        //Comprobamos si hay mensaje de error/exito a través de la sesión
-        if (isset($_SESSION['delete']['message'])) {
-            $data
-        }
 
         //Usuarios obtenidos con los filtros, la ordenación y el tamaño del listado
         $usuarios = $model->getUsersFilteredPage($_GET, $order, self::DEFAULT_SIZE_PAGE, $page);
@@ -484,4 +480,5 @@ class UsuariosController extends BaseController
 
         header('Location: /users-filter');
     }
+
 }
