@@ -83,9 +83,9 @@ declare(strict_types=1);
                         </div>
                         <div class="card-footer">
                             <div class="col-12 text-right">
-                                <a href="<?php echo $_ENV['host.folder']; ?>users-filter/new" value="" name="reiniciar"
+                                <a href="<?php echo $_ENV['host.folder']; ?>users-filter" value="" name="reiniciar"
                                    class="btn btn-danger">Cancelar</a>
-                                <input type="submit" value="Añadir Usuario" class="btn btn-primary ml-2"/>
+                                <input type="submit" value="Guardar cambios" class="btn btn-primary ml-2"/>
                                 <!--Si no le introducimos el nombre al botón, no aparecerá su value en la URL-->
                             </div>
                         </div>

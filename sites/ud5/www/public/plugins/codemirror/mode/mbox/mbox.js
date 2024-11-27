@@ -12,9 +12,9 @@
 "use strict";
 
 var rfc2822 = [
-  "From", "Sender", "Reply-To", "To", "Cc", "Bcc", "Message-ID",
+  "From", "Sender", "Reply-To", "To", "Cc", "Bcc", "Mensaje-ID",
   "In-Reply-To", "References", "Resent-From", "Resent-Sender", "Resent-To",
-  "Resent-Cc", "Resent-Bcc", "Resent-Message-ID", "Return-Path", "Received"
+  "Resent-Cc", "Resent-Bcc", "Resent-Mensaje-ID", "Return-Path", "Received"
 ];
 var rfc2822NoEmail = [
   "Date", "Subject", "Comments", "Keywords", "Resent-Date"

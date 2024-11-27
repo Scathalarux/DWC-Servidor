@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
+use Com\Daw2\Libraries\Mensaje;
 use Com\Daw2\Models\AuxCountriesModel;
 use Com\Daw2\Models\AuxRolModel;
 use Com\Daw2\Models\UsuarioModel;
@@ -60,11 +61,11 @@ class UsuariosController extends BaseController
      */
     public function doFilterUsuarios(): void
     {
-        $data = [];
         $data = [
             'titulo' => 'Todos los usuarios',
             'breadcrumb' => array('Usuarios', 'Listado de usuarios')
         ];
+
         //obtenemos el modelo de la tabla usuarios
         $model = new UsuarioModel();
         //obtenemos el modelo y los datos de la tabla aux_rol
@@ -132,6 +133,7 @@ class UsuariosController extends BaseController
 
         //Usuarios obtenidos con los filtros, la ordenación y el tamaño del listado
         $usuarios = $model->getUsersFilteredPage($_GET, $order, self::DEFAULT_SIZE_PAGE, $page);
+
 
         $data['input'] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['usuarios'] = $this->calcularNeto($usuarios);
@@ -272,36 +274,40 @@ class UsuariosController extends BaseController
     /**
      * Función que añade un usuario a la base de datos
      * @return void
+     * @throws Exception
      */
     public function addUsuario(): void
     {
-        if (!empty($_POST)) {
-            $errores = $this->checkFormUsuario($_POST);
 
-            if ($errores !== []) {
-                $insertData = $_POST;
-                //añadimos un elemento para saber si el usuario está activo o no
-                $insertData['activo'] = isset($_POST['activo']) ? 1 : 0;
-                //controlamos que pueda haber valores null (salario y retencionIRPF)
-                foreach ($insertData as $key => $value) {
-                    if (empty($value)) {
-                        $insertData[$key] = null;
-                    }
+        $errores = $this->checkFormUsuario($_POST);
+
+        if ($errores === []) {
+            $insertData = $_POST;
+            //añadimos un elemento para saber si el usuario está activo o no
+            $insertData['activo'] = isset($_POST['activo']) ? 1 : 0;
+            //controlamos que pueda haber valores null (salario y retencionIRPF)
+            foreach ($insertData as $key => $value) {
+                if ($value === '') {
+                    $insertData[$key] = null;
                 }
-                //obtenemos el modelo de la tabla usuarios
-                $model = new UsuarioModel();
-                //realizamos la llamada a la query para añadirlo
-                if ($model->addUsuario($insertData)) {
-                    header('Location: /users-filter');
-                } else {
-                    $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                    $errores['username'] = "No se ha podido realizar el guardado";
-                    $this->showAddUsuario($input, $errores);
-                }
+            }
+            //obtenemos el modelo de la tabla usuarios
+            $model = new UsuarioModel();
+            //realizamos la llamada a la query para añadirlo
+            if ($model->addUsuario($insertData)) {
+                $message = new Mensaje("Usuario añadido correctamente", Mensaje::SUCCESS, 'Éxito');
+                header('Location: /users-filter');
             } else {
                 $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $errores['username'] = "No se ha podido realizar el guardado";
                 $this->showAddUsuario($input, $errores);
+                $message = new Mensaje("No se ha podido añadir al usuario", Mensaje::ERROR, 'Error');
             }
+
+            $this->addFlashMessage($message);
+        } else {
+            $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $this->showAddUsuario($input, $errores);
         }
     }
 
@@ -373,7 +379,7 @@ class UsuariosController extends BaseController
                 $errores['id_rol'] = "Rol no valido";
             } else {
                 $auxRolModel = new AuxRolModel();
-                $rol = $auxRolModel->find($datos['id_rol']);
+                $rol = $auxRolModel->find((int)$datos['id_rol']);
                 if (is_null($rol)) {
                     $errores['id_rol'] = "Rol no valido";
                 }
@@ -388,7 +394,7 @@ class UsuariosController extends BaseController
                 $errores['id_country'] = "Pais no válido";
             } else {
                 $auxCountriesModel = new AuxCountriesModel();
-                $country = $auxCountriesModel->find($datos['id_country']);
+                $country = $auxCountriesModel->find((int)$datos['id_country']);
                 if (is_null($country)) {
                     $errores['id_country'] = "País no valido";
                 }
@@ -429,31 +435,33 @@ class UsuariosController extends BaseController
         if (is_null($usuario)) {
             header('Location: /users-filter');
         }
-        if (!empty($_POST)) {
+
             $errores = $this->checkFormUsuario($_POST);
 
-            if ($errores !== []) {
-                $insertData = $_POST;
-                //añadimos un elemento para saber si el usuario está activo o no
-                $insertData['activo'] = isset($_POST['activo']) ? 1 : 0;
-                //controlamos que pueda haber valores null (salario y retencionIRPF)
-                foreach ($insertData as $key => $value) {
-                    if (empty($value)) {
-                        $insertData[$key] = null;
-                    }
+        if ($errores === []) {
+            $insertData = $_POST;
+            //añadimos un elemento para saber si el usuario está activo o no
+            $insertData['activo'] = isset($_POST['activo']) ? 1 : 0;
+            //controlamos que pueda haber valores null (salario y retencionIRPF)
+            foreach ($insertData as $key => $value) {
+                if ($value === '') {
+                    $insertData[$key] = null;
                 }
-                //realizamos la llamada a la query para añadirlo
-                if ($model->editUsuario($insertData, $username)) {
-                    header('Location: /users-filter');
-                } else {
-                    $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                    $errores['username'] = "No se ha podido realizar el guardado";
-                    $this->showEditUsuario($username, $input, $errores);
-                }
+            }
+            //realizamos la llamada a la query para añadirlo
+            if ($model->editUsuario($insertData, $username)) {
+                $message = new Mensaje("Usuario editado correctamente", Mensaje::SUCCESS, 'Éxito');
+                header('Location: /users-filter');
             } else {
+                $message = new Mensaje("Usuario editado correctamente", Mensaje::SUCCESS, 'Éxito');
                 $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $errores['username'] = "No se ha podido realizar el guardado";
                 $this->showEditUsuario($username, $input, $errores);
             }
+            $this->addFlashMessage($message);
+        } else {
+            $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $this->showEditUsuario($username, $input, $errores);
         }
     }
 
@@ -462,23 +470,17 @@ class UsuariosController extends BaseController
         $model = new UsuarioModel();
         $usuario = $model->getUsuarioUsername($username);
         //Usuario correcto
-        if (is_null($usuario) || $usuario === false) {
-            $_SESSION['flash']['messageType'] = false;
-            $_SESSION['flash']['message'] = "El usuario no existe";
+        if ($usuario === [] || $usuario === false) {
+            $message = new Mensaje('El usuario no existe', Mensaje::ERROR, 'Error');
         } else {
-            $_SESSION['flash']['username'] = true;
             //Operacion correcta
             if ($model->deleteUsuario($username)) {
-                $_SESSION['flash']['messageType'] = true;
-                $_SESSION['flash']['message'] = "Operación realizada correctamente";
+                $message = new Mensaje('Operación realizada correctamente', Mensaje::SUCCESS, 'Éxito');
             } else {
-                $_SESSION['flash']['messageType'] = false;
-                $_SESSION['flash']['message'] = "No se ha podido realizar la operación correctamente";
+                $message = new Mensaje('No se ha podido eliminar el usuario', Mensaje::ERROR, 'Error');
             }
         }
-
-
+        $this->addFlashMessage($message);
         header('Location: /users-filter');
     }
-
 }

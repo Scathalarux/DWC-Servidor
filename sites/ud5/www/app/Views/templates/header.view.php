@@ -110,19 +110,19 @@
                     <?php
 
                     if (isset($breadcrumb) && is_array($breadcrumb)) {
-                    ?>
+                        ?>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <?php
 
                             foreach ($breadcrumb as $b) {
-                            ?>
+                                ?>
                             <li class="breadcrumb-item"><?php echo $b; ?></li>
-                            <?php
+                                <?php
                             } ?>
                         </ol>
                     </div><!-- /.col -->
-                    <?php
+                        <?php
                     }
                     ?>
                 </div><!-- /.row -->
@@ -132,3 +132,16 @@
 
         <section class="content">
             <div class="container-fluid">
+
+                <!--Comprobamos la existencia de errores-->
+                <?php if (isset($flashMessages) && is_array($flashMessages)) {
+                    foreach ($flashMessages as $flashMessage) {?>
+                        <div class="alert alert-<?php echo $flashMessage->getTipoMensaje(); ?> alert-dismissible fade show" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <?php if ($flashMessage->getTitulo() !== '') {?>
+                            <h5 class="m-2 font-weight-bold text-white"><?php echo $flashMessage->getTitulo(); ?></h5>
+                        <?php } ?>
+                            <p class="m-2 text-white"><?php echo $flashMessage->getTexto(); ?></p>
+                        </div>
+                    <?php }
+                } ?>

@@ -6,6 +6,7 @@ namespace Com\Daw2\Core;
 
 use Com\Daw2\Controllers\PreferenciasUsuario;
 use Com\Daw2\Controllers\CsvController;
+use Com\Daw2\Controllers\ProductosController;
 use Com\Daw2\Controllers\UserController;
 use Com\Daw2\Controllers\UsuariosController;
 use Com\Daw2\Core\Controllers\UsuarController;
@@ -198,6 +199,14 @@ class FrontController
             function () {
                 $controlador = new UsuariosController();
                 $controlador->showUsersCarlos();
+            },
+            'get'
+        );
+        Route::add(
+            '/productos',
+            function () {
+                $controlador = new ProductosController();
+                $controlador->showProducts();
             },
             'get'
         );

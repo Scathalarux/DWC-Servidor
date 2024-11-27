@@ -1,20 +1,4 @@
-<?php if (isset($_SESSION['delete'])) { ?>
-<div class="row">
-    <?php if (isset($_SESSION['delete']['username'])) { ?>
-        <div class="col-12 ">
-            <div class="alert alert-<?php echo $_SESSION['delete']['username'] ? 'success' : 'danger' ?>">
-                <h6 class="m-4 font-weight-bold text-white"><?php echo $_SESSION['delete']['messageUser'] ?? "" ?></h6>
-            </div>
-        </div>
-    <?php }
-    if (isset($_SESSION['delete']['operation'])){ ?>
-    <div class="col-12 ">
-        <div class="alert alert-<?php echo $_SESSION['delete']['operation'] ? 'success' : 'danger' ?>">
-            <h6 class="m-4 font-weight-bold text-white"><?php echo $_SESSION['delete']['messageOperation'] ?? "" ?></h6>
-        </div>
-    </div>
-</div>
-<?php }} ?>
+
 <!--Filtros-->
 <div class="row">
     <div class="col-12">
