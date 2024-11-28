@@ -101,9 +101,9 @@ declare(strict_types=1);
                         <th>Categoría</th>
                         <th>Proveedor</th>
                         <th>Stock</th>
-                        <th>Coste</th>
-                        <th>Margen</th>
-                        <th>PVP</th>
+                        <th class="d-none d-lg-table-cell">Coste</th>
+                        <th class="d-none d-lg-table-cell">Margen</th>
+                        <th class="d-none d-lg-table-cell">PVP</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -114,9 +114,9 @@ declare(strict_types=1);
                                 <td><?php echo $producto['nombre_categoria'] ?></td>
                                 <td><?php echo $producto['nombre_proveedor'] ?></td>
                                 <td><?php echo $producto['stock'] ?></td>
-                                <td><?php echo number_format($producto['coste'], 2, ',') ?></td>
-                                <td><?php echo $producto['margen'] ?></td>
-                                <td><?php echo $producto['pvp'] ?></td>
+                                <td class="d-none d-lg-table-cell"><?php echo $producto['coste'] ?></td>
+                                <td class="d-none d-lg-table-cell"><?php echo $producto['margen'] ?></td>
+                                <td class="d-none d-lg-table-cell"><?php echo $producto['pvp'] ?></td>
                             </tr>
                     <?php } ?>
                     </tbody>

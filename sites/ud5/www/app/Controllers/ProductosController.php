@@ -16,7 +16,8 @@ class ProductosController extends BaseController
             'breadcrumb' => ['Inicio','Productos']
         ];
         $modelo = new ProductoModel();
-        $productos = $modelo->getFilteredProducts();
+        $productos = $modelo->getFilteredProducts($_GET);
+
         $data['productos'] = $productos;
 
         $this->view->showViews(array('templates/header.view.php', 'productos.view.php', 'templates/footer.view.php'), $data);
@@ -25,12 +26,9 @@ class ProductosController extends BaseController
 
     public function getOrder(): int
     {
-
     }
 
     public function getPage(): int
     {
-
     }
 }
-
