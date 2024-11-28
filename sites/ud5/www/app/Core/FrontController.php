@@ -206,7 +206,7 @@ class FrontController
             '/productos',
             function () {
                 $controlador = new ProductosController();
-                $controlador->showProducts();
+                $controlador->doFilteredProducts();
             },
             'get'
         );

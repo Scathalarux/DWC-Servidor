@@ -13,15 +13,37 @@ class ProductoModel extends BaseDbModel
                                 JOIN proveedor pv ON pv.cif=pr.proveedor
                                 LEFT JOIN categoria c ON c.id_categoria=pr.id_categoria";
 
+    public const ALTER_TABLE_PVP = "CREATE TABLE";
+
+
+    /**
+     * Modifica la tabla para poder añadir la columna pvp
+     */
+    public function alterTable(): void
+    {
+    }
 
     /**
      * Función que obtiene los datos de los productos
      * @return array
      */
-    public function getProducts(): array
+    public function getAllProducts(): array
     {
+
         $sql = self::SELECT_BASE;
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    public function getFilteredProducts(array $datos): array
+    {
+        $sql = self::SELECT_BASE;
+        $stmt = $this->pdo->query($sql);
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getFiltros(array $datos): array
+    {
+        
     }
 }

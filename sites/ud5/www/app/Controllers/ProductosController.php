@@ -9,16 +9,28 @@ use Com\Daw2\Models\ProductoModel;
 
 class ProductosController extends BaseController
 {
-    public function showProducts(): void
+    public function doFilteredProducts(): void
     {
         $data = [
           'titulo' => 'Productos',
             'breadcrumb' => ['Inicio','Productos']
         ];
         $modelo = new ProductoModel();
-        $productos = $modelo->getProducts();
+        $productos = $modelo->getFilteredProducts();
         $data['productos'] = $productos;
 
         $this->view->showViews(array('templates/header.view.php', 'productos.view.php', 'templates/footer.view.php'), $data);
     }
+
+
+    public function getOrder(): int
+    {
+
+    }
+
+    public function getPage(): int
+    {
+
+    }
 }
+
