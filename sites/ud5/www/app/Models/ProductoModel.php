@@ -14,7 +14,12 @@ class ProductoModel extends BaseDbModel
                                 JOIN proveedor pv ON pv.cif=pr.proveedor
                                 LEFT JOIN categoria c ON c.id_categoria=pr.id_categoria";
 
+    public const SELECT_BASE_COUNT = "SELECT COUNT(*)
+                                        FROM producto pr
+                                        JOIN proveedor pv ON pv.cif=pr.proveedor
+                                        LEFT JOIN categoria c ON c.id_categoria=pr.id_categoria";
     public const ALTER_TABLE_PVP = "CREATE TABLE";
+    public const COLUMNS_ORDER = ['codigo', 'nombreProducto', 'categoria', 'nombreProveedor', 'stock', 'coste', 'margen', 'pvp'];
 
 
     /**
@@ -53,6 +58,30 @@ class ProductoModel extends BaseDbModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getMaxPages(array $data, int $sizePages): int
+    {
+        //Obtenemos las condiciones (filtros) y las variables asociadas
+        $filtrosQuery = $this->getFiltrosQuery($data);
+
+        //calculamos cuantos registros hay
+        //si hay filtros los procesamos
+        if (!empty($filtrosQuery['condiciones'])) {
+            $query = self::SELECT_BASE_COUNT . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']);
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($filtrosQuery['vars']);
+        } else {
+            //si no hay filtros mostramos todos los usuarios
+            $stmt = $this->pdo->query(self::SELECT_BASE_COUNT);
+        }
+
+        $numFilas = $stmt->fetchColumn(0);
+
+        //dividimos entre el tamaño de cada página y nos quedamos con el ceil
+        $maxPages = (int)ceil($numFilas / $sizePages);
+
+        return $maxPages;
+    }
+
     public function getFiltrosQuery(array $datos): array
     {
         $resultado = [];
@@ -89,7 +118,7 @@ class ProductoModel extends BaseDbModel
 
         //proveedor (selector normal)
         if (!empty($datos['proveedor'])) {
-                        $condiciones[] = "pr.proveedor = :proveedor";
+            $condiciones[] = "pr.proveedor = :proveedor";
             $vars['proveedor'] = $datos['proveedor'];
         }
 
@@ -121,5 +150,32 @@ class ProductoModel extends BaseDbModel
         $resultado['vars'] = $vars;
 
         return $resultado;
+    }
+
+    public function getFilteredPage(array $data, int $order, int $sizePage, int $page): array
+    {
+        $filtrosQuery = $this->getFiltrosQuery($data);
+
+        $sentido = ($order < 0) ? "DESC" : "ASC";
+
+        $order = abs($order);
+
+        $offset = ($page - 1) * $sizePage;
+
+        if (!empty($filtrosQuery['condiciones'])) {
+            $query = self::SELECT_BASE
+                . " WHERE " . implode(" AND ", $filtrosQuery['condiciones'])
+                . " ORDER BY " . $order . " " . $sentido
+                . " LIMIT " . $offset . "," . $sizePage;
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($filtrosQuery['vars']);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $query = self::SELECT_BASE
+                . " ORDER BY " . $order . " " . $sentido
+                . " LIMIT " . $offset . "," . $sizePage;
+            $stmt = $this->pdo->query($query);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 }

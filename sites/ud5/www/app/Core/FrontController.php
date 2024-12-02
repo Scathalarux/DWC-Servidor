@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Core;
 
+use Com\Daw2\Controllers\ErroresController;
+use Com\Daw2\Controllers\InicioController;
 use Com\Daw2\Controllers\PreferenciasUsuario;
 use Com\Daw2\Controllers\CsvController;
 use Com\Daw2\Controllers\ProductosController;
@@ -24,7 +26,7 @@ class FrontController
         Route::add(
             '/',
             function () {
-                $controlador = new \Com\Daw2\Controllers\InicioController();
+                $controlador = new InicioController();
                 $controlador->index();
             },
             'get'
@@ -251,7 +253,7 @@ class FrontController
         Route::add(
             '/demo-proveedores',
             function () {
-                $controlador = new \Com\Daw2\Controllers\InicioController();
+                $controlador = new InicioController();
                 $controlador->demo();
             },
             'get'
@@ -259,14 +261,14 @@ class FrontController
 
         Route::pathNotFound(
             function () {
-                $controller = new \Com\Daw2\Controllers\ErroresController();
+                $controller = new ErroresController();
                 $controller->error404();
             }
         );
 
         Route::methodNotAllowed(
             function () {
-                $controller = new \Com\Daw2\Controllers\ErroresController();
+                $controller = new ErroresController();
                 $controller->error405();
             }
         );
