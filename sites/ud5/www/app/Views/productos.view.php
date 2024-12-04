@@ -3,157 +3,235 @@
 declare(strict_types=1);
 
 ?>
-<!--Inicio HTML -->
+<!--Filtros-->
 <div class="row">
     <div class="col-12">
         <div class="card shadow mb-4">
-            <form method="get" action="<?php echo $_ENV['host.folder'] ?>productos">
+            <form method="get" action="<?php echo $_ENV['host.folder']; ?>users-filter?">
 <!--                <input type="hidden" name="order" value="<?php /*echo $order */?>"/>
--->                <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <input type="hidden" name="page" value="<?php /*echo $page */?>"/>-->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Filtros</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                     <!--<form action="./?sec=formulario" method="post">                   -->
                     <div class="row">
-                        <div class="col-12 col-lg-4">
-                            <div class="mb-3">
-                                <label for="codigo">Código artículo:</label>
-                                <input type="text" class="form-control" name="codigo" id="codigo" value="" />
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="codigo">Codigo producto:</label>
+                                <input type="text" class="form-control" name="codigo" id="codigo"
+                                       value="<?php echo $input['codigo'] ?? ''; ?>"/>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-4">
-                            <div class="mb-3">
-                                <label for="nombre">Nombre artículo:</label>
-                                <input type="text" class="form-control" name="nombre" id="nombre" value="" />
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="nombre">Nombre producto:</label>
+                                <input type="text" class="form-control" name="nombre" id="nombre"
+                                       value="<?php echo $input['nombre'] ?? ''; ?>"/>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-3">
-                            <div class="mb-3">
-                                <label for="id_categoria">Categoría:</label>
-                                <select name="id_categoria[]" id="id_categoria" class="form-control select2" data-placeholder="Categoría" multiple>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="categoria">Categoria producto:</label>
+                                <select name="categoria[]" class="form-control" multiple>
                                     <option value="">-</option>
+                                    <?php /*foreach ($categorias as $categoria) { */?><!--
+                                        <option value="<?php /*echo $categoria['id_categoria']; */?>"
+                                            <?php /*echo isset($input['categoria']) && $categoria['id_categoria] === $input['categoria'] ? 'selected' : ''; */?>>
+                                            <?php /*echo ucfirst($proveedor['nombre']) */?></option>
+                                    --><?php /*} */?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="proveedor">Proveedor producto:</label>
+                                <select name="proveedor" class="form-control">
+                                    <option value="">-</option>
+                                    <?php /*foreach ($proveedores as $proveedor) { */?><!--
+                                        <option value="<?php /*echo $proveedor['cif']; */?>"
+                                            <?php /*echo isset($input['proveedor']) && $proveedor['cif'] === $input['proveedor'] ? 'selected' : ''; */?>>
+                                            <?php /*echo ucfirst($proveedor['nombre']) */?></option>
+                                    --><?php /*} */?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
-                            <div class="mb-3">
-                                <label for="proveedor">Proveedor:</label>
-                                <select name="proveedor" id="proveedor" class="form-control" data-placeholder="Proveedor">
-                                    <option value="">-</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-4">
-                            <div class="mb-3">
-                                <label for="stock">Stock:</label>
+                            <div class="form-group">
+                                <label for="stock">Stock producto:</label>
                                 <div class="row">
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="min_stock" id="min_stock" value="" placeholder="Mí­nimo"/>
+                                        <input type="text" class="form-control" name="minStock" id="minStock"
+                                               value="<?php echo $input['minStock'] ?? ''; ?>"
+                                               placeholder="Mí­nimo"/>
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="max_stock" id="max_stock" value="" placeholder="Máximo" />
+                                        <input type="text" class="form-control" name="maxStock" id="maxStock"
+                                               value="<?php echo $input['maxStock'] ?? ''; ?>"
+                                               placeholder="Máximo"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
-                            <div class="mb-3">
-                                <label for="pvp">PVP:</label>
+                            <div class="form-group">
+                                <label for="pvp">PVP producto:</label>
                                 <div class="row">
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="min_pvp" id="min_pvp" value="" placeholder="Mí­nimo"/>
+                                        <input type="text" class="form-control" name="minPvp" id="minPvp"
+                                               value="<?php echo $input['minPvp'] ?? ''; ?>"
+                                               placeholder="Mí­nimo"/>
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="max_pvp" id="max_pvp" value="" placeholder="Máximo" />
+                                        <input type="text" class="form-control" name="maxPvp" id="maxPvp"
+                                               value="<?php echo $input['maxPvp'] ?? ''; ?>"
+                                               placeholder="Máximo"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="col-12 text-right">
-                        <a href="<?php echo$_ENV['host.folder']; ?>productos" value="" name="reiniciar" class="btn btn-danger">Reiniciar filtros</a>
-                        <input type="submit" value="Aplicar filtros" name="enviar" class="btn btn-primary ml-2"/>
+                        <div class="col-12 col-lg-4">
+                            <div class="form-group">
+                                <label for="cotizacion">Cotización:</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" name="cotizacionMinimo"
+                                               id="cotizacionMinimo"
+                                               value="<?php echo $input['cotizacionMinimo'] ?? ''; ?>"
+                                               placeholder="Mí­nimo"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" name="cotizacionMaximo"
+                                               id="cotizacionMaximo"
+                                               value="<?php echo $input['cotizacionMaximo'] ?? ''; ?>"
+                                               placeholder="Máximo"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="col-12 text-right">
+                                <a href="<?php echo $_ENV['host.folder']; ?>users-filter" value="" name="reiniciar"
+                                   class="btn btn-danger">Reiniciar filtros</a>
+                                <input type="submit" value="Aplicar filtros" class="btn btn-primary ml-2"/>
+                                <!--Si no le introducimos el nombre al botón, no aparecerá su value en la URL-->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+</div>
+<!-- DataTables -->
+<div class="row">
     <div class="col-12">
-        <div class="card shadow mb-4">
-            <?php if(isset($productos)) ?>
-            <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary"><?php echo $titulo ?></h6>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body" id="card_table">
-                <div id="button_container" class="mb-3"></div>
-                <!--<form action="./?sec=formulario" method="post">                   -->
-                <table id="tabladatos" class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Código<i class="fas fa-sort-amount-down-alt"></i></th>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Proveedor</th>
-                        <th>Stock</th>
-                        <th class="d-none d-lg-table-cell">Coste</th>
-                        <th class="d-none d-lg-table-cell">Margen</th>
-                        <th class="d-none d-lg-table-cell">PVP</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($productos as $producto){ ?>
-                            <tr>
-                                <td><?php echo $producto['codigo'] ?></td>
-                                <td><?php echo $producto['nombre'] ?></td>
-                                <td><?php echo $producto['nombre_categoria'] ?></td>
-                                <td><?php echo $producto['nombre_proveedor'] ?></td>
-                                <td><?php echo $producto['stock'] ?></td>
-                                <td class="d-none d-lg-table-cell"><?php echo $producto['coste'] ?></td>
-                                <td class="d-none d-lg-table-cell"><?php echo $producto['margen'] ?></td>
-                                <td class="d-none d-lg-table-cell"><?php echo $producto['pvp'] ?></td>
-                            </tr>
-                    <?php } ?>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer">
-                <nav aria-label="Navegacion por paginas">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item">
-                            <a class="page-link" href="/proveedores?page=1&order=1" aria-label="First">
-                                <span aria-hidden="true">&laquo;</span>
-                                <span class="sr-only">First</span>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="/proveedores?page=2&order=1" aria-label="Previous">
-                                <span aria-hidden="true">&lt;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
+        <?php
+        if (!empty($productos)) {
+            ?>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="col-6">
+                        <h6 class="m-0 font-weight-bold text-primary"><?php echo $titulo; ?></h6>
+                    </div>
+                    <div class="col-6">
+                        <div class="m-0 font-weight-bold justify-content-end">
+                            <a href="<?php echo $_ENV['host.folder'] . 'producto/new'?>"
+                               class="btn btn-primary ml-1 float-right"> Nuevo
+                                producto <i class="fas fa-plus-circle"></i></a>
+                        </div>
+                    </div>
+                </div>
 
-                        <li class="page-item active"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="/proveedores?page=4&order=1" aria-label="Next">
-                                <span aria-hidden="true">&gt;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="/proveedores?page=8&order=1" aria-label="Last">
-                                <span aria-hidden="true">&raquo;</span>
-                                <span class="sr-only">Last</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <div class="card-body" id="card_table">
+                    <table id="tabladatos" class="table table-striped datatable">
+                        <thead>
+                        <tr>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos&order='; ?>1">Código</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos&order='; ?>2">Nombre</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos&order='; ?>3">Categoría</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos&order='; ?>4">Proveedor</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos&order='; ?>5">Stock</a></th>
+                            <th class="d-none d-lg-table-cell"><a href="<?php echo $_ENV['host.folder'] . 'productos&order='; ?>6">Coste</a></th>
+                            <th class="d-none d-lg-table-cell"><a href="<?php echo $_ENV['host.folder'] . 'productos&order='; ?>7">Margen</a></th>
+                            <th class="d-none d-lg-table-cell"><a href="<?php echo $_ENV['host.folder'] . 'productos&order='; ?>8">PVP</a></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($usuarios as $usuario) { ?>
+                            <tr class="<?php echo !($usuario['activo']) ? 'table-danger' : '' ?>">
+                                <td><?php echo $usuario['username']; ?></td>
+                                <td><?php echo number_format($usuario['salarioBruto'], 2, ',', '.') ?></td>
+                                <td><?php echo number_format($usuario['retencionIRPF'], 2) ?>%</td>
+                                <td><?php echo str_replace([',', '.', '_'], ['_', ',', '.'], $usuario['salarioNeto']) ?></td>
+                                <td><?php echo $usuario['nombre_rol'] ?></td>
+                                <td><?php echo $usuario['country_name'] ?></td>
+                                <td>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/edit/' . $usuario['username']?>" class="btn btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Editar Usuario"><i class="fas fa-edit"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/delete/' . $usuario['username']?>" class="btn btn-danger ml-1" data-toggle="tooltip" data-placement="top" title="Borrar Usuario"><i class="fas fa-trash"></i></a>
+
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <nav aria-label="Navegacion por paginas">
+                        <ul class="pagination justify-content-center">
+                            <?php if ($page > 1) { ?>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href=""
+                                       aria-label="First">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">First</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href=""
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&lt;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                            <?php } ?>
+                            <li class="page-item active">
+                                <a class="page-link"
+                                   href=""><?php echo $page; ?></a>
+                            </li>
+                            <?php if ($page < $maxPages) { ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="" aria-label="Next">
+                                        <span aria-hidden="true">&gt;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href=""
+                                       aria-label="Last">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Last</span>
+                                    </a>
+                                </li>
+
+                            <?php } ?>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-        </div>
+
+        <?php } else {
+            ?>
+            <div class="alert alert-warning" role="alert">
+                No hay registros en la base de datos
+            </div>
+        <?php } ?>
     </div>
 </div>
+

@@ -9,6 +9,7 @@ use Com\Daw2\Controllers\InicioController;
 use Com\Daw2\Controllers\PreferenciasUsuario;
 use Com\Daw2\Controllers\CsvController;
 use Com\Daw2\Controllers\ProductosController;
+use Com\Daw2\Controllers\ProductosController2;
 use Com\Daw2\Controllers\UserController;
 use Com\Daw2\Controllers\UsuariosController;
 use Com\Daw2\Core\Controllers\UsuarController;

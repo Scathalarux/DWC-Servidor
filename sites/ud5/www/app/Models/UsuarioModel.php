@@ -293,7 +293,9 @@ class UsuarioModel extends BaseDbModel
 
         //si hay filtros los procesamos
         if (!empty($filtrosQuery['condiciones'])) {
-            $query = self::BASE_QUERY . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']) . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido;
+            $query = self::BASE_QUERY 
+                . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']) 
+                . " ORDER BY " . self::ORDER_COLUMNS[$order - 1] . ' ' . $sentido;
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($filtrosQuery['vars']);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
