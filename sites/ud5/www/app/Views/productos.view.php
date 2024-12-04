@@ -7,7 +7,7 @@ declare(strict_types=1);
 <div class="row">
     <div class="col-12">
         <div class="card shadow mb-4">
-            <form method="get" action="<?php echo $_ENV['host.folder']; ?>users-filter?">
+            <form method="get" action="<?php echo $_ENV['host.folder']; ?>productos">
 <!--                <input type="hidden" name="order" value="<?php /*echo $order */?>"/>
                 <input type="hidden" name="page" value="<?php /*echo $page */?>"/>-->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -34,13 +34,12 @@ declare(strict_types=1);
                         <div class="col-12 col-lg-6">
                             <div class="form-group">
                                 <label for="categoria">Categoria producto:</label>
-                                <select name="categoria[]" class="form-control" multiple>
-                                    <option value="">-</option>
-                                    <?php /*foreach ($categorias as $categoria) { */?><!--
-                                        <option value="<?php /*echo $categoria['id_categoria']; */?>"
-                                            <?php /*echo isset($input['categoria']) && $categoria['id_categoria] === $input['categoria'] ? 'selected' : ''; */?>>
-                                            <?php /*echo ucfirst($proveedor['nombre']) */?></option>
-                                    --><?php /*} */?>
+                                <select name="categoria[]" class="form-control select2" multiple>
+                                    <?php foreach ($categorias as $categoria) { ?>
+                                        <option value="<?php echo $categoria['id_categoria']; ?>"
+                                            <?php echo isset($input['categoria'])&& $categoria['id_categoria'] == $input['categoria'] ? 'selected' : ''; ?>>
+                                            <?php echo ucfirst($categoria['nombre_categoria'])?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -49,11 +48,11 @@ declare(strict_types=1);
                                 <label for="proveedor">Proveedor producto:</label>
                                 <select name="proveedor" class="form-control">
                                     <option value="">-</option>
-                                    <?php /*foreach ($proveedores as $proveedor) { */?><!--
-                                        <option value="<?php /*echo $proveedor['cif']; */?>"
-                                            <?php /*echo isset($input['proveedor']) && $proveedor['cif'] === $input['proveedor'] ? 'selected' : ''; */?>>
-                                            <?php /*echo ucfirst($proveedor['nombre']) */?></option>
-                                    --><?php /*} */?>
+                                    <?php foreach ($proveedores as $proveedor) { ?>
+                                        <option value="<?php echo $proveedor['cif']; ?>"
+                                            <?php echo isset($input['proveedor']) && $proveedor['cif'] === $input['proveedor'] ? 'selected' : ''; ?>>
+                                            <?php echo ucfirst($proveedor['nombre']) ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -91,29 +90,9 @@ declare(strict_types=1);
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-4">
-                            <div class="form-group">
-                                <label for="cotizacion">Cotización:</label>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <input type="text" class="form-control" name="cotizacionMinimo"
-                                               id="cotizacionMinimo"
-                                               value="<?php echo $input['cotizacionMinimo'] ?? ''; ?>"
-                                               placeholder="Mí­nimo"/>
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control" name="cotizacionMaximo"
-                                               id="cotizacionMaximo"
-                                               value="<?php echo $input['cotizacionMaximo'] ?? ''; ?>"
-                                               placeholder="Máximo"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
                         <div class="card-footer">
                             <div class="col-12 text-right">
-                                <a href="<?php echo $_ENV['host.folder']; ?>users-filter" value="" name="reiniciar"
+                                <a href="<?php echo $_ENV['host.folder']; ?>productos" value="" name="reiniciar"
                                    class="btn btn-danger">Reiniciar filtros</a>
                                 <input type="submit" value="Aplicar filtros" class="btn btn-primary ml-2"/>
                                 <!--Si no le introducimos el nombre al botón, no aparecerá su value en la URL-->
@@ -160,17 +139,20 @@ declare(strict_types=1);
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($usuarios as $usuario) { ?>
-                            <tr class="<?php echo !($usuario['activo']) ? 'table-danger' : '' ?>">
-                                <td><?php echo $usuario['username']; ?></td>
-                                <td><?php echo number_format($usuario['salarioBruto'], 2, ',', '.') ?></td>
-                                <td><?php echo number_format($usuario['retencionIRPF'], 2) ?>%</td>
-                                <td><?php echo str_replace([',', '.', '_'], ['_', ',', '.'], $usuario['salarioNeto']) ?></td>
-                                <td><?php echo $usuario['nombre_rol'] ?></td>
-                                <td><?php echo $usuario['country_name'] ?></td>
+                        <?php foreach ($productos as $producto) { ?>
+                            <tr>
+                                <td><?php echo $producto['codigo']; ?></td>
+                                <td><?php echo $producto['nombre']; ?></td>
+                                <td><?php echo $producto['nombre_proveedor']; ?></td>
+                                <td><?php echo $producto['nombre_categoria']; ?></td>
+                                <td><?php echo $producto['stock']; ?></td>
+                                <td class="d-none d-lg-table-cell"><?php echo $producto['coste']; ?></td>
+                                <td class="d-none d-lg-table-cell"><?php echo $producto['margen']; ?></td>
+                                <td class="d-none d-lg-table-cell"><?php echo $producto['pvp']; ?></td>
+
                                 <td>
-                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/edit/' . $usuario['username']?>" class="btn btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Editar Usuario"><i class="fas fa-edit"></i></a>
-                                    <a href="<?php echo $_ENV['host.folder'] . 'users-filter/delete/' . $usuario['username']?>" class="btn btn-danger ml-1" data-toggle="tooltip" data-placement="top" title="Borrar Usuario"><i class="fas fa-trash"></i></a>
+                                    <a href="" class="btn btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Editar Usuario"><i class="fas fa-edit"></i></a>
+                                    <a href="" class="btn btn-danger ml-1" data-toggle="tooltip" data-placement="top" title="Borrar Usuario"><i class="fas fa-trash"></i></a>
 
                                 </td>
                             </tr>

@@ -14,7 +14,7 @@ class CategoriaModel extends BaseDbModel
 
     public function getAll(): array
     {
-        $stmt = $this->pdo->prepare(self::SELECT_BASE);
+        $stmt = $this->pdo->query(self::SELECT_BASE);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
