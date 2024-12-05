@@ -12,6 +12,7 @@ use Com\Daw2\Models\ProveedorModel;
 class ProductosController extends BaseController
 {
 
+
     public const DEFAULT_ORDER = 1;
     public function doFilteredProducts(): void
     {

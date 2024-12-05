@@ -75,7 +75,7 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'allUsers', $_ENV['host.folder'] . 'usersBySalario', $_ENV['host.folder'] . 'standardUsers',$_ENV['host.folder'] . 'usersByName',$_ENV['host.folder'] . 'users-filter', $_ENV['host.folder'] . 'productos']) ? 'menu-open' : ''; ?>">
+        <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'allUsers', $_ENV['host.folder'] . 'usersBySalario', $_ENV['host.folder'] . 'standardUsers',$_ENV['host.folder'] . 'usersByName',$_ENV['host.folder'] . 'users-filter', $_ENV['host.folder'] . 'productos', $_ENV['host.folder'] . 'productos']) ? 'menu-open' : ''; ?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-file-excel"></i>
                 <p>
@@ -124,6 +124,13 @@
                        class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'productos' ? 'active' : ''; ?>">
                         <i class="fas fa-table nav-icon"></i>
                         <p>Productos</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo $_ENV['host.folder']?>productos2"
+                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'productos2' ? 'active' : ''; ?>">
+                        <i class="fas fa-table nav-icon"></i>
+                        <p>Productos2</p>
                     </a>
                 </li>
             </ul>

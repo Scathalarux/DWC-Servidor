@@ -9,10 +9,9 @@ use Com\Daw2\Controllers\InicioController;
 use Com\Daw2\Controllers\PreferenciasUsuario;
 use Com\Daw2\Controllers\CsvController;
 use Com\Daw2\Controllers\ProductosController;
-use Com\Daw2\Controllers\ProductosController2;
+use Com\Daw2\Controllers\ProductoController2;
 use Com\Daw2\Controllers\UserController;
 use Com\Daw2\Controllers\UsuariosController;
-use Com\Daw2\Core\Controllers\UsuarController;
 use Com\Daw2\Models\UsuarioModel;
 use Steampixel\Route;
 
@@ -210,6 +209,14 @@ class FrontController
             function () {
                 $controlador = new ProductosController();
                 $controlador->doFilteredProducts();
+            },
+            'get'
+        );
+        Route::add(
+            '/productos2',
+            function () {
+                $controlador = new ProductoController2();
+                $controlador->doFilteredProductos();
             },
             'get'
         );
