@@ -8,7 +8,7 @@ declare(strict_types=1);
     <div class="col-12">
         <div class="card shadow mb-4">
             <form method="get" action="<?php echo $_ENV['host.folder']; ?>productos2">
-                <!--<input type="hidden" name="order" value="<?php /*echo $order */ ?>"/>-->
+                <input type="hidden" name="order" value="<?php echo $order?>"/>
                 <!--<input type="hidden" name="page" value="<?php /*echo $page */ ?>"/>-->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Filtros</h6>
@@ -37,7 +37,7 @@ declare(strict_types=1);
                                 <select name="categoria[]" class="form-control select2" multiple>
                                     <?php foreach ($categorias as $categoria) { ?>
                                         <option value="<?php echo $categoria['id_categoria']; ?>"
-                                            <?php echo isset($input['categoria']) && $categoria['id_categoria'] == $input['categoria'] ? 'selected' : ''; ?>>
+                                            <?php echo isset($input['categoria']) && in_array($categoria['id_categoria'], $input['categoria']) ? 'selected' : ''; ?>>
                                             <?php echo ucfirst($categoria['nombre_categoria']) ?></option>
                                     <?php } ?>
                                 </select>
@@ -48,11 +48,11 @@ declare(strict_types=1);
                                 <label for="proveedor">Proveedor producto:</label>
                                 <select name="proveedor" class="form-control">
                                     <option value="">-</option>
-                                    <?php /*foreach ($proveedores as $proveedor) { */ ?><!--
-                                        <option value="<?php /*echo $proveedor['cif']; */ ?>"
-                                            <?php /*echo isset($input['proveedor']) && $proveedor['cif'] === $input['proveedor'] ? 'selected' : ''; */ ?>>
-                                            <?php /*echo ucfirst($proveedor['nombre']) */ ?></option>
-                                    --><?php /*} */ ?>
+                                    <?php foreach ($proveedores as $proveedor) { ?>
+                                        <option value="<?php echo $proveedor['cif']; ?>"
+                                            <?php echo isset($input['proveedor']) && $proveedor['cif'] === $input['proveedor'] ? 'selected' : '';  ?>>
+                                            <?php echo ucfirst($proveedor['nombre']) ?></option>
+                                    <?php }  ?>
                                 </select>
                             </div>
                         </div>
@@ -118,17 +118,38 @@ declare(strict_types=1);
                     <table id="tabladatos" class="table table-striped datatable">
                         <thead>
                         <tr>
-                            <th><a href="<?php $_ENV['host.folder'] . 'productos2&order=' ?>1">Código</a></th>
-                            <th><a href="<?php $_ENV['host.folder'] . 'productos2&order=' ?>2">Nombre</a></th>
-                            <th><a href="<?php $_ENV['host.folder'] . 'productos2&order=' ?>3">Categoría</a></th>
-                            <th><a href="<?php $_ENV['host.folder'] . 'productos2&order=' ?>4">Proveedor</a></th>
-                            <th><a href="<?php $_ENV['host.folder'] . 'productos2&order=' ?>5">Stock</a></th>
-                            <th class="d-none d-lg-table-cell"><a
-                                        href="<?php $_ENV['host.folder'] . 'productos2&order=' ?>6">Coste</a></th>
-                            <th class="d-none d-lg-table-cell"><a
-                                        href="<?php $_ENV['host.folder'] . 'productos2&order=' ?>7">Margen</a></th>
-                            <th class="d-none d-lg-table-cell"><a
-                                        href="<?php $_ENV['host.folder'] . 'productos2&order=' ?>8">PVP</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos2?' . $copiaGet . 'order=' . (($order > 0) ? '-' : '') ?>1">Código</a>
+                                <?php if (abs($order) == 1) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order < 0) ? 'up' : 'down'?>-alt"></i>
+                                <?php }?></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos2?' . $copiaGet . 'order=' . (($order > 0) ? '-' : '')  ?>2">Nombre</a>
+                                <?php if (abs($order) == 2) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order < 0) ? 'up' : 'down'?>-alt"></i>
+                                <?php }?></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos2?' . $copiaGet . 'order=' . (($order > 0) ? '-' : '')  ?>3">Categoría</a>
+                                <?php if (abs($order) == 3) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order < 0) ? 'up' : 'down'?>-alt"></i>
+                                <?php }?></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos2?' . $copiaGet . 'order=' . (($order > 0) ? '-' : '')  ?>4">Proveedor</a>
+                                <?php if (abs($order) == 4) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order < 0) ? 'up' : 'down'?>-alt"></i>
+                                <?php }?></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'productos2?' . $copiaGet . 'order=' . (($order > 0) ? '-' : '') ?>5">Stock</a>
+                                <?php if (abs($order) == 5) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order < 0) ? 'up' : 'down'?>-alt"></i>
+                                <?php }?></th>
+                            <th class="d-none d-lg-table-cell"><a href="<?php echo $_ENV['host.folder'] . 'productos2?' . $copiaGet . 'order=' . (($order > 0) ? '-' : '')  ?>6">Coste</a>
+                                <?php if (abs($order) == 6) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order < 0) ? 'up' : 'down'?>-alt"></i>
+                                <?php }?></th>
+                            <th class="d-none d-lg-table-cell"><a href="<?php echo $_ENV['host.folder'] . 'productos2?' . $copiaGet . 'order=' . (($order > 0) ? '-' : '') ?>7">Margen</a>
+                                <?php if (abs($order) == 7) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order < 0) ? 'up' : 'down'?>-alt"></i>
+                                <?php }?></th>
+                            <th class="d-none d-lg-table-cell"><a href="<?php echo $_ENV['host.folder'] . 'productos2?' . $copiaGet . 'order=' . (($order > 0) ? '-' : '') ?>8">PVP</a>
+                                <?php if (abs($order) == 8) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order < 0) ? 'up' : 'down'?>-alt"></i>
+                                <?php }?></th>
                         </tr>
                         </thead>
                         <tbody>

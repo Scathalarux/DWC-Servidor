@@ -12,14 +12,8 @@ use Com\Daw2\Models\ProveedorModel2;
 class ProductoController2 extends BaseController
 {
     public const DEFAULT_ORDER = 1;
-    public bool $addedColumn = false;
 
-    public function addColumn(): void
-    {
-        $modelo = new ProductoModel2();
-        $modelo->addColumn();
-        $addedColumn = true;
-    }
+
     public function doFilteredProductos(): void
     {
         $data = $this->getCommonData();
@@ -28,14 +22,26 @@ class ProductoController2 extends BaseController
           'breadcrumb' => ['Inicio', 'Productos']
         ];
 
-        if (!$this->addedColumn) {
-            $this->addColumn();
-        }
+
         $modelo = new ProductoModel2();
+        /*$modelo->addColumn();*/
 
-        $productos = $modelo->getProductos();
+        $order = $this->getOrder();
 
+        $productos = $modelo->getFilteredProductos($_GET, $order);
+
+        //Mantenemos filtros y los transformamos, eliminando el orden
+        $copiaGet = $_GET;
+        unset($copiaGet['order']);
+        $data['copiaGet'] = http_build_query($copiaGet);
+        if (!empty($data['copiaGet'])) {
+            $data['copiaGet'] .= '&';
+        }
+
+
+        $data['order'] = $order;
         $data['productos'] = $productos;
+        $data['input'] = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $this->view->showViews(array('templates/header.view.php', 'productos2.view.php', 'templates/footer.view.php'), $data);
     }
@@ -54,7 +60,7 @@ class ProductoController2 extends BaseController
     {
         if (!empty($_GET['order']) && filter_var($_GET['order'], FILTER_VALIDATE_INT)) {
             if (abs((int)$_GET['order']) > 0 && abs((int)$_GET['order']) <= count(ProductoModel2::ORDER_COLUMNS)) {
-                return $_GET['order'];
+                return (int)$_GET['order'];
             }
         }
         return self::DEFAULT_ORDER;
