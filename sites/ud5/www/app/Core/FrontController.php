@@ -220,6 +220,46 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/productos2/new',
+            function () {
+                $controlador = new ProductoController2();
+                $controlador->showAddProducto();
+            },
+            'get'
+        );
+        Route::add(
+            '/productos2/new',
+            function () {
+                $controlador = new ProductoController2();
+                $controlador->addProducto();
+            },
+            'post'
+        );
+        Route::add(
+            '/productos2/edit/(\p{L}{2,3}[0-9]{7})',
+            function ($codigo) {
+                $controlador = new ProductoController2();
+                $controlador->showEditProducto($codigo);
+            },
+            'get'
+        );
+        Route::add(
+            '/productos2/edit/(\p{L}{2,3}[0-9]{7})',
+            function ($codigo) {
+                $controlador = new ProductoController2();
+                $controlador->editProducto($codigo);
+            },
+            'post'
+        );
+        Route::add(
+            '/productos2/delete/(\p{L}{2,3}[0-9]{7})',
+            function ($codigo) {
+                $controlador = new ProductoController2();
+                $controlador->deleteProducto($codigo);
+            },
+            'get'
+        );
 
         /*Route::add(
             '/anagrama',

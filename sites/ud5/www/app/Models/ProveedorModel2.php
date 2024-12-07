@@ -15,4 +15,16 @@ class ProveedorModel2 extends BaseDbModel
         $stmt = $this->pdo->query(self::SELECT_BASE);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function find(string $cif): ?array
+    {
+        $stmt = $this->pdo->prepare("select * from proveedor where cif = ?");
+        $stmt->execute([$cif]);
+        $row = $stmt->fetch();
+        if ($row) {
+            return $row;
+        } else {
+            return null;
+        }
+    }
 }

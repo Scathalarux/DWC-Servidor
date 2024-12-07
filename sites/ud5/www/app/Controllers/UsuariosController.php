@@ -233,6 +233,23 @@ class UsuariosController extends BaseController
     }
 
     /**
+     * Función que obtiene los roles y los paises de la base de datos
+     * @return array conjunto de roles y paises
+     */
+    public function getCommonData(): array
+    {
+        $data = [];
+        //obtenemos el modelo y los datos de la tabla aux_rol
+        $auxRolModel = new AuxRolModel();
+        $data['roles'] = $auxRolModel->getAll();
+
+        //obtenemos el modelo y los datos de la tabla aux_countries
+        $auxCountriesModel = new AuxCountriesModel();
+        $data['countries'] = $auxCountriesModel->getAll();
+        return $data;
+    }
+
+    /**
      * Función que muestra la interfaz para poder añadir un usuario
      * @param array $input
      * @param array $errors
@@ -252,23 +269,6 @@ class UsuariosController extends BaseController
         $data['errors'] = $errors;
 
         $this->view->showViews(array('templates/header.view.php', 'editUsuarioFiltro.view.php', 'templates/footer.view.php'), $data);
-    }
-
-    /**
-     * Función que obtiene los roles y los paises de la base de datos
-     * @return array conjunto de roles y paises
-     */
-    public function getCommonData(): array
-    {
-        $data = [];
-        //obtenemos el modelo y los datos de la tabla aux_rol
-        $auxRolModel = new AuxRolModel();
-        $data['roles'] = $auxRolModel->getAll();
-
-        //obtenemos el modelo y los datos de la tabla aux_countries
-        $auxCountriesModel = new AuxCountriesModel();
-        $data['countries'] = $auxCountriesModel->getAll();
-        return $data;
     }
 
     /**

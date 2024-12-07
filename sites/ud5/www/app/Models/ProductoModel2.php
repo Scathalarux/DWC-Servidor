@@ -119,4 +119,52 @@ class ProductoModel2 extends BaseDbModel
         }
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function addProducto(array $data): bool
+    {
+        if (empty($data['id_categoria'])) {
+            $data['id_categoria'] = null;
+        }
+        $sql = "insert into producto (codigo, nombre, descripcion, proveedor, coste, margen, stock, iva, id_categoria) 
+                values (:codigo, :nombre, :descripcion, :proveedor, :coste, :margen, :stock, :iva, :id_categoria)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
+    }
+
+    public function getProductoCodigo(string $codigo): array|bool
+    {
+        $sql = "select * from producto where codigo = :codigo";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['codigo' => $codigo]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function editProducto(string $oldCodigo, array $data): bool
+    {
+        if (empty($data['id_categoria'])) {
+            $data['id_categoria'] = null;
+        }
+        $sql = "update producto set 
+                    codigo = :codigo,
+                    nombre = :nombre,
+                    descripcion = :descripcion,
+                    proveedor = :proveedor,
+                    coste = :coste,
+                    margen = :margen,
+                    stock = :stock,
+                    iva = :iva,
+                    id_categoria = :id_categoria
+                    where codigo = :oldCodigo";
+        $stmt = $this->pdo->prepare($sql);
+        $data['oldCodigo'] = $oldCodigo;
+        return $stmt->execute($data);
+    }
+
+    public function deleteProducto(string $codigo): bool
+    {
+        $sql = "delete from producto where codigo = :codigo";
+        $stmt = $this->pdo->prepare($sql);
+
+        return $stmt->execute(['codigo' => $codigo]);
+    }
 }
