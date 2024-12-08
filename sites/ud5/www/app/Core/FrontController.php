@@ -8,6 +8,7 @@ use Com\Daw2\Controllers\ErroresController;
 use Com\Daw2\Controllers\InicioController;
 use Com\Daw2\Controllers\PreferenciasUsuario;
 use Com\Daw2\Controllers\CsvController;
+use Com\Daw2\Controllers\ProductoController3;
 use Com\Daw2\Controllers\ProductosController;
 use Com\Daw2\Controllers\ProductoController2;
 use Com\Daw2\Controllers\UserController;
@@ -257,6 +258,55 @@ class FrontController
             function ($codigo) {
                 $controlador = new ProductoController2();
                 $controlador->deleteProducto($codigo);
+            },
+            'get'
+        );
+        Route::add(
+            '/productos3',
+            function () {
+                $controlador = new ProductoController3();
+                $controlador->doFiltradoProductos();
+            },
+            'get'
+        );
+        Route::add(
+            '/productos3/new',
+            function () {
+                $controlador = new ProductoController3();
+                $controlador->showAddProducto();
+            },
+            'get'
+        );
+        Route::add(
+            '/productos3/new',
+            function () {
+                $controlador = new ProductoController3();
+                $controlador->doAddProducto();
+            },
+            'post'
+        );
+        Route::add(
+            '/productos3/edit/([\p{L}]{2,3}[0-9]{7})',
+            function ($codigo) {
+                $controlador = new ProductoController3();
+                $controlador->showEditProducto($codigo);
+            },
+            'get'
+        );
+
+        Route::add(
+            '/productos3/edit/([\p{L}]{2,3}[0-9]{7})',
+            function ($codigo) {
+                $controlador = new ProductoController3();
+                $controlador->doEditProducto($codigo);
+            },
+            'post'
+        );
+        Route::add(
+            '/productos3/delete/([\p{L}]{2,3}[0-9]{7})',
+            function ($codigo) {
+                $controlador = new ProductoController3();
+                $controlador->doDeleteProducto($codigo);
             },
             'get'
         );
