@@ -171,66 +171,7 @@ class UsuariosController extends BaseController
     }
 
 
-    /**
-     * Función que obtiene los usuarios ordenados por salario y se los manda a la vista
-     * @return void
-     * @throws Exception
-     */
-    public function showOrderUsuarioSalario(): void
-    {
 
-        $data = [];
-        $data = [
-            'titulo' => 'Usuarios según salario',
-            'breadcrumb' => array('Usuarios', 'Usuarios según salario'),
-            'seccion' => '/usersBySalario'
-        ];
-        $model = new UsuarioModel();
-        $data['usuarios'] = $this->calcularNeto($model->getUsuariosSalario());
-
-        $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
-    }
-
-    /**
-     * Función que obtiene los usuarios de tipo 'standard' del modelo y se los manda a la vista
-     * @return void
-     * @throws Exception
-     */
-    public function showStandardUsers(): void
-    {
-        $data = [];
-        $data = [
-            'titulo' => 'Usuarios standard',
-            'breadcrumb' => array('Usuarios', 'Usuarios standard'),
-            'seccion' => '/standardUsers'
-        ];
-        $model = new UsuarioModel();
-        $data['usuarios'] = $this->calcularNeto($model->getUsuariosStandard());
-
-
-        $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
-    }
-
-    /**
-     * Función que obtiene los usuarios que tienen en el nombre 'Carlos' y se los envia a la vista
-     * @return void
-     * @throws Exception
-     */
-    public function showUsersCarlos(): void
-    {
-
-        $data = [];
-        $data = [
-            'titulo' => 'Usuarios según nombre',
-            'breadcrumb' => array('Usuarios', 'Usuarios según nombre'),
-            'seccion' => '/usersByName'
-        ];
-        $model = new UsuarioModel();
-        $data['usuarios'] = $this->calcularNeto($model->getUsuariosCarlos());
-
-
-        $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
-    }
 
     /**
      * Función que obtiene los roles y los paises de la base de datos
@@ -482,5 +423,65 @@ class UsuariosController extends BaseController
         }
         $this->addFlashMessage($message);
         header('Location: /users-filter');
+    }
+
+
+    /**
+     * Función que obtiene los usuarios ordenados por salario y se los manda a la vista
+     * @return void
+     * @throws Exception
+     */
+    public function showOrderUsuarioSalario(): void
+    {
+
+        $data = [
+            'titulo' => 'Usuarios según salario',
+            'breadcrumb' => array('Usuarios', 'Usuarios según salario'),
+            'seccion' => '/usersBySalario'
+        ];
+        $model = new UsuarioModel();
+        $data['usuarios'] = $this->calcularNeto($model->getUsuariosSalario());
+
+        $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    /**
+     * Función que obtiene los usuarios de tipo 'standard' del modelo y se los manda a la vista
+     * @return void
+     * @throws Exception
+     */
+    public function showStandardUsers(): void
+    {
+        $data = [
+            'titulo' => 'Usuarios standard',
+            'breadcrumb' => array('Usuarios', 'Usuarios standard'),
+            'seccion' => '/standardUsers'
+        ];
+        $model = new UsuarioModel();
+        $data['usuarios'] = $this->calcularNeto($model->getUsuariosStandard());
+
+
+        $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    /**
+     * Función que obtiene los usuarios que tienen en el nombre 'Carlos' y se los envia a la vista
+     * @return void
+     * @throws Exception
+     */
+    public function showUsersCarlos(): void
+    {
+
+        $data = [];
+        $data = [
+            'titulo' => 'Usuarios según nombre',
+            'breadcrumb' => array('Usuarios', 'Usuarios según nombre'),
+            'seccion' => '/usersByName'
+        ];
+        $model = new UsuarioModel();
+        $data['usuarios'] = $this->calcularNeto($model->getUsuariosCarlos());
+
+
+        $this->view->showViews(array('templates/header.view.php', 'showUsers.view.php', 'templates/footer.view.php'), $data);
     }
 }
