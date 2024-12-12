@@ -13,6 +13,7 @@ use Com\Daw2\Controllers\ProductosController;
 use Com\Daw2\Controllers\ProductoController2;
 use Com\Daw2\Controllers\UserController;
 use Com\Daw2\Controllers\UsuariosController;
+use Com\Daw2\Controllers\UsuariosSistemaController;
 use Com\Daw2\Models\UsuarioModel;
 use Steampixel\Route;
 
@@ -205,6 +206,18 @@ class FrontController
             },
             'get'
         );
+
+        Route::add(
+            '/usuariosSistema',
+            function () {
+                $controlador = new UsuariosSistemaController();
+                $controlador->showUsuariosSistema();
+            },
+            'get'
+        );
+
+
+        //REPASO EXAMEN 1ª EV
         Route::add(
             '/productos',
             function () {
