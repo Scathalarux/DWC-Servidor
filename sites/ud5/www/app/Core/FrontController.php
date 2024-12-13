@@ -215,6 +215,31 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/usuariosSistema/login',
+            function () {
+                $controlador = new UsuariosSistemaController();
+                $controlador->showUsuariosSistema();
+            },
+            'get'
+        );
+
+        Route::add(
+            '/usuariosSistema/new',
+            function () {
+                $controlador = new UsuariosSistemaController();
+                $controlador->showAddUsuarioSistema();
+            },
+            'get'
+        );
+        Route::add(
+            '/usuariosSistema/new',
+            function () {
+                $controlador = new UsuariosSistemaController();
+                $controlador->doAddUsuarioSistema();
+            },
+            'post'
+        );
 
 
         //REPASO EXAMEN 1ª EV
