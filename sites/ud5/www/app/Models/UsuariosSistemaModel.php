@@ -34,6 +34,7 @@ class UsuariosSistemaModel extends BaseDbModel
                 values (:id_usuario, :id_rol, :email, :pass, :nombre, :last_date, :idioma, :baja)';
 
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute($data);
+
+        return  $stmt->execute($data);
     }
 }

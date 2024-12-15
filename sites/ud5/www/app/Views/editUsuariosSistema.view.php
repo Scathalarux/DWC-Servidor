@@ -19,7 +19,7 @@ declare(strict_types=1);
                         <div class="col-12 col-lg-6">
                             <div class="form-group">
                                 <label for="id_rol">Tipo usuario:</label>
-                                <select name="id_rol" id="id_rol" class="form-control" required>
+                                <select name="id_rol" id="id_rol" class="form-control" >
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) { ?>
                                         <option value="<?php echo $rol['id_rol']; ?>"
@@ -33,14 +33,14 @@ declare(strict_types=1);
 
                         <div class="col-12 col-lg-6">
                                 <div class="form-group">
-                                    <label for="username">Nombre usuario :</label>
-                                    <input type="text" class="form-control" name="username" id="username"
-                                           value="<?php echo $input['username'] ?? ''; ?>"
+                                    <label for="nombre">Nombre usuario :</label>
+                                    <input type="text" class="form-control" name="nombre" id="nombre"
+                                           value="<?php echo $input['nombre'] ?? ''; ?>"
                                            minlength="3"
                                            maxlength="50"
                                            placeholder="my_username"
-                                           required/>
-                                    <p class="text-danger"><?php echo $errores['username'] ?? '';?></p>
+                                           />
+                                    <p class="text-danger"><?php echo $errores['nombre'] ?? '';?></p>
                                 </div>
                         </div>
                         <div class="col-12 col-lg-4">
@@ -54,11 +54,11 @@ declare(strict_types=1);
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                                <label for="password">Contraseña:</label>
-                                <input type="password" class="form-control" name="password"
-                                       id="password"
-                                       value="<?php echo $input['password'] ?? ''; ?>" maxlength="" placeholder=""/>
-                                <p class="text-danger"><?php echo $errores['password'] ?? '';?></p>
+                                <label for="password1">Contraseña:</label>
+                                <input type="password" class="form-control" name="password1"
+                                       id="password1"
+                                       value="<?php echo $input['password1'] ?? ''; ?>" maxlength="" placeholder=""/>
+                                <p class="text-danger"><?php echo $errores['password1'] ?? '';?></p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
@@ -76,7 +76,7 @@ declare(strict_types=1);
                                 <input type="text" class="form-control" name="idioma"
                                        id="cotizacion"
                                        value="<?php echo $input['idioma'] ?? ''; ?>"
-                                       maxlength=""
+                                       maxlength="2"
                                        placeholder="Idioma..."
                                 />
                                 <p class="text-danger"><?php echo $errores['idioma'] ?? '';?></p>
@@ -85,9 +85,9 @@ declare(strict_types=1);
 
                         <div class="col-12 col-lg-4">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="activo" id="activo"
+                                <input type="checkbox" class="form-check-input" name="baja" id="baja"
                                     <?php echo !empty($input['activo']) ? 'checked' : '';?>/>
-                                <label for="activo">Usuario Activo</label>
+                                <label for="baja">Usuario Activo</label>
                             </div>
                         </div>
                         <div class="card-footer">
