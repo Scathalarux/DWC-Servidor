@@ -23,7 +23,7 @@ declare(strict_types=1);
             <div class="card-body" id="card_table">
                 <div id="button_container" class="mb-3"></div>
                 <!--<form action="./?sec=formulario" method="post">                   -->
-                <table id="tabladatos" class="table table-striped">
+                <table id="tabladatos" class="table table-striped table-responsive">
                     <thead>
                     <tr>
                         <th><a href="<?php echo $_ENV['host.folder'] . 'usuariosSistema?order=' . (($order == 1) ? '-' : '') ?>1">ID </a>
@@ -76,9 +76,13 @@ declare(strict_types=1);
                             <td><?php echo $usuario['email'] ?? '-' ?></td>
                             <td><?php echo $usuario['pass'] ?? '-' ?></td>
                             <td><?php echo $usuario['nombre'] ?? '-'?></td>
-                            <td><?php echo $usuario['last_date'] ?? '-'?></td>
+                            <td><?php echo !empty($usuario['last_date']) ? (DateTimeImmutable::createFromFormat('Y-m-d H:i:s',$usuario['last_date'])->format('d/m/Y H:i:s')): '-'?></td>
                             <td><?php echo $usuario['idioma'] ?? '-'?></td>
                             <td><?php echo $usuario['baja'] ? 'Activo' : 'Parado' ?></td>
+                            <td>
+                                <a href="<?php echo $_ENV['host.folder'] . 'usuariosSistema/edit/' . $usuario['id_usuario'] ?>" target="_blank" class="btn btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pen"></i></a>
+                                <a href="<?php echo $_ENV['host.folder'] . 'usuariosSistema/delete/' . $usuario['id_usuario']?>" target="_blank" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Borrar"><i class="fas fa-trash"></i></a>
+                            </td>
                         </tr>
                     <?php } ?>
                     </tbody>

@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-
 ?>
 <div class="row">
     <div class="col-12">
         <div class="card shadow mb-4">
-            <form method="post" action="<?php echo $_ENV['host.folder']; ?>usuariosSistema/new">
+            <form method="post" action="">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary"><?php echo $titulo ?></h6>
                 </div>
@@ -18,7 +17,7 @@ declare(strict_types=1);
 
                         <div class="col-12 col-lg-6">
                             <div class="form-group">
-                                <label for="id_rol">Tipo usuario:</label>
+                                <label for="id_rol">Tipo usuario <span class="text-danger">*</span>:</label>
                                 <select name="id_rol" id="id_rol" class="form-control" >
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) { ?>
@@ -33,7 +32,7 @@ declare(strict_types=1);
 
                         <div class="col-12 col-lg-6">
                                 <div class="form-group">
-                                    <label for="nombre">Nombre usuario :</label>
+                                    <label for="nombre">Nombre usuario <span class="text-danger">*</span>:</label>
                                     <input type="text" class="form-control" name="nombre" id="nombre"
                                            value="<?php echo $input['nombre'] ?? ''; ?>"
                                            minlength="3"
@@ -45,7 +44,7 @@ declare(strict_types=1);
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                                <label for="email">Email:</label>
+                                <label for="email">Email <span class="text-danger">*</span>:</label>
                                 <input type="text" class="form-control" name="email"
                                        id="email"
                                        value="<?php echo $input['email'] ?? ''; ?>" maxlength="" placeholder="user@email.com"/>
@@ -54,7 +53,7 @@ declare(strict_types=1);
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                                <label for="password1">Contraseña:</label>
+                                <label for="password1">Contraseña <span class="text-danger">*</span>:</label>
                                 <input type="password" class="form-control" name="password1"
                                        id="password1"
                                        value="<?php echo $input['password1'] ?? ''; ?>" maxlength="" placeholder=""/>
@@ -63,7 +62,7 @@ declare(strict_types=1);
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                                <label for="password2">Repite la contraseña:</label>
+                                <label for="password2">Repite la contraseña <span class="text-danger">*</span>:</label>
                                 <input type="password" class="form-control" name="password2"
                                        id="password2"
                                        value="<?php echo $input['password2'] ?? ''; ?>" maxlength="" placeholder=""/>
@@ -72,7 +71,7 @@ declare(strict_types=1);
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                                <label for="idioma">Idioma:</label>
+                                <label for="idioma">Idioma <span class="text-danger">*</span>:</label>
                                 <input type="text" class="form-control" name="idioma"
                                        id="cotizacion"
                                        value="<?php echo $input['idioma'] ?? ''; ?>"
@@ -87,7 +86,7 @@ declare(strict_types=1);
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" name="baja" id="baja"
                                     <?php echo !empty($input['activo']) ? 'checked' : '';?>/>
-                                <label for="baja">Usuario Activo</label>
+                                <label for="baja">Usuario Activo <span class="text-danger">*</span></label>
                             </div>
                         </div>
                         <div class="card-footer">

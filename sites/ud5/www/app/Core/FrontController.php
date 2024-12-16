@@ -219,9 +219,17 @@ class FrontController
             '/usuariosSistema/login',
             function () {
                 $controlador = new UsuariosSistemaController();
-                $controlador->showUsuariosSistema();
+                $controlador->showLoginUsuariosSistema();
             },
             'get'
+        );
+        Route::add(
+            '/usuariosSistema/login',
+            function () {
+                $controlador = new UsuariosSistemaController();
+                $controlador->doLoginUsuariosSistema();
+            },
+            'post'
         );
 
         Route::add(
@@ -237,6 +245,22 @@ class FrontController
             function () {
                 $controlador = new UsuariosSistemaController();
                 $controlador->doAddUsuarioSistema();
+            },
+            'post'
+        );
+        Route::add(
+            '/usuariosSistema/edit/([\p{N}]{1,})',
+            function ($idUsuario) {
+                $controlador = new UsuariosSistemaController();
+                $controlador->showEditUsuarioSistema($idUsuario);
+            },
+            'get'
+        );
+        Route::add(
+            '/usuariosSistema/edit/([\p{N}]{1,})',
+            function ($idUsuario) {
+                $controlador = new UsuariosSistemaController();
+                $controlador->doEditUsuarioSistema($idUsuario);
             },
             'post'
         );

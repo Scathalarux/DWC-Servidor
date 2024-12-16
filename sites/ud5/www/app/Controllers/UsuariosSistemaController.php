@@ -67,23 +67,19 @@ class UsuariosSistemaController extends BaseController
 
         if ($errores === []) {
             $insertData = $_POST;
+            //Comprobamos si se ha enviado el valor del chechbox de baja
             $insertData['baja'] = isset($_POST['baja']) ? 1 : 0;
+            //Establecemos como null la fecha en la creación
             $insertData['last_date'] = null;
+            //Establecemos como null el identificador del usuario ya que se lo generará la base de datos de forma autoincremental
             $insertData['id_usuario'] = null;
-            $insertData['id_rol'] = ($_POST['id_rol'] !== '') ? (int)$_POST['id_rol'] : 1;
-            $insertData['pass'] = password_hash($_POST['password1'], PASSWORD_DEFAULT);
+            //$insertData['id_rol'] = (int)$_POST['id_rol'];
 
 
-            unset($insertData['password1']);
+            //Transformamos a hash la contraseña para introducirlo así en la base de datos
+            $insertData['password1'] = password_hash($_POST['password1'], PASSWORD_DEFAULT);
+
             unset($insertData['password2']);
-
-
-            //controlamos que pueda haber valores null (salario y retencionIRPF)
-            foreach ($insertData as $key => $value) {
-                if ($value === '') {
-                    $insertData[$key] = null;
-                }
-            }
 
             $modeloUsuariosSistema = new UsuariosSistemaModel();
 
@@ -115,6 +111,8 @@ class UsuariosSistemaController extends BaseController
                     $errores['id_rol'] = "Rol no válido";
                 }
             }
+        } else {
+            $errores['id_rol'] = "El rol es obligatorio";
         }
 
 
@@ -123,44 +121,143 @@ class UsuariosSistemaController extends BaseController
             if (filter_var($data['email'], FILTER_VALIDATE_EMAIL) === false) {
                 $errores['email'] = "Email con formáto no válido";
             }
+        } else {
+            $errores['email'] = "El rol es obligatorio";
         }
 
         //contraseña
+        $pwd1 = false;
+        $pwd2 = false;
         if (!empty($data['password1'])) {
-            $pwd1 = false;
-            $pwd2 = false;
             //Comprobamos el contenido de la contraseña1
             if (!preg_match('/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$/', $data['password1'])) {
                 $errores['password1'] = "La contraseña debe tener al menos 8 caracteres y contener una mayúscula, un número y un caracter especial ";
             } else {
                 $pwd1 = true;
             }
-            //En caso de haber introducido la primera contraseña, comprobamos la existencia de la segunda contraseña
-            if (!empty($data['password2'])) {
-                if (!preg_match('/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$/', $data['password2'])) {
-                    $errores['password2'] = "La contraseña debe tener al menos 8 caracteres y contener una mayúscula, un número y un caracter especial ";
-                } else {
-                    $pwd2 = true;
-                }
+        } else {
+            $errores['password1'] = "La contraseña es obligatoria";
+        }
+        if (!empty($data['password2'])) {
+            if (!preg_match('/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$/', $data['password2'])) {
+                $errores['password2'] = "La contraseña debe tener al menos 8 caracteres y contener una mayúscula, un número y un caracter especial ";
             } else {
-                $errores['password2'] = "Debe repetir la contraseña";
+                $pwd2 = true;
             }
+        } else {
+            $errores['password2'] = "Debe repetir la contraseña";
+        }
 
-            //Si ambas contraseñas tienen buena forma, comprobamos que coinciden
-            if ($pwd1 && $pwd2) {
-                if ($data['password1'] !== $data['password2']) {
-                    $errores['password1'] = "Las contraseñas deben coincidir";
-                }
+        //Si ambas contraseñas tienen buena forma, comprobamos que coinciden
+        if ($pwd1 && $pwd2) {
+            if ($data['password1'] !== $data['password2']) {
+                $errores['password1'] = "Las contraseñas deben coincidir";
             }
         }
 
         //idioma
         if (!empty($data['idioma'])) {
-            if (mb_strlen($data['idioma']) > 2) {
+            if (mb_strlen($data['idioma']) !== 2) {
                 $errores['idioma'] = "El idioma debe tener 2 caracteres";
             }
+        } else {
+            $errores['idioma'] = "El idioma es obligatorio";
         }
 
         return $errores;
+    }
+
+    public function showEditUsuarioSistema(string $idUsuario, array $errores = [], array $input = []): void
+    {
+        //obtenemos los datos del usuario
+        $modeloUsuariosSistema = new UsuariosSistemaModel();
+        $usuario = $modeloUsuariosSistema->getUsuarioID((int)$idUsuario);
+
+        if (is_null($usuario)) {
+            header('Location: /usuariosSistema');
+        }
+
+        $data = $this->getCommonData();
+        $data += [
+            'titulo' => 'Editar Usuario',
+            'breadcrumb' => ['Inicio', 'Usuarios Sistema', 'Editar Usuario'],
+        ];
+
+        $data['errores'] = $errores;
+        $data['input'] = ($input === []) ? $usuario : $input;
+
+        $this->view->showViews(array('templates/header.view.php', 'editUsuariosSistema.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function doEditUsuarioSistema(string $idUsuario): void
+    {
+        //obtenemos los datos del usuario
+        $modeloUsuariosSistema = new UsuariosSistemaModel();
+        $usuario = $modeloUsuariosSistema->getUsuarioID((int)$idUsuario);
+
+        if (is_null($usuario)) {
+            header('Location: /usuariosSistema');
+        }
+
+        //comprobamos la existencia de errores
+        $errores = $this->checkForm($_POST);
+        if ($errores === []) {
+            $insertData = $_POST;
+            //Comprobamos si se ha enviado el valor del chechbox de baja
+            $insertData['baja'] = isset($_POST['baja']) ? 1 : 0;
+            //$insertData['id_rol'] = (int)$_POST['id_rol'];
+
+
+            //Transformamos a hash la contraseña para introducirlo así en la base de datos
+            $insertData['pass'] = password_hash($_POST['password1'], PASSWORD_DEFAULT);
+
+
+            unset($insertData['password1']);
+            unset($insertData['password2']);
+
+            $modeloUsuariosSistema = new UsuariosSistemaModel();
+
+            if ($modeloUsuariosSistema->editUsuarioSistema((int)$idUsuario, $insertData)) {
+                header('Location: /usuariosSistema');
+            } else {
+                $errores['nombre'] = "No se ha podido realizar la operación";
+                $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $this->showEditUsuarioSistema($idUsuario, $errores, $input);
+            }
+        } else {
+            $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $this->showEditUsuarioSistema($idUsuario, $errores, $input);
+        }
+    }
+
+    public function showLoginUsuariosSistema(array $errores = []): void
+    {
+        $data = [
+          'titulo' => 'Login',
+          'breadcrumb' => ['Login', 'Usuarios Sistema'],
+        ];
+        $data['errores'] = $errores;
+        $this->view->showViews(array('templates/header.view.php', 'loginUsuariosSistema.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function doLoginUsuariosSistema(): void
+    {
+        $modeloUsuariosSistema = new UsuariosSistemaModel();
+        $usuario = $modeloUsuariosSistema->getUsuarioEmail($_POST['email']);
+
+        if ($usuario) {
+            if (password_verify($_POST['password'], $usuario['pass'])) {
+                isset($_POST['remember']) ? setcookie('email', $_POST['email']) : '';
+                if ($modeloUsuariosSistema->editUsuarioSistemaDate((int)$usuario['id_usuario'])) {
+                    header('Location: /usuariosSistema');
+                };
+            } else {
+                $errores['verificacion'] = "El usuario o la contraseña no son correctos";
+                $this->showLoginUsuariosSistema($errores);
+            }
+        } else {
+            $errores['verificacion'] = "El usuario o la contraseña no son correctos";
+            $this->showLoginUsuariosSistema($errores);
+        }
     }
 }

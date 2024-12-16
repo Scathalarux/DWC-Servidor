@@ -160,7 +160,7 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'usuariosSistema']) ? 'menu-open' : ''; ?>">
+        <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'usuariosSistema', $_ENV['host.folder'] . 'usuariosSistema/login']) ? 'menu-open' : ''; ?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-user"></i>
                 <p>
@@ -168,6 +168,15 @@
                     <i class="right fas fa-angle-left"></i>
                 </p>
             </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="<?php echo $_ENV['host.folder']?>usuariosSistema/login"
+                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'usuariosSistema/login' ? 'active' : ''; ?>">
+                        <i class="fas fa-user-circle nav-icon"></i>
+                        <p>Login Usuarios Sistema</p>
+                    </a>
+                </li>
+            </ul>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
                     <a href="<?php echo $_ENV['host.folder']?>usuariosSistema"
