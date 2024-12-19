@@ -20,11 +20,15 @@ declare(strict_types=1);
                                 <label for="id_rol">Tipo usuario <span class="text-danger">*</span>:</label>
                                 <select name="id_rol" id="id_rol" class="form-control" >
                                     <option value="">-</option>
-                                    <?php foreach ($roles as $rol) { ?>
+                                    <?php if (!isset($_SESSION['username']) || $_SESSION['id_rol'] !== $admin['id_rol']) {?>
+                                        <option value="<?php echo $staff['id_rol'] ?>"><?php echo $staff['rol'] ?></option>
+                                    <?php } else { ?>
+                                        <?php foreach ($roles as $rol) { ?>
                                         <option value="<?php echo $rol['id_rol']; ?>"
                                             <?php echo isset($input['id_rol']) && $rol['id_rol'] == $input['id_rol'] ? 'selected' : ''; ?>>
-                                            <?php echo ucfirst($rol['nombre_rol']) ?></option>
-                                    <?php } ?>
+                                            <?php echo ucfirst($rol['rol']) ?></option>
+                                        <?php }
+                                    } ?>
                                 </select>
                                 <p class="text-danger"><?php echo $errores['id_rol'] ?? '';?></p>
                             </div>

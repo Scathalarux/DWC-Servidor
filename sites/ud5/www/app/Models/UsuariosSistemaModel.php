@@ -8,9 +8,9 @@ use Com\Daw2\Core\BaseDbModel;
 
 class UsuariosSistemaModel extends BaseDbModel
 {
-    public const SELECT_BASE = "SELECT u.*, ar.nombre_rol
+    public const SELECT_BASE = "SELECT u.*, r.rol
                                 FROM usuario_sistema u
-                                LEFT JOIN aux_rol ar ON u.id_rol = ar.id_rol";
+                                JOIN rol r ON u.id_rol = r.id_rol";
 
     public const COLUMN_ORDER = ['id_usuario', 'id_rol', 'email', 'pass', 'nombre', 'last_date', 'idioma', 'baja'];
 

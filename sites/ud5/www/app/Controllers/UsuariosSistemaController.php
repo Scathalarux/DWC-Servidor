@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
-use Com\Daw2\Models\AuxRolModel;
+use Com\Daw2\Models\RolModel;
 use Com\Daw2\Models\UsuariosSistemaModel;
 
 class UsuariosSistemaController extends BaseController
 {
     public function showUsuariosSistema(): void
     {
+
+
         $data = [
             'titulo' => 'Usuarios Sistema',
             'breadcrumb' => ['Inicio', 'Usuarios Sistema'],
@@ -41,9 +43,11 @@ class UsuariosSistemaController extends BaseController
 
     public function getCommonData(): array
     {
-        $modeloAuxRol = new AuxRolModel();
+        $modeloRol = new RolModel();
 
-        $data['roles'] = $modeloAuxRol->getAll();
+        $data['roles'] = $modeloRol->getAll();
+        $data['staff'] = $modeloRol->getRol('Staff');
+        $data['admin'] = $modeloRol->getRol('Administrator');
         return $data;
     }
 
@@ -63,7 +67,7 @@ class UsuariosSistemaController extends BaseController
 
     public function doAddUsuarioSistema(): void
     {
-        $errores = $this->checkForm($_POST);
+        $errores = $this->checkForm($_POST, 'add');
 
         if ($errores === []) {
             $insertData = $_POST;
@@ -96,7 +100,7 @@ class UsuariosSistemaController extends BaseController
         }
     }
 
-    public function checkForm(array $data): array
+    public function checkForm(array $data, string $type): array
     {
         $errores = [];
 
@@ -105,8 +109,8 @@ class UsuariosSistemaController extends BaseController
             if (filter_var($data['id_rol'], FILTER_VALIDATE_INT) === false) {
                 $errores['id_rol'] = "Rol no válido";
             } else {
-                $modeloAuxRol = new AuxRolModel();
-                $rol = $modeloAuxRol->find((int)$data['id_rol']);
+                $modeloRol = new RolModel();
+                $rol = $modeloRol->find((int)$data['id_rol']);
                 if (is_null($rol)) {
                     $errores['id_rol'] = "Rol no válido";
                 }
@@ -125,6 +129,17 @@ class UsuariosSistemaController extends BaseController
             $errores['email'] = "El rol es obligatorio";
         }
 
+
+        //Comprobaremos la contraseña en caso de que se esté añadiendo un nuevo usuario
+        //Si está en la edición y no introduce un cambio en la contraseña, se omitirá
+        if ($type === "add") {
+            if (empty($errores['password1'])) {
+                $errores['password1'] = "La contraseña es obligatoria";
+            }
+            if (empty($errores['password2'])) {
+                $errores['password2'] = "Debe repetir la contraseña";
+            }
+        }
         //contraseña
         $pwd1 = false;
         $pwd2 = false;
@@ -135,17 +150,14 @@ class UsuariosSistemaController extends BaseController
             } else {
                 $pwd1 = true;
             }
-        } else {
-            $errores['password1'] = "La contraseña es obligatoria";
         }
+
         if (!empty($data['password2'])) {
             if (!preg_match('/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$/', $data['password2'])) {
                 $errores['password2'] = "La contraseña debe tener al menos 8 caracteres y contener una mayúscula, un número y un caracter especial ";
             } else {
                 $pwd2 = true;
             }
-        } else {
-            $errores['password2'] = "Debe repetir la contraseña";
         }
 
         //Si ambas contraseñas tienen buena forma, comprobamos que coinciden
@@ -169,6 +181,7 @@ class UsuariosSistemaController extends BaseController
 
     public function showEditUsuarioSistema(string $idUsuario, array $errores = [], array $input = []): void
     {
+
         //obtenemos los datos del usuario
         $modeloUsuariosSistema = new UsuariosSistemaModel();
         $usuario = $modeloUsuariosSistema->getUsuarioID((int)$idUsuario);
@@ -200,16 +213,19 @@ class UsuariosSistemaController extends BaseController
         }
 
         //comprobamos la existencia de errores
-        $errores = $this->checkForm($_POST);
+        $errores = $this->checkForm($_POST, 'edit');
         if ($errores === []) {
             $insertData = $_POST;
             //Comprobamos si se ha enviado el valor del chechbox de baja
             $insertData['baja'] = isset($_POST['baja']) ? 1 : 0;
             //$insertData['id_rol'] = (int)$_POST['id_rol'];
 
-
-            //Transformamos a hash la contraseña para introducirlo así en la base de datos
-            $insertData['pass'] = password_hash($_POST['password1'], PASSWORD_DEFAULT);
+            if ($_POST['password1'] !== '') {
+                //Transformamos a hash la contraseña para introducirlo así en la base de datos
+                $insertData['pass'] = password_hash($_POST['password1'], PASSWORD_DEFAULT);
+            } else {
+                $insertData['pass'] = $usuario['pass'];
+            }
 
 
             unset($insertData['password1']);
@@ -233,31 +249,44 @@ class UsuariosSistemaController extends BaseController
     public function showLoginUsuariosSistema(array $errores = []): void
     {
         $data = [
-          'titulo' => 'Login',
-          'breadcrumb' => ['Login', 'Usuarios Sistema'],
+            'titulo' => 'Login',
+            'breadcrumb' => ['Login', 'Usuarios Sistema'],
         ];
         $data['errores'] = $errores;
-        $this->view->showViews(array('templates/header.view.php', 'loginUsuariosSistema.view.php', 'templates/footer.view.php'), $data);
+        $this->view->showViews(array('loginUsuariosSistema.view.php'), $data);
     }
 
     public function doLoginUsuariosSistema(): void
     {
         $modeloUsuariosSistema = new UsuariosSistemaModel();
         $usuario = $modeloUsuariosSistema->getUsuarioEmail($_POST['email']);
+        $passOk = false;
 
         if ($usuario) {
-            if (password_verify($_POST['password'], $usuario['pass'])) {
+            $passOk = password_verify($_POST['password'], $usuario['pass']);
+            if ($passOk) {
                 isset($_POST['remember']) ? setcookie('email', $_POST['email']) : '';
                 if ($modeloUsuariosSistema->editUsuarioSistemaDate((int)$usuario['id_usuario'])) {
+                    $_SESSION['username'] = ucfirst($usuario['nombre']);
+                    $_SESSION['id_rol'] = $usuario['id_rol'];
+
                     header('Location: /usuariosSistema');
-                };
-            } else {
-                $errores['verificacion'] = "El usuario o la contraseña no son correctos";
-                $this->showLoginUsuariosSistema($errores);
+                } else {
+                    $errores['verificacion'] = "Se ha producido un error, vuelva a intentarlo";
+                    $this->showLoginUsuariosSistema($errores);
+                }
             }
-        } else {
+        }
+
+        if ($usuario === false || $passOk === false) {
             $errores['verificacion'] = "El usuario o la contraseña no son correctos";
             $this->showLoginUsuariosSistema($errores);
         }
+    }
+
+    public function doLogout(): void
+    {
+        session_destroy();
+        header('Location: /usuariosSistema/login');
     }
 }

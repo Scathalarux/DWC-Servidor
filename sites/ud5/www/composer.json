@@ -12,10 +12,20 @@
     "steampixel/simple-php-router": "^0.7.1",
     "vlucas/phpdotenv": "^5.5",
     "ext-pdo": "*",
-    "ext-decimal": "*"
+    "ext-decimal": "*",
+    "google/apiclient": "^2.15.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.9.2",
     "vendor-autoload.php": "*"
+  },
+  "scripts": {
+    "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
+  },
+  "extra": {
+    "google/apiclient-services": [
+      "OAuth"
+    ]
   }
+
 }

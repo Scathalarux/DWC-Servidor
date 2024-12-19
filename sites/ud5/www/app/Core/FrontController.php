@@ -216,6 +216,14 @@ class FrontController
             'get'
         );
         Route::add(
+            '/usuariosSistema/google-oauth.php',
+            function () {
+                $controlador = new UsuariosSistemaController();
+                $controlador->showLoginUsuariosSistema();
+            },
+            'get'
+        );
+        Route::add(
             '/usuariosSistema/login',
             function () {
                 $controlador = new UsuariosSistemaController();
@@ -230,6 +238,14 @@ class FrontController
                 $controlador->doLoginUsuariosSistema();
             },
             'post'
+        );
+        Route::add(
+            '/usuariosSistema/logout',
+            function () {
+                $controlador = new UsuariosSistemaController();
+                $controlador->doLogout();
+            },
+            'get'
         );
 
         Route::add(

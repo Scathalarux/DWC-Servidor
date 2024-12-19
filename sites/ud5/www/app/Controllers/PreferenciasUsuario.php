@@ -39,7 +39,7 @@ class PreferenciasUsuario extends BaseController
                 $_SESSION['username'] = "Usuario";
             }
         }
-0
+
         $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 

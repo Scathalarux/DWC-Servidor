@@ -72,7 +72,7 @@ declare(strict_types=1);
                     <?php foreach ($usuarios as $usuario) { ?>
                         <tr>
                             <td><?php echo $usuario['id_usuario'] ?></td>
-                            <td><?php echo $usuario['nombre_rol'] ?? '-' ?></td>
+                            <td><?php echo $usuario['rol'] ?? '-' ?></td>
                             <td><?php echo $usuario['email'] ?? '-' ?></td>
                             <td><?php echo $usuario['pass'] ?? '-' ?></td>
                             <td><?php echo $usuario['nombre'] ?? '-'?></td>
@@ -80,8 +80,8 @@ declare(strict_types=1);
                             <td><?php echo $usuario['idioma'] ?? '-'?></td>
                             <td><?php echo $usuario['baja'] ? 'Activo' : 'Parado' ?></td>
                             <td>
-                                <a href="<?php echo $_ENV['host.folder'] . 'usuariosSistema/edit/' . $usuario['id_usuario'] ?>" target="_blank" class="btn btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pen"></i></a>
-                                <a href="<?php echo $_ENV['host.folder'] . 'usuariosSistema/delete/' . $usuario['id_usuario']?>" target="_blank" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Borrar"><i class="fas fa-trash"></i></a>
+                                <a href="<?php echo $_ENV['host.folder'] . 'usuariosSistema/edit/' . $usuario['id_usuario'] ?>" target="_blank" class="btn btn-success ml-1 mt-1" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pen"></i></a>
+                                <a href="<?php echo $_ENV['host.folder'] . 'usuariosSistema/delete/' . $usuario['id_usuario']?>" target="_blank" class="btn btn-danger  ml-1 mt-1" data-toggle="tooltip" data-placement="top" title="Borrar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>
