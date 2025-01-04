@@ -12,6 +12,10 @@ use Decimal\Decimal;
 
 class UsuariosController extends BaseController
 {
+    public const PAGE_SIZE = 25;
+
+    public const DEFAULT_PAGE = 1;
+
     public function showUsuarios(): void
     {
         $data = $this->getCommonData();
@@ -39,11 +43,30 @@ class UsuariosController extends BaseController
 
         $usuariosModel = new UsuariosModel();
 
-        $usuarios = $usuariosModel->getFilteredUsuarios($_GET);
+        //ordenación
+        $order = $this->getOrder();
+
+        $copiaGet = $_GET;
+        unset($copiaGet['order']);
+        $data['copiaGet'] = http_build_query($copiaGet);
+        if (!empty($data['copiaGet'])) {
+            $data['copiaGet'] .= '&';
+        }
+
+        //maxPage
+        $maxPage = $usuariosModel->getMaxPage($_GET, self::PAGE_SIZE);
+
+        //paginación
+        $page = $this->getPage($maxPage);
+
+
+        $usuarios = $usuariosModel->getFilteredUsuarios($_GET, $order);
         $input = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $data['usuarios'] = $usuarios;
         $data['input'] = $input;
+        $data['order'] = $order;
+        $data['page'] = $page;
 
         $this->view->showViews(array('templates/header.view.php', 'usuarios.view.php', 'templates/footer.view.php'), $data);
     }
@@ -183,5 +206,27 @@ class UsuariosController extends BaseController
 
 
         return $errors;
+    }
+
+    public function getOrder(): int
+    {
+        if (!empty($_GET['order']) && filter_var($_GET['order'], FILTER_VALIDATE_INT)) {
+            if (abs((int)$_GET['order']) > 0 && abs((int)$_GET['order']) <= count(UsuariosModel::ORDER_COLUMNS)) {
+                return (int)$_GET['order'];
+            }
+        }
+
+        return UsuariosModel::DEFAULT_ORDER;
+    }
+
+    public function getPage(int $maxPage): int
+    {
+        if (!empty($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT)) {
+            if ((int)$_GET['page'] > 0 && (int)$_GET['page'] <= $maxPage) {
+                return (int)$_GET['page'];
+            }
+        }
+
+        return self::DEFAULT_PAGE;
     }
 }

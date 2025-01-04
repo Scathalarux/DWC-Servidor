@@ -28,16 +28,16 @@ class FrontController
             },
             'get'
         );
-        Route::add(
+        /*Route::add(
             '/usuarios',
             function () {
                 $controlador = new UsuariosController();
                 $controlador->showUsuarios();
             },
             'get'
-        );
+        );*/
         Route::add(
-            '/usuariosFiltros',
+            '/usuarios',
             function () {
                 $controlador = new UsuariosController();
                 $controlador->showFilteredUsuarios();

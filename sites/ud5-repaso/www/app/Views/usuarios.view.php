@@ -7,7 +7,7 @@ declare(strict_types=1);
 <div class="row">
     <div class="col-12">
         <div class="card shadow mb-4">
-            <form method="get" action="/usuariosFiltros">
+            <form method="get" action="/usuarios">
                 <input type="hidden" name="order" value="1"/>
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Filtros</h6>
@@ -38,7 +38,7 @@ declare(strict_types=1);
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="id_rol">Rol:</label>
-                                <select name="id_rol" id="id_continente" class="form-control" data-placeholder="Rol">
+                                <select name="id_rol" id="id_rol" class="form-control" data-placeholder="Rol">
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) { ?>
                                         <option value="<?php echo $rol['id_rol'] ?>" <?php echo isset($input['id_rol']) && $rol['id_rol'] === $input['id_rol'] ? 'selected' : '' ?>><?php echo $rol['nombre_rol'] ?></option>
@@ -115,14 +115,32 @@ declare(strict_types=1);
                         <thead>
                         <tr>
                             <th>
-                                <a href="<?php echo $_ENV['host.folder'] . 'usuarios?' . 'order=' . (($order == 1) ? '-' : '')?>1">Username</a>
-                                <i class="fas fa-sort-amount-down-alt"></i>
+                                <a href="<?php echo $_ENV['host.folder'] . 'usuarios?' . $copiaGet . '&order=' . (($order == 1) ? '-' : '')?>1">Username</a>
+                                <?php if (abs($order) == 1) { ?>
+                                <i class="fas fa-sort-amount-<?php echo ($order > 0) ? 'down' : 'up' ?>-alt"></i>
+                                <?php } ?>
                             </th>
-                            <th><a href="/usuarios?order=2">Salario Bruto</a></th>
-                            <th><a href="/usuarios?order=3">Retención IRPF</a></th>
-                            <th><a href="/usuarios?order=4">Rol</a></th>
-                            <th><a href="/usuarios?order=5">País</a></th>
-                            <th><a href="/usuarios?order=6">Activo</a></th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'usuarios?' . $copiaGet . '&order=' . (($order == 2) ? '-' : '')?>2">Salario Bruto</a>
+                                <?php if (abs($order) == 2) { ?>
+                                    <i class="fas fa-sort-amount-<?php echo ($order > 0) ? 'down' : 'up' ?>-alt"></i>
+                                <?php } ?>
+                            </th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'usuarios?' . $copiaGet . '&order=' . (($order == 3) ? '-' : '')?>3">Retención IRPF</a>
+                                <?php if (abs($order) == 3) { ?>
+                                    <i class="fas fa-sort-amount-<?php echo ($order > 0) ? 'down' : 'up' ?>-alt"></i>
+                                <?php } ?>
+                            </th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'usuarios?' . $copiaGet . '&order=' . (($order == 4) ? '-' : '')?>4">Rol</a>
+                                <?php if (abs($order) == 4) { ?>
+                                    <i class="fas fa-sort-amount-<?php echo ($order > 0) ? 'down' : 'up' ?>-alt"></i>
+                                <?php } ?>
+                            </th>
+                            <th><a href="<?php echo $_ENV['host.folder'] . 'usuarios?' . $copiaGet . '&order=' . (($order == 5) ? '-' : '')?>5">País</a>
+                                <?php if (abs($order) == 5) { ?>
+                                    <i class="fas fa-sort-amount-<?php echo ($order > 0) ? 'down' : 'up' ?>-alt"></i>
+                                <?php } ?>
+                            </th>
+                            <th>Activo</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -149,6 +167,41 @@ declare(strict_types=1);
                         <?php } ?>
                         </tbody>
                     </table>
+                    <div class="card-footer">
+                        <nav aria-label="Navegacion por paginas">
+                            <ul class="pagination justify-content-center">
+                                <?php if ($page === 1) { ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?php echo $_ENV['host.folder'] . 'usuarios?' . '&page=1' ?>" aria-label="First">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">First</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?php echo $_ENV['host.folder'] . 'usuarios?' . '&page=' . ($page - 1) ?>" aria-label="Previous">
+                                        <span aria-hidden="true">&lt;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <?php } ?>
+                                <li class="page-item active"><a class="page-link" href="#">3</a></li>
+                                <?php if ($page === $maxPage) { ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?php echo $_ENV['host.folder'] . 'usuarios?' . '&page=' . ($page + 1) ?>" aria-label="Next">
+                                        <span aria-hidden="true">&gt;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?php echo $_ENV['host.folder'] . 'usuarios?' . '&page=' . $maxPage ?>" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Last</span>
+                                    </a>
+                                </li>
+                                <?php } ?>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>

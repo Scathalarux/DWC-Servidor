@@ -14,6 +14,10 @@ class UsuariosModel extends BaseDbModel
                         JOIN aux_countries ac ON ac.id = u.id_country";
 
 
+    public const ORDER_COLUMNS = ['username', 'salarioBruto', 'retencionIRPF',  'id_rol', 'id_country'];
+
+    public const DEFAULT_ORDER = 1;
+
     public function getUsuarios(): array
     {
         $stmt = $this->pdo->query(self::SELECT_BASE);
@@ -28,16 +32,21 @@ class UsuariosModel extends BaseDbModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function getFilteredUsuarios(array $data): array
+    public function getFilteredUsuarios(array $data, int $order): array
     {
         $filtrosQuery = $this->getFiltros($data);
 
+        $sentido = $order > 0 ? ' ASC ' : ' DESC ';
+
+        $order = abs($order);
+
         if (!empty($filtrosQuery['condiciones'])) {
-            $sql = self::SELECT_BASE . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']);
+            $sql = self::SELECT_BASE . " WHERE " . implode(" AND ", $filtrosQuery['condiciones'])
+                . ' ORDER BY ' . self::ORDER_COLUMNS[$order - 1] . $sentido;
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($filtrosQuery['vars']);
         } else {
-            $stmt = $this->pdo->query(self::SELECT_BASE);
+            $stmt = $this->pdo->query(self::SELECT_BASE . ' ORDER BY ' . self::ORDER_COLUMNS[$order - 1] . $sentido);
         }
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -111,5 +120,22 @@ class UsuariosModel extends BaseDbModel
         $sql = 'INSERT INTO usuario (username, salarioBruto, retencionIRPF, activo, id_rol, id_country) VALUES (:username, :salarioBruto, :retencion, :activo; :id_rol, :id_country)';
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($data);
+    }
+
+    public function getMaxPage(array $data, int $pageSize): int
+    {
+        $filtrosQuery = $this->getFiltros($data);
+
+
+        if (!empty($filtrosQuery['condiciones'])) {
+            $sql = self::SELECT_BASE . " WHERE " . implode(" AND ", $filtrosQuery['condiciones']);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($filtrosQuery['vars']);
+        } else {
+            $stmt = $this->pdo->query(self::SELECT_BASE);
+        }
+
+        $rows = $stmt->fetchColumn(0);
+        return (int)ceil($rows / $pageSize);
     }
 }

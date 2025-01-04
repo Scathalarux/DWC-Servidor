@@ -38,7 +38,7 @@ declare(strict_types=1);
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="id_rol">Rol:</label>
-                                <select name="id_rol" id="id_continente" class="form-control" data-placeholder="Rol">
+                                <select name="id_rol" id="id_rol" class="form-control" data-placeholder="Rol">
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) { ?>
                                         <option value="<?php echo $rol['id_rol'] ?>" <?php echo isset($input['id_rol']) && $rol['id_rol'] === $input['id_rol'] ? 'selected' : '' ?>><?php echo $rol['nombre_rol'] ?></option>
