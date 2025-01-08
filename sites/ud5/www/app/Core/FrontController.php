@@ -25,429 +25,460 @@ class FrontController
         guardados en $_SESSION sean accesibles en el código */
         session_start();
 
-        Route::add(
-            '/',
-            function () {
-                $controlador = new InicioController();
-                $controlador->index();
-            },
-            'get'
-        );
+        if (isset($_SESSION['username'])) {
+            Route::add(
+                '/',
+                function () {
+                    $controlador = new InicioController();
+                    $controlador->index();
+                },
+                'get'
+            );
 
-        /*Route::add(
-            '/test',
-            function () {
-                $controlador = new CsvController();
-                $controlador->showFormularioNombre();
-            },
-            'get'
-        );
+            /*Route::add(
+                '/test',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->showFormularioNombre();
+                },
+                'get'
+            );
 
-        Route::add(
-            '/test',
-            function () {
-                $controlador = new CsvController();
-                $controlador->doFormularioNombre();
-            },
-            'post'
-        );*/
-        Route::add(
-            '/historicoPoblacionPontevedra',
-            function () {
-                $controlador = new CsvController();
-                $controlador->showPoblacionPontevedra();
-            },
-            'get'
-        );
-        Route::add(
-            '/poblacionGruposEdad',
-            function () {
-                $controlador = new CsvController();
-                $controlador->showPoblacionGruposEdad();
-            },
-            'get'
-        );
-        Route::add(
-            '/poblacionPontevedra2020',
-            function () {
-                $controlador = new CsvController();
-                $controlador->showPoblacionPontevedra2020();
-            },
-            'get'
-        );
-        Route::add(
-            '/anadirMunicipio',
-            function () {
-                $controlador = new CsvController();
-                $controlador->addRow();
-            },
-            'post'
-        );
-        Route::add(
-            '/anadirMunicipio',
-            function () {
-                $controlador = new CsvController();
-                $controlador->showAnadirPoblacion();
-            },
-            'get'
-        );
+            Route::add(
+                '/test',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->doFormularioNombre();
+                },
+                'post'
+            );*/
+            Route::add(
+                '/historicoPoblacionPontevedra',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->showPoblacionPontevedra();
+                },
+                'get'
+            );
+            Route::add(
+                '/poblacionGruposEdad',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->showPoblacionGruposEdad();
+                },
+                'get'
+            );
+            Route::add(
+                '/poblacionPontevedra2020',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->showPoblacionPontevedra2020();
+                },
+                'get'
+            );
+            Route::add(
+                '/anadirMunicipio',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->addRow();
+                },
+                'post'
+            );
+            Route::add(
+                '/anadirMunicipio',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->showAnadirPoblacion();
+                },
+                'get'
+            );
 
-        Route::add(
-            '/usuarios/new',
-            function () {
-                $controlador = new UserController();
-                $controlador->showAnadirUser();
-            },
-            'get'
-        );
-        Route::add(
-            '/usuarios/new',
-            function () {
-                $controlador = new UserController();
-                $controlador->doAnadirUser();
-            },
-            'post'
-        );
+            Route::add(
+                '/usuarios/new',
+                function () {
+                    $controlador = new UserController();
+                    $controlador->showAnadirUser();
+                },
+                'get'
+            );
+            Route::add(
+                '/usuarios/new',
+                function () {
+                    $controlador = new UserController();
+                    $controlador->doAnadirUser();
+                },
+                'post'
+            );
 
-        Route::add(
-            '/allUsers',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->showAllUsuarios();
-            },
-            'get'
-        );
-        Route::add(
-            '/users-filter',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->doFilterUsuarios();
-            },
-            'get'
-        );
-        Route::add(
-            '/users-filter/new',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->showAddUsuario();
-            },
-            'get'
-        );
-        Route::add(
-            '/users-filter/new',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->addUsuario();
-            },
-            'post'
-        );
-        Route::add(
-            '/users-filter/edit/([\p{L}\p{N}_]{3,50})',
-            function ($username) {
-                $controlador = new UsuariosController();
-                $controlador->showEditUsuario($username);
-            },
-            'get'
-        );
-        Route::add(
-            '/users-filter/edit/([\p{L}\p{N}_]{3,50})',
-            function ($username) {
-                $controlador = new UsuariosController();
-                $controlador->doEditUsuario($username);
-            },
-            'post'
-        );
-        Route::add(
-            '/users-filter/delete/([\p{L}\p{N}_]{3,50})',
-            function ($username) {
-                $controlador = new UsuariosController();
-                $controlador->deleteUsuario($username);
-            },
-            'get'
-        );
+            Route::add(
+                '/allUsers',
+                function () {
+                    $controlador = new UsuariosController();
+                    $controlador->showAllUsuarios();
+                },
+                'get'
+            );
+            Route::add(
+                '/users-filter',
+                function () {
+                    $controlador = new UsuariosController();
+                    $controlador->doFilterUsuarios();
+                },
+                'get'
+            );
+            Route::add(
+                '/users-filter/new',
+                function () {
+                    $controlador = new UsuariosController();
+                    $controlador->showAddUsuario();
+                },
+                'get'
+            );
+            Route::add(
+                '/users-filter/new',
+                function () {
+                    $controlador = new UsuariosController();
+                    $controlador->addUsuario();
+                },
+                'post'
+            );
+            Route::add(
+                '/users-filter/edit/([\p{L}\p{N}_]{3,50})',
+                function ($username) {
+                    $controlador = new UsuariosController();
+                    $controlador->showEditUsuario($username);
+                },
+                'get'
+            );
+            Route::add(
+                '/users-filter/edit/([\p{L}\p{N}_]{3,50})',
+                function ($username) {
+                    $controlador = new UsuariosController();
+                    $controlador->doEditUsuario($username);
+                },
+                'post'
+            );
+            Route::add(
+                '/users-filter/delete/([\p{L}\p{N}_]{3,50})',
+                function ($username) {
+                    $controlador = new UsuariosController();
+                    $controlador->deleteUsuario($username);
+                },
+                'get'
+            );
 
-        Route::add(
-            '/preferenciasUsuario',
-            function () {
-                $controlador = new PreferenciasUsuario();
-                $controlador->showPreferenciasUsuario();
-            },
-            'get'
-        );
-        Route::add(
-            '/preferenciasUsuario',
-            function () {
-                $controlador = new PreferenciasUsuario();
-                $controlador->doPreferenciasUsuario();
-            },
-            'post'
-        );
-        Route::add(
-            '/usersBySalario',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->showOrderUsuarioSalario();
-            },
-            'get'
-        );
-        Route::add(
-            '/standardUsers',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->showStandardUsers();
-            },
-            'get'
-        );
-        Route::add(
-            '/usersByName',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->showUsersCarlos();
-            },
-            'get'
-        );
+            Route::add(
+                '/preferenciasUsuario',
+                function () {
+                    $controlador = new PreferenciasUsuario();
+                    $controlador->showPreferenciasUsuario();
+                },
+                'get'
+            );
+            Route::add(
+                '/preferenciasUsuario',
+                function () {
+                    $controlador = new PreferenciasUsuario();
+                    $controlador->doPreferenciasUsuario();
+                },
+                'post'
+            );
+            Route::add(
+                '/usersBySalario',
+                function () {
+                    $controlador = new UsuariosController();
+                    $controlador->showOrderUsuarioSalario();
+                },
+                'get'
+            );
+            Route::add(
+                '/standardUsers',
+                function () {
+                    $controlador = new UsuariosController();
+                    $controlador->showStandardUsers();
+                },
+                'get'
+            );
+            Route::add(
+                '/usersByName',
+                function () {
+                    $controlador = new UsuariosController();
+                    $controlador->showUsersCarlos();
+                },
+                'get'
+            );
 
-        Route::add(
-            '/usuariosSistema',
-            function () {
-                $controlador = new UsuariosSistemaController();
-                $controlador->showUsuariosSistema();
-            },
-            'get'
-        );
-        Route::add(
-            '/usuariosSistema/google-oauth.php',
-            function () {
-                $controlador = new UsuariosSistemaController();
-                $controlador->showLoginUsuariosSistema();
-            },
-            'get'
-        );
-        Route::add(
-            '/usuariosSistema/login',
-            function () {
-                $controlador = new UsuariosSistemaController();
-                $controlador->showLoginUsuariosSistema();
-            },
-            'get'
-        );
-        Route::add(
-            '/usuariosSistema/login',
-            function () {
-                $controlador = new UsuariosSistemaController();
-                $controlador->doLoginUsuariosSistema();
-            },
-            'post'
-        );
-        Route::add(
-            '/usuariosSistema/logout',
-            function () {
-                $controlador = new UsuariosSistemaController();
-                $controlador->doLogout();
-            },
-            'get'
-        );
+            Route::add(
+                '/usuariosSistema',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->showUsuariosSistema();
+                },
+                'get'
+            );
+            Route::add(
+                '/usuariosSistema/google-oauth.php',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->showLoginUsuariosSistema();
+                },
+                'get'
+            );
+            Route::add(
+                '/usuariosSistema/login',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->showLoginUsuariosSistema();
+                },
+                'get'
+            );
+            Route::add(
+                '/usuariosSistema/login',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->doLoginUsuariosSistema();
+                },
+                'post'
+            );
+            Route::add(
+                '/usuariosSistema/logout',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->doLogout();
+                },
+                'get'
+            );
 
-        Route::add(
-            '/usuariosSistema/new',
-            function () {
-                $controlador = new UsuariosSistemaController();
-                $controlador->showAddUsuarioSistema();
-            },
-            'get'
-        );
-        Route::add(
-            '/usuariosSistema/new',
-            function () {
-                $controlador = new UsuariosSistemaController();
-                $controlador->doAddUsuarioSistema();
-            },
-            'post'
-        );
-        Route::add(
-            '/usuariosSistema/edit/([\p{N}]{1,})',
-            function ($idUsuario) {
-                $controlador = new UsuariosSistemaController();
-                $controlador->showEditUsuarioSistema($idUsuario);
-            },
-            'get'
-        );
-        Route::add(
-            '/usuariosSistema/edit/([\p{N}]{1,})',
-            function ($idUsuario) {
-                $controlador = new UsuariosSistemaController();
-                $controlador->doEditUsuarioSistema($idUsuario);
-            },
-            'post'
-        );
-
-
-        //REPASO EXAMEN 1ª EV
-        Route::add(
-            '/productos',
-            function () {
-                $controlador = new ProductosController();
-                $controlador->doFilteredProducts();
-            },
-            'get'
-        );
-        Route::add(
-            '/productos2',
-            function () {
-                $controlador = new ProductoController2();
-                $controlador->doFilteredProductos();
-            },
-            'get'
-        );
-        Route::add(
-            '/productos2/new',
-            function () {
-                $controlador = new ProductoController2();
-                $controlador->showAddProducto();
-            },
-            'get'
-        );
-        Route::add(
-            '/productos2/new',
-            function () {
-                $controlador = new ProductoController2();
-                $controlador->addProducto();
-            },
-            'post'
-        );
-        Route::add(
-            '/productos2/edit/(\p{L}{2,3}[0-9]{7})',
-            function ($codigo) {
-                $controlador = new ProductoController2();
-                $controlador->showEditProducto($codigo);
-            },
-            'get'
-        );
-        Route::add(
-            '/productos2/edit/(\p{L}{2,3}[0-9]{7})',
-            function ($codigo) {
-                $controlador = new ProductoController2();
-                $controlador->editProducto($codigo);
-            },
-            'post'
-        );
-        Route::add(
-            '/productos2/delete/(\p{L}{2,3}[0-9]{7})',
-            function ($codigo) {
-                $controlador = new ProductoController2();
-                $controlador->deleteProducto($codigo);
-            },
-            'get'
-        );
-        Route::add(
-            '/productos3',
-            function () {
-                $controlador = new ProductoController3();
-                $controlador->doFiltradoProductos();
-            },
-            'get'
-        );
-        Route::add(
-            '/productos3/new',
-            function () {
-                $controlador = new ProductoController3();
-                $controlador->showAddProducto();
-            },
-            'get'
-        );
-        Route::add(
-            '/productos3/new',
-            function () {
-                $controlador = new ProductoController3();
-                $controlador->doAddProducto();
-            },
-            'post'
-        );
-        Route::add(
-            '/productos3/edit/([\p{L}]{2,3}[0-9]{7})',
-            function ($codigo) {
-                $controlador = new ProductoController3();
-                $controlador->showEditProducto($codigo);
-            },
-            'get'
-        );
-
-        Route::add(
-            '/productos3/edit/([\p{L}]{2,3}[0-9]{7})',
-            function ($codigo) {
-                $controlador = new ProductoController3();
-                $controlador->doEditProducto($codigo);
-            },
-            'post'
-        );
-        Route::add(
-            '/productos3/delete/([\p{L}]{2,3}[0-9]{7})',
-            function ($codigo) {
-                $controlador = new ProductoController3();
-                $controlador->doDeleteProducto($codigo);
-            },
-            'get'
-        );
-
-        /*Route::add(
-            '/anagrama',
-            function () {
-                $controlador = new CsvController();
-                $controlador->showAnagrama();
-            },
-            'get'
-        );
-
-        Route::add(
-            '/anagrama',
-            function () {
-                $controlador = new CsvController();
-                $controlador->doAnagrama();
-            },
-            'post'
-        );
-
-        Route::add(
-            '/mismas-letras',
-            function () {
-                $controlador = new CsvController();
-                $controlador->showMismasLetras();
-            },
-            'get'
-        );
-
-        Route::add(
-            '/mismas-letras',
-            function () {
-                $controlador = new CsvController();
-                $controlador->doMismasLetras();
-            },
-            'post'
-        );*/
+            Route::add(
+                '/usuariosSistema/new',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->showAddUsuarioSistema();
+                },
+                'get'
+            );
+            Route::add(
+                '/usuariosSistema/new',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->doAddUsuarioSistema();
+                },
+                'post'
+            );
+            Route::add(
+                '/usuariosSistema/edit/([\p{N}]{1,})',
+                function ($idUsuario) {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->showEditUsuarioSistema($idUsuario);
+                },
+                'get'
+            );
+            Route::add(
+                '/usuariosSistema/edit/([\p{N}]{1,})',
+                function ($idUsuario) {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->doEditUsuarioSistema($idUsuario);
+                },
+                'post'
+            );
 
 
-        Route::add(
-            '/demo-proveedores',
-            function () {
-                $controlador = new InicioController();
-                $controlador->demo();
-            },
-            'get'
-        );
+            //REPASO EXAMEN 1ª EV
+            Route::add(
+                '/productos',
+                function () {
+                    $controlador = new ProductosController();
+                    $controlador->doFilteredProducts();
+                },
+                'get'
+            );
+            Route::add(
+                '/productos2',
+                function () {
+                    $controlador = new ProductoController2();
+                    $controlador->doFilteredProductos();
+                },
+                'get'
+            );
+            Route::add(
+                '/productos2/new',
+                function () {
+                    $controlador = new ProductoController2();
+                    $controlador->showAddProducto();
+                },
+                'get'
+            );
+            Route::add(
+                '/productos2/new',
+                function () {
+                    $controlador = new ProductoController2();
+                    $controlador->addProducto();
+                },
+                'post'
+            );
+            Route::add(
+                '/productos2/edit/(\p{L}{2,3}[0-9]{7})',
+                function ($codigo) {
+                    $controlador = new ProductoController2();
+                    $controlador->showEditProducto($codigo);
+                },
+                'get'
+            );
+            Route::add(
+                '/productos2/edit/(\p{L}{2,3}[0-9]{7})',
+                function ($codigo) {
+                    $controlador = new ProductoController2();
+                    $controlador->editProducto($codigo);
+                },
+                'post'
+            );
+            Route::add(
+                '/productos2/delete/(\p{L}{2,3}[0-9]{7})',
+                function ($codigo) {
+                    $controlador = new ProductoController2();
+                    $controlador->deleteProducto($codigo);
+                },
+                'get'
+            );
+            Route::add(
+                '/productos3',
+                function () {
+                    $controlador = new ProductoController3();
+                    $controlador->doFiltradoProductos();
+                },
+                'get'
+            );
+            Route::add(
+                '/productos3/new',
+                function () {
+                    $controlador = new ProductoController3();
+                    $controlador->showAddProducto();
+                },
+                'get'
+            );
+            Route::add(
+                '/productos3/new',
+                function () {
+                    $controlador = new ProductoController3();
+                    $controlador->doAddProducto();
+                },
+                'post'
+            );
+            Route::add(
+                '/productos3/edit/([\p{L}]{2,3}[0-9]{7})',
+                function ($codigo) {
+                    $controlador = new ProductoController3();
+                    $controlador->showEditProducto($codigo);
+                },
+                'get'
+            );
 
-        Route::pathNotFound(
-            function () {
-                $controller = new ErroresController();
-                $controller->error404();
-            }
-        );
+            Route::add(
+                '/productos3/edit/([\p{L}]{2,3}[0-9]{7})',
+                function ($codigo) {
+                    $controlador = new ProductoController3();
+                    $controlador->doEditProducto($codigo);
+                },
+                'post'
+            );
+            Route::add(
+                '/productos3/delete/([\p{L}]{2,3}[0-9]{7})',
+                function ($codigo) {
+                    $controlador = new ProductoController3();
+                    $controlador->doDeleteProducto($codigo);
+                },
+                'get'
+            );
 
-        Route::methodNotAllowed(
-            function () {
-                $controller = new ErroresController();
-                $controller->error405();
-            }
-        );
+            /*Route::add(
+                '/anagrama',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->showAnagrama();
+                },
+                'get'
+            );
+
+            Route::add(
+                '/anagrama',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->doAnagrama();
+                },
+                'post'
+            );
+
+            Route::add(
+                '/mismas-letras',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->showMismasLetras();
+                },
+                'get'
+            );
+
+            Route::add(
+                '/mismas-letras',
+                function () {
+                    $controlador = new CsvController();
+                    $controlador->doMismasLetras();
+                },
+                'post'
+            );*/
+
+
+            Route::add(
+                '/demo-proveedores',
+                function () {
+                    $controlador = new InicioController();
+                    $controlador->demo();
+                },
+                'get'
+            );
+
+            Route::pathNotFound(
+                function () {
+                    $controller = new ErroresController();
+                    $controller->error404();
+                }
+            );
+
+        } else {
+            Route::add(
+                '/usuariosSistema/login',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->showLoginUsuariosSistema();
+                },
+                'get'
+            );
+            Route::add(
+                '/usuariosSistema/login',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->doLoginUsuariosSistema();
+                },
+                'post'
+            );
+            Route::pathNotFound(
+                function () {
+
+                    header('Location: /usuariosSistema/login');
+                }
+            );
+
+            Route::methodNotAllowed(
+                function () {
+                    $controller = new ErroresController();
+                    $controller->error405();
+                }
+            );
+        };
+
+
+
+
+
         Route::run();
     }
 }

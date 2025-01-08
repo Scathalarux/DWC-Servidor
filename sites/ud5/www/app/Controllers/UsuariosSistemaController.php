@@ -133,10 +133,10 @@ class UsuariosSistemaController extends BaseController
         //Comprobaremos la contraseña en caso de que se esté añadiendo un nuevo usuario
         //Si está en la edición y no introduce un cambio en la contraseña, se omitirá
         if ($type === "add") {
-            if (empty($errores['password1'])) {
+            if (empty($data['password1'])) {
                 $errores['password1'] = "La contraseña es obligatoria";
             }
-            if (empty($errores['password2'])) {
+            if (empty($data['password2'])) {
                 $errores['password2'] = "Debe repetir la contraseña";
             }
         }
@@ -145,16 +145,16 @@ class UsuariosSistemaController extends BaseController
         $pwd2 = false;
         if (!empty($data['password1'])) {
             //Comprobamos el contenido de la contraseña1
-            if (!preg_match('/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$/', $data['password1'])) {
-                $errores['password1'] = "La contraseña debe tener al menos 8 caracteres y contener una mayúscula, un número y un caracter especial ";
+            if (!preg_match('/^(?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,}\S$/', $data['password1'])) {
+                $errores['password1'] = "La contraseña debe tener al menos 7 caracteres y contener una mayúscula, un número y un caracter especial ";
             } else {
                 $pwd1 = true;
             }
         }
 
         if (!empty($data['password2'])) {
-            if (!preg_match('/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$/', $data['password2'])) {
-                $errores['password2'] = "La contraseña debe tener al menos 8 caracteres y contener una mayúscula, un número y un caracter especial ";
+            if (!preg_match('/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/', $data['password2'])) {
+                $errores['password2'] = "La contraseña debe tener al menos 7 caracteres y contener una mayúscula, un número y un caracter especial ";
             } else {
                 $pwd2 = true;
             }
@@ -266,10 +266,9 @@ class UsuariosSistemaController extends BaseController
             $passOk = password_verify($_POST['password'], $usuario['pass']);
             if ($passOk) {
                 isset($_POST['remember']) ? setcookie('email', $_POST['email']) : '';
+                $_SESSION['username'] = ucfirst($usuario['nombre']);
+                $_SESSION['id_rol'] = $usuario['id_rol'];
                 if ($modeloUsuariosSistema->editUsuarioSistemaDate((int)$usuario['id_usuario'])) {
-                    $_SESSION['username'] = ucfirst($usuario['nombre']);
-                    $_SESSION['id_rol'] = $usuario['id_rol'];
-
                     header('Location: /usuariosSistema');
                 } else {
                     $errores['verificacion'] = "Se ha producido un error, vuelva a intentarlo";
