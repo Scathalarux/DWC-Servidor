@@ -27,9 +27,6 @@
       <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="6f58e861-13e6-45be-a34b-24b0e6b827ff" beautifier_path="/var/www/html/vendor/bin/phpcbf" tool_path="/var/www/html/vendor/bin/phpcs" timeout="30000" />
     </phpcs_settings>
   </component>
-  <component name="PhpExternalFormatter">
-    <option name="externalFormatter" value="PHP_CBF" />
-  </component>
   <component name="PhpIncludePathManager">
     <include_path>
       <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-mbstring" />

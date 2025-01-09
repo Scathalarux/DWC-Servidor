@@ -282,34 +282,9 @@ class FrontController
             }
 
 
-
             //Para que todos los usuarios puedan iniciar/cerrar sesión
             Route::add(
-                '/usuariosSistema/google-oauth.php',
-                function () {
-                    $controlador = new UsuariosSistemaController();
-                    $controlador->showLoginUsuariosSistema();
-                },
-                'get'
-            );
-            Route::add(
-                '/usuariosSistema/login',
-                function () {
-                    $controlador = new UsuariosSistemaController();
-                    $controlador->showLoginUsuariosSistema();
-                },
-                'get'
-            );
-            Route::add(
-                '/usuariosSistema/login',
-                function () {
-                    $controlador = new UsuariosSistemaController();
-                    $controlador->doLoginUsuariosSistema();
-                },
-                'post'
-            );
-            Route::add(
-                '/usuariosSistema/logout',
+                '/logout',
                 function () {
                     $controlador = new UsuariosSistemaController();
                     $controlador->doLogout();
@@ -340,13 +315,6 @@ class FrontController
                 function () {
                     $controller = new ErroresController();
                     $controller->error403();
-                }
-            );
-
-            Route::methodNotAllowed(
-                function () {
-                    $controller = new ErroresController();
-                    $controller->error405();
                 }
             );
 
@@ -496,35 +464,69 @@ class FrontController
             );*/
         } else {
             Route::add(
-                '/usuariosSistema/login',
+                '/login',
                 function () {
                     $controlador = new UsuariosSistemaController();
-                    $controlador->showLoginUsuariosSistema();
+                    $controlador->showLogin();
                 },
                 'get'
             );
             Route::add(
-                '/usuariosSistema/login',
+                '/login',
                 function () {
                     $controlador = new UsuariosSistemaController();
-                    $controlador->doLoginUsuariosSistema();
+                    $controlador->doLogin();
                 },
                 'post'
             );
+            Route::add(
+                '/login-with-google',
+                function () {
+                    $controller = new UsuariosSistemaController();
+                    $controller->doGoogleLogin();
+                },
+                'get'
+            );
+            Route::add(
+                '/register',
+                function () {
+                    $controller = new UsuariosSistemaController();
+                    $controller->showRegister();
+                },
+                'get'
+            );
+            Route::add(
+                '/register',
+                function () {
+                    $controller = new UsuariosSistemaController();
+                    $controller->doRegister();
+                },
+                'post'
+            );
+            Route::add(
+                '/register-with-google',
+                function () {
+                    $controller = new UsuariosSistemaController();
+                    $controller->doGoogleRegister();
+                },
+                'get'
+            );
+
+
             Route::pathNotFound(
                 function () {
-                    header('Location: /usuariosSistema/login');
+                    header('Location: /login');
                 }
             );
 
-            Route::methodNotAllowed(
-                function () {
-                    $controller = new ErroresController();
-                    $controller->error405();
-                }
-            );
         };
 
+        Route::methodNotAllowed(
+            function () {
+                $controller = new ErroresController();
+                $controller->error405();
+            }
+        );
 
         Route::run();
     }

@@ -10,6 +10,9 @@ use Com\Daw2\Models\UsuariosSistemaModel;
 
 class UsuariosSistemaController extends BaseController
 {
+    public const DEFAULT_ROL = 3;
+    public const DEFAULT_IDIOMA = 'es';
+
     public function showUsuariosSistema(): void
     {
         $data = [
@@ -102,19 +105,35 @@ class UsuariosSistemaController extends BaseController
     {
         $errores = [];
 
-        //rol
-        if (!empty($data['id_rol'])) {
-            if (filter_var($data['id_rol'], FILTER_VALIDATE_INT) === false) {
-                $errores['id_rol'] = "Rol no válido";
-            } else {
-                $modeloRol = new RolModel();
-                $rol = $modeloRol->find((int)$data['id_rol']);
-                if (is_null($rol)) {
+        if ($type !== 'register') {
+            //rol
+            if (!empty($data['id_rol'])) {
+                if (filter_var($data['id_rol'], FILTER_VALIDATE_INT) === false) {
                     $errores['id_rol'] = "Rol no válido";
+                } else {
+                    $modeloRol = new RolModel();
+                    $rol = $modeloRol->find((int)$data['id_rol']);
+                    if (is_null($rol)) {
+                        $errores['id_rol'] = "Rol no válido";
+                    }
                 }
+            } else {
+                $errores['id_rol'] = "El rol es obligatorio";
+            }
+
+            //idioma
+            if (!empty($data['idioma'])) {
+                if (mb_strlen($data['idioma']) !== 2) {
+                    $errores['idioma'] = "El idioma debe tener 2 caracteres";
+                }
+            } else {
+                $errores['idioma'] = "El idioma es obligatorio";
             }
         } else {
-            $errores['id_rol'] = "El rol es obligatorio";
+            //términos
+            if (empty($data['terminos'])) {
+                $errores['idioma'] = "El idioma es obligatorio";
+            }
         }
 
 
@@ -130,7 +149,7 @@ class UsuariosSistemaController extends BaseController
 
         //Comprobaremos la contraseña en caso de que se esté añadiendo un nuevo usuario
         //Si está en la edición y no introduce un cambio en la contraseña, se omitirá
-        if ($type === "add") {
+        if ($type === "add" || $type === "register") {
             if (empty($data['password1'])) {
                 $errores['password1'] = "La contraseña es obligatoria";
             }
@@ -165,14 +184,6 @@ class UsuariosSistemaController extends BaseController
             }
         }
 
-        //idioma
-        if (!empty($data['idioma'])) {
-            if (mb_strlen($data['idioma']) !== 2) {
-                $errores['idioma'] = "El idioma debe tener 2 caracteres";
-            }
-        } else {
-            $errores['idioma'] = "El idioma es obligatorio";
-        }
 
         return $errores;
     }
@@ -244,17 +255,13 @@ class UsuariosSistemaController extends BaseController
         }
     }
 
-    public function showLoginUsuariosSistema(array $errores = []): void
+    public function showLogin(array $errores = []): void
     {
-        $data = [
-            'titulo' => 'Login',
-            'breadcrumb' => ['Login', 'Usuarios Sistema'],
-        ];
         $data['errores'] = $errores;
-        $this->view->showViews(array('loginUsuariosSistema.view.php'), $data);
+        $this->view->showViews(array('login.view.php'), $data);
     }
 
-    public function doLoginUsuariosSistema(): void
+    public function doLogin(): void
     {
         $modeloUsuariosSistema = new UsuariosSistemaModel();
         $usuario = $modeloUsuariosSistema->getUsuarioEmail($_POST['email']);
@@ -271,14 +278,51 @@ class UsuariosSistemaController extends BaseController
                     header('Location: /usuariosSistema');
                 } else {
                     $errores['verificacion'] = "Se ha producido un error, vuelva a intentarlo";
-                    $this->showLoginUsuariosSistema($errores);
+                    $this->showLogin($errores);
                 }
             }
         }
 
         if ($usuario === false || $passOk === false) {
             $errores['verificacion'] = "El usuario o la contraseña no son correctos";
-            $this->showLoginUsuariosSistema($errores);
+            $this->showLogin($errores);
+        }
+    }
+
+    public function showRegister(array $errores = [], array $input = []): void
+    {
+        $data['errores'] = $errores;
+        $data['input'] = $input;
+        $this->view->showViews(array('register.view.php'), $data);
+    }
+
+    public function doRegister(): void
+    {
+        $errors = $this->checkForm($_POST, 'register');
+        if ($errors === []) {
+            $model = new UsuariosSistemaModel();
+
+            $usuario = $model->addUsuarioSistema(
+                [
+                    'id_rol' => self::DEFAULT_ROL,
+                    'email' => $_POST['email'],
+                    'pass' => password_hash($_POST['password'], PASSWORD_DEFAULT),
+                    'nombre' => $_POST['nombre'],
+                    'last_date' => null,
+                    'idioma' => self::DEFAULT_IDIOMA,
+                    'baja' => 0
+                ]
+            );
+            /*if ($usuario) {
+                $this->addFlashMessage(new Mensaje('Usuario registrado correctamente', Mensaje::SUCCESS, 'Éxito'));
+            } else {
+                $this->addFlashMessage(new Mensaje('No se ha podido insertar al usuario', Mensaje::ERROR, 'Error'));
+            }*/
+            header('Location: /login');
+
+        } else {
+            $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $this->showRegister($errors, $input);
         }
     }
 

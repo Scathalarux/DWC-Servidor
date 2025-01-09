@@ -288,7 +288,7 @@ class FrontController2
                 '/usuariosSistema/google-oauth.php',
                 function () {
                     $controlador = new UsuariosSistemaController();
-                    $controlador->showLoginUsuariosSistema();
+                    $controlador->showLogin();
                 },
                 'get'
             );
@@ -296,7 +296,7 @@ class FrontController2
                 '/usuariosSistema/login',
                 function () {
                     $controlador = new UsuariosSistemaController();
-                    $controlador->showLoginUsuariosSistema();
+                    $controlador->showLogin();
                 },
                 'get'
             );
@@ -304,7 +304,7 @@ class FrontController2
                 '/usuariosSistema/login',
                 function () {
                     $controlador = new UsuariosSistemaController();
-                    $controlador->doLoginUsuariosSistema();
+                    $controlador->doLogin();
                 },
                 'post'
             );
@@ -484,7 +484,7 @@ class FrontController2
                 '/usuariosSistema/login',
                 function () {
                     $controlador = new UsuariosSistemaController();
-                    $controlador->showLoginUsuariosSistema();
+                    $controlador->showLogin();
                 },
                 'get'
             );
@@ -492,7 +492,7 @@ class FrontController2
                 '/usuariosSistema/login',
                 function () {
                     $controlador = new UsuariosSistemaController();
-                    $controlador->doLoginUsuariosSistema();
+                    $controlador->doLogin();
                 },
                 'post'
             );
