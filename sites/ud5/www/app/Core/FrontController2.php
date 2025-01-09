@@ -17,7 +17,7 @@ use Com\Daw2\Controllers\UsuariosSistemaController;
 use Com\Daw2\Models\UsuarioModel;
 use Steampixel\Route;
 
-class FrontController
+class FrontController2
 {
     public static function main()
     {
@@ -328,25 +328,10 @@ class FrontController
                 );
             }
 
-
             Route::pathNotFound(
                 function () {
                     $controller = new ErroresController();
                     $controller->error404();
-                }
-            );
-
-            Route::pathForbbiden(
-                function () {
-                    $controller = new ErroresController();
-                    $controller->error403();
-                }
-            );
-
-            Route::methodNotAllowed(
-                function () {
-                    $controller = new ErroresController();
-                    $controller->error405();
                 }
             );
 
@@ -513,6 +498,7 @@ class FrontController
             );
             Route::pathNotFound(
                 function () {
+
                     header('Location: /usuariosSistema/login');
                 }
             );

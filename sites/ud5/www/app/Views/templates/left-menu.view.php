@@ -4,9 +4,7 @@
         <li class="nav-item">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] ? 'active' : ''; ?>">
                 <i class="nav-icon fas fa-th"></i>
-                <p>
-                    Inicio
-                </p>
+                <p>Inicio</p>
             </a>
         </li>
         <!-- Add icons to the links using the .nav-icon class
@@ -14,10 +12,7 @@
         <li class="nav-item <?php /*//echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'].'demo-proveedores']) ? 'menu-open' : ''; */?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>
-                    Panel de control
-                    <i class="right fas fa-angle-left"></i>
-                </p>
+                <p> Panel de control <i class="right fas fa-angle-left"></i></p>
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
@@ -36,6 +31,7 @@
                 <p>Nuevo usuario</p>
             </a>
         </li>-->
+        <?php if (str_contains($_SESSION['permisos']['csvController'], 'r') !== false) { ?>
         <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'historicoPoblacionPontevedra', $_ENV['host.folder'] . 'poblacionGruposEdad', $_ENV['host.folder'] . 'poblacionPontevedra2020']) ? 'menu-open' : ''; ?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-file-excel"></i>
@@ -66,6 +62,7 @@
                         <p>Población Pontevedra 2020</p>
                     </a>
                 </li>
+                <?php if (str_contains($_SESSION['permisos']['csvController'], 'w') !== false) { ?>
                 <li class="nav-item">
                     <a href="<?php echo $_ENV['host.folder']?>anadirMunicipio"
                        class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'anadirMunicipio' ? 'active' : ''; ?>">
@@ -73,8 +70,10 @@
                         <p>Añadir Municipio</p>
                     </a>
                 </li>
+                <?php } ?>
             </ul>
         </li>
+        <?php } ?>
         <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'allUsers', $_ENV['host.folder'] . 'usersBySalario', $_ENV['host.folder'] . 'standardUsers',$_ENV['host.folder'] . 'usersByName',$_ENV['host.folder'] . 'users-filter', $_ENV['host.folder'] . 'productos', $_ENV['host.folder'] . 'productos2', $_ENV['host.folder'] . 'productos3']) ? 'menu-open' : ''; ?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-file-excel"></i>
@@ -119,29 +118,30 @@
                         <p>Usuarios filtros</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="<?php echo $_ENV['host.folder']?>productos"
-                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'productos' ? 'active' : ''; ?>">
+                <!--<li class="nav-item">
+                    <a href="<?php /*echo $_ENV['host.folder']*/?>productos"
+                       class="nav-link <?php /*echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'productos' ? 'active' : ''; */?>">
                         <i class="fas fa-table nav-icon"></i>
                         <p>Productos</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo $_ENV['host.folder']?>productos2"
-                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'productos2' ? 'active' : ''; ?>">
+                    <a href="<?php /*echo $_ENV['host.folder']*/?>productos2"
+                       class="nav-link <?php /*echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'productos2' ? 'active' : ''; */?>">
                         <i class="fas fa-table nav-icon"></i>
                         <p>Productos2</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo $_ENV['host.folder']?>productos3"
-                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'productos3' ? 'active' : ''; ?>">
+                    <a href="<?php /*echo $_ENV['host.folder']*/?>productos3"
+                       class="nav-link <?php /*echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'productos3' ? 'active' : ''; */?>">
                         <i class="fas fa-table nav-icon"></i>
                         <p>Productos3</p>
                     </a>
-                </li>
+                </li>-->
             </ul>
         </li>
+        <?php  if (str_contains($_SESSION['permisos']['preferenciasUsuario'], 'r') !== false) { ?>
         <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'pruebaCookies']) ? 'menu-open' : ''; ?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-cookie"></i>
@@ -160,6 +160,8 @@
                 </li>
             </ul>
         </li>
+        <?php }
+        if (str_contains($_SESSION['permisos']['usuariosSistemaController'], 'r') !== false) { ?>
         <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'] . 'usuariosSistema', $_ENV['host.folder'] . 'usuariosSistema/login']) ? 'menu-open' : ''; ?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-user"></i>
@@ -187,6 +189,7 @@
                 </li>
             </ul>
         </li>
+        <?php } ?>
     </ul>
 </nav>
 <!-- /.sidebar-menu -->

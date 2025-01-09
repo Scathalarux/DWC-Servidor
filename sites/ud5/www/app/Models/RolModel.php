@@ -17,8 +17,8 @@ class RolModel extends BaseDbModel
 
     public function getRol(string $type): bool|array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM `rol` WHERE rol = ?");
-        $stmt->execute([$type]);
+        $stmt = $this->pdo->prepare("SELECT * FROM `rol` WHERE rol LIKE :type");
+        $stmt->execute([':type' => "%$type%"]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     public function find(int $idRol): ?array

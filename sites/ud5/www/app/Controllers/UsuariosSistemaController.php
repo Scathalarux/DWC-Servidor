@@ -12,8 +12,6 @@ class UsuariosSistemaController extends BaseController
 {
     public function showUsuariosSistema(): void
     {
-
-
         $data = [
             'titulo' => 'Usuarios Sistema',
             'breadcrumb' => ['Inicio', 'Usuarios Sistema'],
@@ -268,6 +266,7 @@ class UsuariosSistemaController extends BaseController
                 isset($_POST['remember']) ? setcookie('email', $_POST['email']) : '';
                 $_SESSION['username'] = ucfirst($usuario['nombre']);
                 $_SESSION['id_rol'] = $usuario['id_rol'];
+                $_SESSION['permisos'] = $this->getPermisos((int)$usuario['id_rol']);
                 if ($modeloUsuariosSistema->editUsuarioSistemaDate((int)$usuario['id_usuario'])) {
                     header('Location: /usuariosSistema');
                 } else {
@@ -287,5 +286,50 @@ class UsuariosSistemaController extends BaseController
     {
         session_destroy();
         header('Location: /usuariosSistema/login');
+    }
+
+
+    public function getPermisos(int $id_rol): array
+    {
+        $permisos = [
+            'csvController' => '',
+            'preferenciasUsuario' => '',
+            'usuariosController' => '',
+            'userController' => '',
+            'usuariosSistemaController' => '',
+            'inicioController' => ''
+        ];
+
+
+        //Obtenemos los diferentes roles para relacionarlos con su id_rol
+        $rolModel = new RolModel();
+        $admin = $rolModel->getRol('admin');
+        $encargado = $rolModel->getRol('encargado');
+        $staff = $rolModel->getRol('staff');
+
+        //Asignamos los permisos a los diferentes roles de la BBDD
+        if ($id_rol == $admin['id_rol']) {
+            //Acceso a all
+            $permisos['csvController'] = 'rwd';
+            $permisos['preferenciasUsuario'] = 'rwd';
+            $permisos['usuariosController'] = 'rwd';
+            $permisos['userController'] = 'rwd';
+            $permisos['usuariosSistemaController'] = 'rwd';
+            $permisos['inicioController'] = 'rwd';
+        } elseif ($id_rol == $encargado['id_rol']) {
+            //Acceso a all - gestión de los usuarios
+            $permisos['csvController'] = 'rwd';
+            $permisos['preferenciasUsuario'] = 'rwd';
+            $permisos['userController'] = 'rwd';
+            $permisos['usuariosSistemaController'] = 'rwd';
+            $permisos['inicioController'] = 'rwd';
+
+        } elseif ($id_rol == $staff['id_rol']) {
+            //Acceso a los usuarios y csv solo vista
+            $permisos['csvController'] = 'r';
+            $permisos['usuariosController'] = 'r';
+        }
+
+        return $permisos;
     }
 }
