@@ -23,11 +23,5 @@ class ErroresController extends \Com\Daw2\Core\BaseController
         $this->view->showViews(array('templates/header.view.php', 'error.php', 'templates/footer.view.php'), $data);
     }
 
-    public function error403(): void
-    {
-        http_response_code(403);
-        $data = ['titulo' => 'Acceso denegado'];
-        $data['texto'] = 'Acceso denegado. No tiene los permisos necesarios para acceder a esta sección';
-        $this->view->showViews(array('templates/header.view.php', 'error.php', 'templates/footer.view.php'), $data);
-    }
+
 }

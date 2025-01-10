@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
+use Com\Daw2\Models\PermisosModel;
 use Com\Daw2\Models\RolModel;
 use Com\Daw2\Models\UsuariosSistemaModel;
 
@@ -131,8 +132,8 @@ class UsuariosSistemaController extends BaseController
             }
         } else {
             //términos
-            if (empty($data['terminos'])) {
-                $errores['idioma'] = "El idioma es obligatorio";
+            if (!isset($data['terminos'])) {
+                $errores['terminos'] = "Los términos son obligatorios";
             }
         }
 
@@ -150,7 +151,7 @@ class UsuariosSistemaController extends BaseController
         //Comprobaremos la contraseña en caso de que se esté añadiendo un nuevo usuario
         //Si está en la edición y no introduce un cambio en la contraseña, se omitirá
         if ($type === "add" || $type === "register") {
-            if (empty($data['password1'])) {
+            if (empty($data['password'])) {
                 $errores['password1'] = "La contraseña es obligatoria";
             }
             if (empty($data['password2'])) {
@@ -304,6 +305,7 @@ class UsuariosSistemaController extends BaseController
 
             $usuario = $model->addUsuarioSistema(
                 [
+                    'id_usuario' => null,
                     'id_rol' => self::DEFAULT_ROL,
                     'email' => $_POST['email'],
                     'pass' => password_hash($_POST['password'], PASSWORD_DEFAULT),
@@ -344,7 +346,6 @@ class UsuariosSistemaController extends BaseController
             'inicioController' => ''
         ];
 
-
         //Obtenemos los diferentes roles para relacionarlos con su id_rol
         $rolModel = new RolModel();
         $admin = $rolModel->getRol('admin');
@@ -376,4 +377,40 @@ class UsuariosSistemaController extends BaseController
 
         return $permisos;
     }
+
+    public function getPermisosBBDD(int $id_rol): array
+    {
+        $permisosModel = new PermisosModel();
+        $permisos = $permisosModel->getPermisosRol($id_rol);
+
+        return $permisos;
+    }
+
+    public function createPermisos(): void
+    {
+        //Obtenemos los diferentes roles para relacionarlos con su id_rol
+        $rolModel = new RolModel();
+        $admin = $rolModel->getRol('admin');
+        $encargado = $rolModel->getRol('encargado');
+        $staff = $rolModel->getRol('staff');
+
+        //Creamos la tabla que almacenará los permisos
+        $permisosModel = new PermisosModel();
+        $permisosModel->createTablePermisos();
+
+        //Array de secciones a las que se gestiona el acceso
+        $secciones = ['csvController', 'preferenciasUsuario', 'usuariosController', 'usuariosSistemaController', 'userController', 'inicioController'];
+
+        //Bucle para introducir los
+        if ($admin['id_rol']) {
+            foreach ($secciones as $seccion) {
+                $permisosModel->addPermiso($admin['id_rol'], $seccion, 'rwd');
+            }
+        } elseif ($encargado['id_rol']) {
+
+        } elseif ($staff['id_rol']) {
+
+        }
+    }
+
 }

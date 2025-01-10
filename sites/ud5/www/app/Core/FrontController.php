@@ -35,6 +35,16 @@ class FrontController
                 'get'
             );
 
+            //Para que todos los usuarios puedan iniciar/cerrar sesión
+            Route::add(
+                '/logout',
+                function () {
+                    $controlador = new UsuariosSistemaController();
+                    $controlador->doLogout();
+                },
+                'get'
+            );
+
             /*Route::add(
                 '/test',
                 function () {
@@ -282,15 +292,7 @@ class FrontController
             }
 
 
-            //Para que todos los usuarios puedan iniciar/cerrar sesión
-            Route::add(
-                '/logout',
-                function () {
-                    $controlador = new UsuariosSistemaController();
-                    $controlador->doLogout();
-                },
-                'get'
-            );
+
 
             if (str_contains($_SESSION['permisos']['inicioController'], 'r') !== false) {
                 Route::add(
@@ -308,13 +310,6 @@ class FrontController
                 function () {
                     $controller = new ErroresController();
                     $controller->error404();
-                }
-            );
-
-            Route::pathForbbiden(
-                function () {
-                    $controller = new ErroresController();
-                    $controller->error403();
                 }
             );
 

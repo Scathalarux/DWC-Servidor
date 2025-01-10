@@ -173,7 +173,7 @@
             <ul class="nav nav-treeview">
                 <li class="nav-item">
                     <a href="<?php echo $_ENV['host.folder']?>usuariosSistema/login"
-                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'usuariosSistema/login' ? 'active' : ''; ?>">
+                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'] . 'login' ? 'active' : ''; ?>">
                         <i class="fas fa-user-circle nav-icon"></i>
                         <p>Login Usuarios Sistema</p>
                     </a>

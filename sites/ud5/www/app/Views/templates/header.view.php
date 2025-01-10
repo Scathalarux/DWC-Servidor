@@ -56,7 +56,7 @@
         <ul class="navbar-nav ml-auto">
             <!-- Navbar Search -->
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo $_ENV['host.folder'].'usuariosSistema/logout' ?>" role="button">
+                <a class="nav-link" href="<?php echo $_ENV['host.folder'].'logout' ?>" role="button">
                     <i class="text-danger fas fa-sign-out-alt"></i>
                 </a>
             </li>
