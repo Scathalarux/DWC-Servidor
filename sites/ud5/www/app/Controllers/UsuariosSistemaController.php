@@ -271,6 +271,7 @@ class UsuariosSistemaController extends BaseController
         if ($usuario) {
             $passOk = password_verify($_POST['password'], $usuario['pass']);
             if ($passOk) {
+                //Los permisos de esta forma se mantendrán iguales hasta que haga logout y se actualicen los permisos
                 isset($_POST['remember']) ? setcookie('email', $_POST['email']) : '';
                 $_SESSION['username'] = ucfirst($usuario['nombre']);
                 $_SESSION['id_rol'] = $usuario['id_rol'];
