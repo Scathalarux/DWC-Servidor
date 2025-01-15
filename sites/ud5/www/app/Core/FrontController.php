@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Core;
 
+use Com\Daw2\Controllers\CategoriaController;
 use Com\Daw2\Controllers\ErroresController;
 use Com\Daw2\Controllers\InicioController;
 use Com\Daw2\Controllers\PreferenciasUsuario;
@@ -292,8 +293,6 @@ class FrontController
             }
 
 
-
-
             if (str_contains($_SESSION['permisos']['inicioController'], 'r') !== false) {
                 Route::add(
                     '/demo-proveedores',
@@ -503,6 +502,35 @@ class FrontController
                 function () {
                     $controller = new UsuariosSistemaController();
                     $controller->doGoogleRegister();
+                },
+                'get'
+            );
+
+            //Las rutas de API no funcionan con $_SESSION
+
+            //RUTAS DE API
+            //Categorias
+            Route::add(
+                '/api/categoria',
+                function () {
+                    $controller = new CategoriaController();
+                    $controller->respuestaToJson($controller->getAllAPI());
+                },
+                'get'
+            );
+            Route::add(
+                '/api/categoria',
+                function () {
+                    $controller = new CategoriaController();
+                    $controller->respuestaToJson($controller->addCategoriaAPI());
+                },
+                'post'
+            );
+            Route::add(
+                '/api/categoria/([0-9]{1,})',
+                function ($idCategoria) {
+                    $controller = new CategoriaController();
+                    $controller->respuestaToJson($controller->getCategoriaAPI($idCategoria));
                 },
                 'get'
             );
