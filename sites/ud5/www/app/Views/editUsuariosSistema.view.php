@@ -57,11 +57,11 @@ declare(strict_types=1);
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
-                                <label for="password1">Contraseña <span class="text-danger">*</span>:</label>
-                                <input type="password" class="form-control" name="password1"
-                                       id="password1"
-                                       value="<?php echo $input['password1'] ?? ''; ?>" maxlength="" placeholder=""/>
-                                <p class="text-danger"><?php echo $errores['password1'] ?? '';?></p>
+                                <label for="password">Contraseña <span class="text-danger">*</span>:</label>
+                                <input type="password" class="form-control" name="password"
+                                       id="password"
+                                       value="<?php echo $input['password'] ?? ''; ?>" maxlength="" placeholder=""/>
+                                <p class="text-danger"><?php echo $errores['password'] ?? '';?></p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
@@ -89,7 +89,7 @@ declare(strict_types=1);
                         <div class="col-12 col-lg-4">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" name="baja" id="baja"
-                                    <?php echo !empty($input['activo']) ? 'checked' : '';?>/>
+                                    <?php echo isset($input['baja']) && $input['baja'] ? 'checked' : '';?>/>
                                 <label for="baja">Usuario Activo <span class="text-danger">*</span></label>
                             </div>
                         </div>

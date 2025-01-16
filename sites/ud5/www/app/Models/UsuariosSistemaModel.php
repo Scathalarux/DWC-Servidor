@@ -22,7 +22,7 @@ class UsuariosSistemaModel extends BaseDbModel
         $order = abs($order);
 
         $sql = self::SELECT_BASE
-        . ' ORDER BY ' . self::COLUMN_ORDER[$order - 1] . $sentido;
+            . ' ORDER BY ' . self::COLUMN_ORDER[$order - 1] . $sentido;
 
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -31,11 +31,11 @@ class UsuariosSistemaModel extends BaseDbModel
     public function addUsuarioSistema(array $data): bool
     {
         $sql = 'INSERT INTO usuario_sistema (id_usuario, id_rol, email, pass, nombre, last_date, idioma, baja) 
-                values (:id_usuario, :id_rol, :email, :password1, :nombre, :last_date, :idioma, :baja)';
+                values (:id_usuario, :id_rol, :email, :password, :nombre, :last_date, :idioma, :baja)';
 
         $stmt = $this->pdo->prepare($sql);
 
-        return  $stmt->execute($data);
+        return $stmt->execute($data);
     }
 
     public function getUsuarioID(int $id_usuario): ?array
@@ -43,7 +43,12 @@ class UsuariosSistemaModel extends BaseDbModel
         $sql = 'SELECT * FROM usuario_sistema WHERE id_usuario = :id_usuario';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['id_usuario' => $id_usuario]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = $stmt->fetch();
+        if ($result) {
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     public function editUsuarioSistema(int $id_usuario, array $data): bool
@@ -54,17 +59,29 @@ class UsuariosSistemaModel extends BaseDbModel
         return $stmt->execute($data);
     }
 
-    public function getUsuarioEmail(string $email): bool|array
+    public function getUsuarioEmail(string $email): ?array
     {
         $sql = 'SELECT * FROM usuario_sistema WHERE email = :email';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = $stmt->fetch();
+        if ($result) {
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     public function editUsuarioSistemaDate(int $id_usuario): bool
     {
         $sql = "UPDATE usuario_sistema SET last_date = now() WHERE id_usuario = :id_usuario";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute(['id_usuario' => $id_usuario]);
+    }
+
+    public function doDeleteUsuario(int $id_usuario): bool
+    {
+        $sql = "DELETE FROM usuario_sistema WHERE id_usuario = :id_usuario";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute(['id_usuario' => $id_usuario]);
     }

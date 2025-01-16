@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Core;
 
-use Com\Daw2\Controllers\CategoriaController;
 use Com\Daw2\Controllers\ErroresController;
 use Com\Daw2\Controllers\InicioController;
 use Com\Daw2\Controllers\PreferenciasUsuario;
@@ -292,6 +291,18 @@ class FrontController
                 );
             }
 
+            //Borrado usuario sistema --> Delete
+            if (str_contains($_SESSION['permisos']['usuariosSistemaController'], 'd') !== false) {
+                Route::add(
+                    '/usuariosSistema/delete/([\p{N}]{1,})',
+                    function ($idUsuario) {
+                        $controlador = new UsuariosSistemaController();
+                        $controlador->doDeleteUsuarioSistema($idUsuario);
+                    },
+                    'get'
+                );
+            }
+
 
             if (str_contains($_SESSION['permisos']['inicioController'], 'r') !== false) {
                 Route::add(
@@ -314,7 +325,7 @@ class FrontController
 
 
             //REPASO EXAMEN 1ª EV
-            /*Route::add(
+            Route::add(
                 '/productos',
                 function () {
                     $controlador = new ProductosController();
@@ -418,7 +429,7 @@ class FrontController
                     $controlador->doDeleteProducto($codigo);
                 },
                 'get'
-            );*/
+            );
 
             //Ejercicios práctica inicial con php
             /*Route::add(
@@ -502,35 +513,6 @@ class FrontController
                 function () {
                     $controller = new UsuariosSistemaController();
                     $controller->doGoogleRegister();
-                },
-                'get'
-            );
-
-            //Las rutas de API no funcionan con $_SESSION
-
-            //RUTAS DE API
-            //Categorias
-            Route::add(
-                '/api/categoria',
-                function () {
-                    $controller = new CategoriaController();
-                    $controller->respuestaToJson($controller->getAllAPI());
-                },
-                'get'
-            );
-            Route::add(
-                '/api/categoria',
-                function () {
-                    $controller = new CategoriaController();
-                    $controller->respuestaToJson($controller->addCategoriaAPI());
-                },
-                'post'
-            );
-            Route::add(
-                '/api/categoria/([0-9]{1,})',
-                function ($idCategoria) {
-                    $controller = new CategoriaController();
-                    $controller->respuestaToJson($controller->getCategoriaAPI($idCategoria));
                 },
                 'get'
             );

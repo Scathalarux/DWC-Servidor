@@ -13,6 +13,9 @@ class UsuariosSistemaController extends BaseController
 {
     public const DEFAULT_ROL = 3;
     public const DEFAULT_IDIOMA = 'es';
+    public const CHECK_ADD = 'add';
+    public const CHECK_EDIT = 'edit';
+    public const CHECK_REGISTER = 'register';
 
     public function showUsuariosSistema(): void
     {
@@ -69,7 +72,7 @@ class UsuariosSistemaController extends BaseController
 
     public function doAddUsuarioSistema(): void
     {
-        $errores = $this->checkForm($_POST, 'add');
+        $errores = $this->checkForm($_POST, self::CHECK_ADD);
 
         if ($errores === []) {
             $insertData = $_POST;
@@ -83,7 +86,7 @@ class UsuariosSistemaController extends BaseController
 
 
             //Transformamos a hash la contraseña para introducirlo así en la base de datos
-            $insertData['password1'] = password_hash($_POST['password1'], PASSWORD_DEFAULT);
+            $insertData['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
             unset($insertData['password2']);
 
@@ -137,6 +140,10 @@ class UsuariosSistemaController extends BaseController
             }
         }
 
+        //nombre
+        if (empty($data['nombre'])) {
+            $errores['nombre'] = "El nombre es obligatorio";
+        }
 
         //email
         if (!empty($data['email'])) {
@@ -152,7 +159,7 @@ class UsuariosSistemaController extends BaseController
         //Si está en la edición y no introduce un cambio en la contraseña, se omitirá
         if ($type === "add" || $type === "register") {
             if (empty($data['password'])) {
-                $errores['password1'] = "La contraseña es obligatoria";
+                $errores['password'] = "La contraseña es obligatoria";
             }
             if (empty($data['password2'])) {
                 $errores['password2'] = "Debe repetir la contraseña";
@@ -161,17 +168,17 @@ class UsuariosSistemaController extends BaseController
         //contraseña
         $pwd1 = false;
         $pwd2 = false;
-        if (!empty($data['password1'])) {
+        if (!empty($data['password'])) {
             //Comprobamos el contenido de la contraseña1
-            if (!preg_match('/^(?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,}\S$/', $data['password1'])) {
-                $errores['password1'] = "La contraseña debe tener al menos 7 caracteres y contener una mayúscula, un número y un caracter especial ";
+            if (!preg_match('/^(?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,}\S$/', $data['password'])) {
+                $errores['password'] = "La contraseña debe tener al menos 7 caracteres y contener una mayúscula, un número y un caracter especial ";
             } else {
                 $pwd1 = true;
             }
         }
 
         if (!empty($data['password2'])) {
-            if (!preg_match('/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/', $data['password2'])) {
+            if (!preg_match('/^((?=\S *?[A - Z])(?=\S *?[a - z])(?=\S *?[0 - 9]).{6,})\S$/', $data['password2'])) {
                 $errores['password2'] = "La contraseña debe tener al menos 7 caracteres y contener una mayúscula, un número y un caracter especial ";
             } else {
                 $pwd2 = true;
@@ -180,8 +187,8 @@ class UsuariosSistemaController extends BaseController
 
         //Si ambas contraseñas tienen buena forma, comprobamos que coinciden
         if ($pwd1 && $pwd2) {
-            if ($data['password1'] !== $data['password2']) {
-                $errores['password1'] = "Las contraseñas deben coincidir";
+            if ($data['password'] !== $data['password2']) {
+                $errores['password'] = "Las contraseñas deben coincidir";
             }
         }
 
@@ -223,7 +230,7 @@ class UsuariosSistemaController extends BaseController
         }
 
         //comprobamos la existencia de errores
-        $errores = $this->checkForm($_POST, 'edit');
+        $errores = $this->checkForm($_POST, self::CHECK_EDIT);
         if ($errores === []) {
             $insertData = $_POST;
             //Comprobamos si se ha enviado el valor del chechbox de baja
@@ -256,10 +263,23 @@ class UsuariosSistemaController extends BaseController
         }
     }
 
+    public function doDeleteUsuarioSistema(string $idUsuario): void
+    {
+        $modeloUsuariosSistema = new UsuariosSistemaModel();
+        $usuario = $modeloUsuariosSistema->getUsuarioID((int)$idUsuario);
+
+        if (is_null($usuario)) {
+            header('Location: /usuariosSistema');
+        } else {
+            $delete = $modeloUsuariosSistema->doDeleteUsuario((int)$idUsuario);
+            header('Location: /usuariosSistema');
+        }
+    }
+
     public function showLogin(array $errores = []): void
     {
         $data['errores'] = $errores;
-        $this->view->showViews(array('login.view.php'), $data);
+        $this->view->showViews(array('login . view . php'), $data);
     }
 
     public function doLogin(): void
@@ -268,10 +288,9 @@ class UsuariosSistemaController extends BaseController
         $usuario = $modeloUsuariosSistema->getUsuarioEmail($_POST['email']);
         $passOk = false;
 
-        if ($usuario) {
+        if (!is_null($usuario)) {
             $passOk = password_verify($_POST['password'], $usuario['pass']);
             if ($passOk) {
-                //Los permisos de esta forma se mantendrán iguales hasta que haga logout y se actualicen los permisos
                 isset($_POST['remember']) ? setcookie('email', $_POST['email']) : '';
                 $_SESSION['username'] = ucfirst($usuario['nombre']);
                 $_SESSION['id_rol'] = $usuario['id_rol'];
@@ -295,12 +314,12 @@ class UsuariosSistemaController extends BaseController
     {
         $data['errores'] = $errores;
         $data['input'] = $input;
-        $this->view->showViews(array('register.view.php'), $data);
+        $this->view->showViews(array('register . view . php'), $data);
     }
 
     public function doRegister(): void
     {
-        $errors = $this->checkForm($_POST, 'register');
+        $errors = $this->checkForm($_POST, self::CHECK_REGISTER);
         if ($errors === []) {
             $model = new UsuariosSistemaModel();
 
@@ -332,7 +351,7 @@ class UsuariosSistemaController extends BaseController
     public function doLogout(): void
     {
         session_destroy();
-        header('Location: /usuariosSistema/login');
+        header('Location: /usuariosSistema / login');
     }
 
 
