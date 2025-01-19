@@ -45,27 +45,30 @@ class CategoriaController extends BaseController
     {
         try {
             $model = new CategoriaModel();
-            $id_padre = isset($_POST['id_padre']) ? $_POST['id_padre'] : null;
-            //comprobamos que no está repe
-            if ((filter_var($id_padre, FILTER_VALIDATE_INT) !== false || is_null($id_padre)) && $_POST['nombre_categoria'] !== '') {
-                $row = $model->findByPadreNombre($_POST['nombre_categoria'], $id_padre);
-                if ($row) {
-                    $respuesta = new Respuesta(409);
-                } else {
-                    //comprobamos que el padre esté en la BDDD
-                    $padre = $model->find($id_padre);
-                    if ($padre === false) {
-                        $respuesta = new Respuesta(422);
-                    } elseif ($padre === null || $padre) {
-                        //una vez validamos el id_padre, insertamos la categoria
-                        $result = $model->addCategoria($_POST['nombre_categoria'], $id_padre);
-                        if ($result) {
-                            $respuesta = new Respuesta(201);
-                        }
+            //comprobamos que exista un padre o sea de tipo null
+            $idPadre = isset($_POST['id_padre']) ? $_POST['id_padre'] : null;
+
+            if (
+                (filter_var($idPadre, FILTER_VALIDATE_INT) !== false || is_null($idPadre))
+                && (isset($_POST['categoria']) && $_POST['categoria'] !== '')
+            ) {
+                //comprobamos que el padre esté en la BDDD
+                if (!is_null($idPadre) && $model->find((int)$idPadre) === false) {
+                    $respuesta = new Respuesta(422, ['mensaje' => 'El padre no es válido']);
+                }
+                //comprobamos que no está repetido
+                $row = $model->findByPadreNombre($_POST['categoria'], $idPadre);
+                if ($row === false) {
+                    //una vez validamos el idPadre, insertamos la categoria
+                    $result = $model->addCategoria($_POST['categoria'], $idPadre);
+                    if ($result) {
+                        $respuesta = new Respuesta(201, ['mensaje' => 'Categoria agregada correctamente']);
                     }
+                } else {
+                    $respuesta = new Respuesta(409, ['mensaje' => 'Ya existe una categoria con estos datos']);
                 }
             } else {
-                $respuesta = new Respuesta(400);
+                $respuesta = new Respuesta(400, ['mensaje' => 'El id_padre o la categoría no son válidos']);
             }
         } catch (\Exception $e) {
             $respuesta = new Respuesta(500);

@@ -38,8 +38,16 @@ class CategoriaModel extends BaseDbModel
 
     public function findByPadreNombre(string $nombre_categoria, ?int $id_padre): array|false
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM categoria WHERE id_padre = :id_padre AND nombre_categoria = :nombre_categoria');
-        $stmt->execute(['id_padre' => $id_padre, 'nombre_categoria' => $nombre_categoria]);
+        if(is_null($id_padre)){
+            $sql = 'SELECT * FROM categoria WHERE nombre_categoria = :nombre_categoria AND id_padre IS NULL';
+            $vars['nombre_categoria'] = $nombre_categoria;
+        }else{
+            $sql = 'SELECT * FROM categoria WHERE id_padre = :id_padre AND nombre_categoria = :nombre_categoria';
+            $vars['id_padre'] = $id_padre;
+            $vars['nombre_categoria'] = $nombre_categoria;
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($vars);
         return $stmt->fetch();
     }
     public function addCategoria(string $nombre_categoria, ?int $id_padre): bool
