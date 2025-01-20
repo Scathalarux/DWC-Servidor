@@ -7,11 +7,6 @@
       </laravel_pint_by_interpreter>
     </laravel_pint_settings>
   </component>
-  <component name="MessDetector">
-    <phpmd_settings>
-      <phpmd_by_interpreter asDefaultInterpreter="true" interpreter_id="56e4d37f-f400-49ac-84f1-536df5af88de" timeout="30000" />
-    </phpmd_settings>
-  </component>
   <component name="MessDetectorOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
@@ -40,36 +35,36 @@
   <component name="PhpIncludePathManager">
     <include_path>
       <path value="$PROJECT_DIR$/www/vendor/composer" />
-      <path value="$PROJECT_DIR$/www/vendor/psr/http-message" />
-      <path value="$PROJECT_DIR$/www/vendor/psr/http-client" />
-      <path value="$PROJECT_DIR$/www/vendor/psr/cache" />
-      <path value="$PROJECT_DIR$/www/vendor/psr/http-factory" />
-      <path value="$PROJECT_DIR$/www/vendor/google/apiclient" />
       <path value="$PROJECT_DIR$/www/vendor/google/auth" />
-      <path value="$PROJECT_DIR$/www/vendor/psr/log" />
-      <path value="$PROJECT_DIR$/www/vendor/google/apiclient-services" />
-      <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-php80" />
-      <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-mbstring" />
       <path value="$PROJECT_DIR$/www/vendor/vlucas/phpdotenv" />
       <path value="$PROJECT_DIR$/www/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-mbstring" />
       <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-ctype" />
       <path value="$PROJECT_DIR$/www/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/cache" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/www/vendor/google/apiclient-services" />
+      <path value="$PROJECT_DIR$/www/vendor/google/apiclient" />
       <path value="$PROJECT_DIR$/www/vendor/firebase/php-jwt" />
-      <path value="$PROJECT_DIR$/www/vendor/phpoption/phpoption" />
-      <path value="$PROJECT_DIR$/www/vendor/phpseclib/phpseclib" />
       <path value="$PROJECT_DIR$/www/vendor/paragonie/random_compat" />
       <path value="$PROJECT_DIR$/www/vendor/paragonie/constant_time_encoding" />
-      <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/psr7" />
-      <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/www/vendor/phpoption/phpoption" />
+      <path value="$PROJECT_DIR$/www/vendor/phpseclib/phpseclib" />
       <path value="$PROJECT_DIR$/www/vendor/ralouphie/getallheaders" />
       <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/promises" />
       <path value="$PROJECT_DIR$/www/vendor/steampixel/simple-php-router" />
       <path value="$PROJECT_DIR$/www/vendor/graham-campbell/result-type" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter id="56e4d37f-f400-49ac-84f1-536df5af88de" name="php" home="docker-compose://DATA" auto="false" debugger_id="php.debugger.XDebug">
+      <interpreter id="56e4d37f-f400-49ac-84f1-536df5af88de" name="php (project level)" home="docker-compose://DATA" auto="false" debugger_id="php.debugger.XDebug">
         <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="php" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
           <type_data command="EXEC" />
           <dockerComposeConfigurationPaths>

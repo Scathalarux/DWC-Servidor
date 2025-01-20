@@ -13,19 +13,18 @@
     "vlucas/phpdotenv": "^5.5",
     "ext-pdo": "*",
     "ext-decimal": "*",
-    "google/apiclient": "^2.15.0"
+    "ext-mbstring": "*",
+    "google/apiclient": "^2.15.0",
+    "guzzlehttp/guzzle": "^7.9",
+    "ext-openssl": "*",
+    "ext-gd": "*"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^3.9.2",
-    "vendor-autoload.php": "*"
-  },
-  "scripts": {
-    "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
+    "squizlabs/php_codesniffer": "@stable"
   },
   "extra": {
     "google/apiclient-services": [
       "OAuth"
     ]
   }
-
 }
