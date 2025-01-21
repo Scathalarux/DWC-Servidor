@@ -64,4 +64,9 @@ class CategoriaModel extends BaseDbModel
         $executed =  $stmt->execute(['id_categoria' => $id_categoria]);
         return ($executed && $stmt->rowCount() === 1);
     }
+
+    public function updateCategoria()
+    {
+        
+    }
 }
