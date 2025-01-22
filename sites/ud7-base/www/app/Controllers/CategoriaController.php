@@ -16,10 +16,9 @@ class CategoriaController extends BaseController
 
     public function traitPut()
     {
-        
     }
-    
-    
+
+
     public function listCategorias(): void
     {
         try {
@@ -59,7 +58,7 @@ class CategoriaController extends BaseController
             $errores = $this->checkForm($_POST);
 
             if ($errores === []) {
-                $idPadre =  $this->getPadre($_POST);
+                $idPadre = $this->getPadre($_POST);
 
                 //comprobamos que no está repetido
                 $row = $model->findByPadreNombre($_POST['categoria'], $idPadre);
@@ -162,6 +161,7 @@ class CategoriaController extends BaseController
 
         return $errores;
     }
+
     public function getPadre(array $data): bool|int|null
     {
         $model = new CategoriaModel();
@@ -205,4 +205,5 @@ class CategoriaController extends BaseController
         return $this->bodyData;
     }
 
+   
 }
