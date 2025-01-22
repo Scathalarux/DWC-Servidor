@@ -7,6 +7,11 @@
       </laravel_pint_by_interpreter>
     </laravel_pint_settings>
   </component>
+  <component name="MessDetector">
+    <phpmd_settings>
+      <phpmd_by_interpreter asDefaultInterpreter="true" interpreter_id="56e4d37f-f400-49ac-84f1-536df5af88de" timeout="30000" />
+    </phpmd_settings>
+  </component>
   <component name="MessDetectorOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
@@ -25,7 +30,7 @@
   </component>
   <component name="PhpCodeSniffer">
     <phpcs_settings>
-      <phpcs_by_interpreter interpreter_id="56e4d37f-f400-49ac-84f1-536df5af88de" beautifier_path="/usr/local/bin/phpcbf" standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="/usr/local/bin/phpcs" timeout="30000" />
+      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="56e4d37f-f400-49ac-84f1-536df5af88de" beautifier_path="/usr/local/bin/phpcbf" standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="/usr/local/bin/phpcs" timeout="30000" />
     </phpcs_settings>
   </component>
   <component name="PhpExternalFormatter">
@@ -59,6 +64,7 @@
       <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/promises" />
       <path value="$PROJECT_DIR$/www/vendor/steampixel/simple-php-router" />
       <path value="$PROJECT_DIR$/www/vendor/graham-campbell/result-type" />
+      <path value="$PROJECT_DIR$/www/vendor/adhocore/jwt" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
