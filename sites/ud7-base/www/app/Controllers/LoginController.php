@@ -11,8 +11,6 @@ use Com\Daw2\Models\UsuariosSistemaModel;
 
 class LoginController extends BaseController
 {
-    private const SECRET_KEY = 'T3SIIhuntnzJj1p';
-
     public function login(): void
     {
         //comprobamos que hemos recibido todos los datos necesarios para el login
@@ -37,7 +35,7 @@ class LoginController extends BaseController
 
                     //Creación JWT
                     //cabecera del JWT
-                    $jwt = new JWT(self::SECRET_KEY, 'HS256', 1800, 10);
+                    $jwt = new JWT($_ENV['secret'], 'HS256', 1800, 10);
                     //payload del JWT: id_usuario, id_rol, idioma, nombre
                     $token = $jwt->encode($data);
 
@@ -53,8 +51,6 @@ class LoginController extends BaseController
                 $respuesta = new Respuesta(403, ['mensaje' => 'Los datos no son válidos']);
             }
         }
-
-
 
         $this->view->show('json.view.php', ['respuesta' => $respuesta]);
     }

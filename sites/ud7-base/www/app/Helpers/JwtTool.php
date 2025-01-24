@@ -34,20 +34,16 @@ class JwtTool
     /**
      * get access token from header
      * */
-    private static function getBearerToken(): ?string
+    public static function getBearerToken(): ?string
     {
-        if (is_null(self::$token)) {
-            $headers = self::getAuthorizationHeader();
-            // HEADER: Get the access token from the header
-            if (!is_null($headers) && !empty($headers)) {
-                if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
-                    self::$token = $matches[1];
-                    return $matches[1];
-                }
+        $headers = self::getAuthorizationHeader();
+        // HEADER: Get the access token from the header
+        if (!empty($headers)) {
+            if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
+                $token = $matches[1];
+                return $token;
             }
-            return null;
-        } else {
-            return self::$token;
         }
+        return null;
     }
 }
