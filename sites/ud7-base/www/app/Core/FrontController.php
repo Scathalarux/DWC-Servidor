@@ -38,21 +38,23 @@ class FrontController
             'get'
         );
         Route::add(
+            '/categoria',
+            function () {
+                if (isset($decoded)) {
+                    (new CategoriaController())->addCategoria();
+                } else {
+                    http_response_code(403);
+                }
+            }
+            , 'post'
+        );
+        Route::add(
             '/login',
             fn() => (new LoginController())->login(),
             'post'
         );
         //Solo los usuarios logeados tienen acceso
-        Route::add(
-            '/categoria',
-            fn() =>
-                if (isset($decoded)) {
-                    (new CategoriaController())->addCategoria();
-                } else {
-                    http_response_code(403);
-                },
-                'post'
-        );
+
         Route::add(
             '/categoria/(\p{N}+)',
             fn($id) => (new CategoriaController())->deleteCategoria((int)$id),
