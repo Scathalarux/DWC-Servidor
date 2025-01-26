@@ -143,4 +143,19 @@ class UsuariosModel extends BaseDbModel
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function findUsuario(string $username):?array
+    {
+        $sql='SELECT * FROM usuario WHERE username = :username';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function addUsuario(array $data):bool
+    {
+        $sql = 'INSERT INTO usuario (username, salarioBruto, retencionIRPF, activo, id_rol, id_country) VALUES (:username, :salarioBruto, :retencion, :activo, :id_rol, :id_country)';
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
+    }
 }

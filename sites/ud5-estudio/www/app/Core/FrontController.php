@@ -36,6 +36,46 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/usuarios/new',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->showAddUser();
+            },
+            'get'
+        );
+        Route::add(
+            '/usuarios/new',
+            function () {
+                $controlador = new UsuariosController();
+                $controlador->doAddUser();
+            },
+            'post'
+        );
+        Route::add(
+            '/usuarios/edit/([\p{L}\p{N}_]{3,5})',
+            function ($username) {
+                $controlador = new UsuariosController();
+                $controlador->showEditUser($username);
+            },
+            'get'
+        );
+        Route::add(
+            '/usuarios/edit/([\p{L}\p{N}_]{3,5})',
+            function ($username) {
+                $controlador = new UsuariosController();
+                $controlador->doEditUser($username);
+            },
+            'post'
+        );
+        Route::add(
+            '/usuarios/delete/([\p{L}\p{N}_]{3,5})',
+            function ($username) {
+                $controlador = new UsuariosController();
+                $controlador->deleteUsuario($username);
+            },
+            'get'
+        );
 
         Route::pathNotFound(
             function () {

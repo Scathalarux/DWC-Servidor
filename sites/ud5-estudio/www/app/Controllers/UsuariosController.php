@@ -8,6 +8,7 @@ use Com\Daw2\Core\BaseController;
 use Com\Daw2\Models\AuxCountriesModel;
 use Com\Daw2\Models\AuxRolModel;
 use Com\Daw2\Models\UsuariosModel;
+use Decimal\Decimal;
 
 class UsuariosController extends BaseController
 {
@@ -91,6 +92,161 @@ class UsuariosController extends BaseController
         }
 
         return self::DEFAULT_PAGE;
+    }
+
+    public function checkForm(array $data): array
+    {
+        $errores = [];
+
+        //username
+        if (!empty($data['username'])) {
+            if (!preg_match('/[\p{L}\p{N}_]{3,50}/ui'), $data['username']){
+                $errores['username'] = 'El nombre solo puede contener 3-50 caracteres, números y _';
+            }
+        } else {
+            $errores['username'] = 'El nombre de usuario no puede estar vacio';
+        }
+
+        //salarioBruto
+        if (!empty($data['salarioBruto'])) {
+            if (!filter_var($data['salarioBruto'], FILTER_VALIDATE_FLOAT)) {
+                $errores['salarioBruto'] = 'El salario debe ser un numero decimal';
+            } else {
+                if ($data['salarioBruto'] < 600) {
+                    $errores['salarioBruto'] = 'El salario debe ser mayor a 600';
+                }
+
+                $salario = new Decimal($data['salarioBruto']);
+                if ($salario - $salario->round(2) != 0) {
+                    $errores['salarioBruto'] = 'El salario debe tener 2 decimales';
+                }
+            }
+        } else {
+            $errores['salarioBruto'] = 'El salario bruto es necesario';
+        }
+
+        //retención
+        if (!empty($data['retencion'])) {
+            if (!filter_var($data['retencion'], FILTER_VALIDATE_FLOAT)) {
+                $errores['retencion'] = 'La retencion debe ser un numero decimal';
+            }
+
+            $retencion = new Decimal($data['retencion']);
+            if ($retencion - $retencion->round(2) != 0) {
+                $errores['retencion'] = 'La retención debe tener 2 decimales';
+            }
+        } else {
+            $errores['retencion'] = 'La retención es necesaria';
+        }
+
+        //id_rol
+        if (!empty($data['id_rol'])) {
+            if (!filter_var($data['id_rol'], FILTER_VALIDATE_INT)) {
+                $errores['id_rol'] = 'Rol no válido';
+            } else {
+                //nos aseguramos que es un rol dentro de la bbdd
+                $auxRolModel = new AuxRolModel();
+                $rol = $auxRolModel->find((int)$data['id_rol']);
+                if ($rol === false) {
+                    $errores['id_rol'] = 'Rol no válido';
+                }
+            }
+        } else {
+            $errores['id_rol'] = 'El rol es necesario';
+        }
+
+        //id_country
+        if (!empty($data['id_country'])) {
+            if (!filter_var($data['id_country'], FILTER_VALIDATE_INT)) {
+                $errores['id_country'] = 'País no válido';
+            } else {
+                //nos aseguramos que es un rol dentro de la bbdd
+                $auxCountriesModel = new AuxCountriesModel();
+                $country = $auxCountriesModel->find((int)$data['iid_countryd_rol']);
+                if ($country === false) {
+                    $errores['id_country'] = 'País no válido';
+                }
+
+            }
+        } else {
+            $errores['id_country'] = 'El país es necesario';
+        }
+
+
+        return $errores;
+    }
+
+    public function showAddUser(array $errores = [], array $input = []): void
+    {
+        $data = $this->getCommonData();
+        $data += [
+            'titulo' => 'Añadir Usuario',
+            'breadcrumb' => ['Inicio', 'Usuarios', 'Añadir Usuario'],
+        ];
+
+        $data['errores'] = $errores;
+        $data['input'] = $input;
+
+        $this->view->showViews(array('templates/header.view.php', 'editUsuario.add.php', 'templates/footer.view.php'), $data);
+
+    }
+
+    public function doAddUser(): void
+    {
+        $errores = $this->checkForm($_POST);
+
+        if ($errores === []) {
+            //comprobamos que tenemos todos los datos
+            $insertData = $_POST;
+            $insertData['activo']= isset($_POST['activo']) ? 1 : 0;
+            //le pasamos los datos al modelo para que ejecute el add
+            $model = new UsuariosModel();
+            $resultado = $model->addUsuario($insertData);
+            if ($resultado !== false) {
+                //mensaje de éxito
+            }else{
+                //mensaje de error
+            }
+            //redirigimos a la lista de usuarios
+            header('Location: /usuarios');
+
+
+        } else {
+            $input = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            $this->showAddUser($errores, $input);
+        }
+
+    }
+
+    public function showEditUser(string $username, array $errores = [], array $input = []): void
+    {
+        $data = $this->getCommonData();
+        $data += [
+            'titulo' => 'Añadir Usuario',
+            'breadcrumb' => ['Inicio', 'Usuarios', 'Añadir Usuario'],
+        ];
+        $model = new UsuariosModel();
+        $usuario = $model->findUsuario($username);
+        //Si no exite el usuario, redirigimos
+        if (is_null($usuario)) {
+            header('Location: /usuarios');
+        }
+
+        $data['errores'] = $errores;
+        $data['input'] = ($input === []) ? $usuario : $input;
+
+        $this->view->showViews(array('templates/header.view.php', 'editUsuario.add.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function doEditUser(): void
+    {
+
+    }
+
+    public function deleteUsuario(): void
+    {
+
     }
 
 }
