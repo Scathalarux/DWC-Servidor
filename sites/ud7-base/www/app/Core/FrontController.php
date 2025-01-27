@@ -13,7 +13,7 @@ use Steampixel\Route;
 class FrontController
 {
     private static ?array $jwtData = null;
-    private static ?array $permisos = null;
+    private static array $permisos = [];
 
     public static function main()
     {
@@ -36,8 +36,10 @@ class FrontController
                 $controller = new ErrorController();
                 $controller->errorWithBody(403, ['mensaje' => $e->getMessage()]);
                 //para que finalice la ejecución
-                die();
+                die;
             }
+        }else{
+            self::$permisos = LoginController::getPermisos();
         }
 
         Route::add(
@@ -72,67 +74,68 @@ class FrontController
         );
 
 
-            Route::add(
-                '/categoria',
-                function () {
-                    if (str_contains(self::$permisos['categoriaController'], 'w')) {
-                        (new CategoriaController())->addCategoria();
-                    } else {
-                        http_response_code(403);
-                    }
-                },
-                'post'
-            );
+        Route::add(
+            '/categoria',
+            function () {
+                if (str_contains(self::$permisos['categoriaController'], 'w')) {
+                    (new CategoriaController())->addCategoria();
+                } else {
+                    http_response_code(403);
+                }
+            },
+            'post'
+        );
 
-            Route::add(
-                '/categoria/(\p{N}+)',
-                function ($id) {
-                    if (str_contains(self::$permisos['categoriaController'], 'w')) {
-                        (new CategoriaController())->updateCategoria((int)$id);
-                    } else {
-                        http_response_code(403);
-                    }
-                },'put'
-            );
+        Route::add(
+            '/categoria/(\p{N}+)',
+            function ($id) {
+                if (str_contains(self::$permisos['categoriaController'], 'w')) {
+                    (new CategoriaController())->updateCategoria((int)$id);
+                } else {
+                    http_response_code(403);
+                }
+            },'put'
+        );
 
 
-            Route::add(
-                '/categoria/(\p{N}+)',
-                function ($id) {
-                    if (str_contains(self::$permisos['categoriaController'], 'd')) {
-                        (new CategoriaController())->deleteCategoria((int)$id);
-                    } else {
-                        http_response_code(403);
-                    }
-                },
-                'delete'
-            );
+        Route::add(
+            '/categoria/(\p{N}+)',
+            function ($id) {
+                if (str_contains(self::$permisos['categoriaController'], 'd')) {
+                    (new CategoriaController())->deleteCategoria((int)$id);
+                } else {
+                    http_response_code(403);
+                }
+            },
+            'delete'
+        );
 
+        Route::add(
+            '/test',
+            fn() => throw new \Exception(),
+            'get'
+        );
+
+        Route::pathNotFound(
+            function ()
+            {
+                http_response_code(404);
+            }
+        );
+
+        Route::methodNotAllowed(
+            function ()
+            {
+                http_response_code(405);
+            }
+        );
+
+        Route::run();
     }
 
-
-
-
-Route::add(
-'/test',
-fn() => throw new \Exception(),
-'get'
-);
-
-Route::pathNotFound(
-    function ()
-    {
-        http_response_code(404);
-    }
-);
-
-Route::methodNotAllowed(
-    function ()
-    {
-        http_response_code(405);
-    }
-);
-
-Route::run();
 }
-}
+
+
+
+
+

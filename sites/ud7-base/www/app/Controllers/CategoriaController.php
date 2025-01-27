@@ -14,8 +14,26 @@ class CategoriaController extends BaseController
     //Trait
     use BaseRestController;
 
-    public function traitPut()
+    public function traitPut(int $id)
     {
+        $model = new CategoriaModel();
+        $_put = $this->getParams();
+        $errores = $this->checkForm($_put);
+        $categoria = $model->find($id);
+        if($categoria === false){
+            $respuesta = new Respuesta(404, ['mansaje'=>'La categoria no existe']);
+        }else{
+            if($errores === []){
+                if($model->updateCategoria($id, ['id_padre'=> $_put['id_padre'] ?? null, 'nombre_categoria' =>$_put['nombre_categoria']])){
+                    $respuesta = new Respuesta(200);
+                }else{
+                    $respuesta = new Respuesta(500, ['mansaje'=>'Ha ocurrido un error']);
+                }
+
+            }else{
+                $respuesta = new Respuesta(400, $errores);
+            }
+        }
     }
 
 
