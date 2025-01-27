@@ -3,87 +3,136 @@
 namespace Com\Daw2\Core;
 
 use Ahc\Jwt\JWT;
+use Ahc\Jwt\JWTException;
 use Com\Daw2\Controllers\CategoriaController;
+use Com\Daw2\Controllers\ErrorController;
 use Com\Daw2\Controllers\LoginController;
 use Com\Daw2\Helpers\JwtTool;
 use Steampixel\Route;
 
 class FrontController
 {
+    private static ?array $jwtData = null;
+    private static ?array $permisos = null;
+
     public static function main()
     {
         //comprobamos si en la cabecera tenemos un token del usuario
         if (JwtTool::requestHasToken()) {
-            $bearer = JwtTool::getBearerToken();
-            $jwt = new JWT($_ENV['secret']);
-            //si hay manipulación de token o ha caducado, nos salta una excepción
-            $decoded = $jwt->decode($bearer);
-            /**
-             * Con servidor apache podríamos usar esto y procesar
-             * $headers2 = getallheaders();
-             * $jwt2 = explode(" ", $headers2['Authorization'])[1];
-             * $decode2 = $jwt->decode($jwt2);
-             * */
+            //manejamos la posibilidad de que el token esté caducado o sea NO válido
+            try {
+                $bearer = JwtTool::getBearerToken();
+                $jwt = new JWT($_ENV['secret']);
+                //si hay manipulación de token o ha caducado, nos salta una excepción
+                self::$jwtData = $jwt->decode($bearer);
+                self::$permisos = LoginController::getPermisos(self::$jwtData['id_rol']);
+                /**
+                 * Con servidor apache podríamos usar esto y procesar
+                 * $headers2 = getallheaders();
+                 * $jwt2 = explode(" ", $headers2['Authorization'])[1];
+                 * $decode2 = $jwt->decode($jwt2);
+                 * */
+            } catch (JWTException $e) {
+                $controller = new ErrorController();
+                $controller->errorWithBody(403, ['mensaje' => $e->getMessage()]);
+                //para que finalice la ejecución
+                die();
+            }
         }
 
-
-        Route::add(
-            '/categoria',
-            fn() => (new CategoriaController())->listCategorias(),
-            'get'
-        );
-        Route::add(
-            '/categoria/(\p{N}+)',
-            fn($id) => (new CategoriaController())->get((int)$id),
-            'get'
-        );
-        Route::add(
-            '/categoria',
-            function () {
-                if (isset($decoded)) {
-                    (new CategoriaController())->addCategoria();
-                } else {
-                    http_response_code(403);
-                }
-            }
-            , 'post'
-        );
         Route::add(
             '/login',
             fn() => (new LoginController())->login(),
             'post'
         );
+
         //Solo los usuarios logeados tienen acceso
+        //Obtenemos los permisos de los usuarios según el rol que tengan
 
         Route::add(
-            '/categoria/(\p{N}+)',
-            fn($id) => (new CategoriaController())->deleteCategoria((int)$id),
-            'delete'
+            '/categoria',
+            function () {
+                if (str_contains(self::$permisos['categoriaController'], 'r')) {
+                    (new CategoriaController())->listCategorias();
+                } else {
+                    http_response_code(403);
+                }
+            }, 'get'
         );
         Route::add(
             '/categoria/(\p{N}+)',
-            fn($id) => (new CategoriaController())->updateCategoria((int)$id),
-            'put'
-        );
-
-        Route::add(
-            '/test',
-            fn() => throw new \Exception(),
+            function ($id) {
+                if (str_contains(self::$permisos['categoriaController'], 'r')) {
+                    (new CategoriaController())->get((int)$id);
+                } else {
+                    http_response_code(403);
+                }
+            },
             'get'
         );
 
-        Route::pathNotFound(
-            function () {
-                http_response_code(404);
-            }
-        );
 
-        Route::methodNotAllowed(
-            function () {
-                http_response_code(405);
-            }
-        );
+            Route::add(
+                '/categoria',
+                function () {
+                    if (str_contains(self::$permisos['categoriaController'], 'w')) {
+                        (new CategoriaController())->addCategoria();
+                    } else {
+                        http_response_code(403);
+                    }
+                },
+                'post'
+            );
 
-        Route::run();
+            Route::add(
+                '/categoria/(\p{N}+)',
+                function ($id) {
+                    if (str_contains(self::$permisos['categoriaController'], 'w')) {
+                        (new CategoriaController())->updateCategoria((int)$id);
+                    } else {
+                        http_response_code(403);
+                    }
+                },'put'
+            );
+
+
+            Route::add(
+                '/categoria/(\p{N}+)',
+                function ($id) {
+                    if (str_contains(self::$permisos['categoriaController'], 'd')) {
+                        (new CategoriaController())->deleteCategoria((int)$id);
+                    } else {
+                        http_response_code(403);
+                    }
+                },
+                'delete'
+            );
+
     }
+
+
+
+
+Route::add(
+'/test',
+fn() => throw new \Exception(),
+'get'
+);
+
+Route::pathNotFound(
+    function ()
+    {
+        http_response_code(404);
+    }
+);
+
+Route::methodNotAllowed(
+    function ()
+    {
+        http_response_code(405);
+    }
+);
+
+Route::run();
+}
 }

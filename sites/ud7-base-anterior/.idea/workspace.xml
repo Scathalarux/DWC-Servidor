@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="83a8175b-1816-4439-9211-f807dbee1324" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ud5/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ud5/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ud5/.idea/ud5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../ud5/.idea/ud5.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ud5/www/app/Controllers/CategoriaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/../ud5/www/app/Controllers/CategoriaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ud5/www/app/Core/FrontController.php" beforeDir="false" afterPath="$PROJECT_DIR$/../ud5/www/app/Core/FrontController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ud5/www/app/Libraries/Respuesta.php" beforeDir="false" afterPath="$PROJECT_DIR$/../ud5/www/app/Libraries/Respuesta.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ud5/www/app/Models/CategoriaModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/../ud5/www/app/Models/CategoriaModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ud5/www/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/../ud5/www/composer.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/www/composer.json</pharConfigPath>
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="PHPCodeSnifferProjectConfiguration">
+    <option name="selectedConfigurationId" value="56e4d37f-f400-49ac-84f1-536df5af88de" />
+  </component>
+  <component name="PhpServers">
+    <servers>
+      <server host="localhost" id="091d869c-ff8d-42ea-8d33-ad83790b7ed9" name="localhost" port="85" use_path_mappings="true">
+        <path_mappings>
+          <mapping local-root="$PROJECT_DIR$/www" remote-root="/var/www/html" />
+          <mapping local-root="$PROJECT_DIR$/www/public" remote-root="/var/www/html/public" />
+        </path_mappings>
+      </server>
+    </servers>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="php">
+    <include_path>
+      <path value="$PROJECT_DIR$/www/vendor/composer" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/cache" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/www/vendor/google/apiclient" />
+      <path value="$PROJECT_DIR$/www/vendor/google/auth" />
+      <path value="$PROJECT_DIR$/www/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/www/vendor/google/apiclient-services" />
+      <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/www/vendor/vlucas/phpdotenv" />
+      <path value="$PROJECT_DIR$/www/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/www/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/www/vendor/firebase/php-jwt" />
+      <path value="$PROJECT_DIR$/www/vendor/phpoption/phpoption" />
+      <path value="$PROJECT_DIR$/www/vendor/phpseclib/phpseclib" />
+      <path value="$PROJECT_DIR$/www/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/www/vendor/paragonie/constant_time_encoding" />
+      <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/www/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/www/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/www/vendor/steampixel/simple-php-router" />
+      <path value="$PROJECT_DIR$/www/vendor/graham-campbell/result-type" />
+    </include_path>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2rtk61uq1rzMS83PoqRXaoqWMiX" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;credentialsType com.jetbrains.php.remote.interpreter.ui.PhpInplaceEditRemoteSdkForm&quot;: &quot;Docker Compose&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/lara.comesanavarela/2DAW/DWC-Servidor/sites/ud5&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.php.debug.servers&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PS-243.23654.115" />
+        <option value="bundled-php-predefined-a98d8de5180a-4c3855d0ab16-com.jetbrains.php.sharedIndexes-PS-243.23654.115" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="83a8175b-1816-4439-9211-f807dbee1324" name="Changes" comment="" />
+      <created>1737385579706</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1737385579706</updated>
+      <workItem from="1737385581000" duration="478000" />
+      <workItem from="1737386071241" duration="1943000" />
+      <workItem from="1737388439486" duration="187000" />
+      <workItem from="1737388707851" duration="2979000" />
+      <workItem from="1737392405579" duration="11000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

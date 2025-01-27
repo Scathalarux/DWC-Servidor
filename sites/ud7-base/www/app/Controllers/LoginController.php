@@ -11,6 +11,10 @@ use Com\Daw2\Models\UsuariosSistemaModel;
 
 class LoginController extends BaseController
 {
+    private const ROL_ADMIN = 1;
+    private const ROL_ENCARGADO = 2;
+    private const ROL_STAFF = 3;
+
     public function login(): void
     {
         //comprobamos que hemos recibido todos los datos necesarios para el login
@@ -35,7 +39,7 @@ class LoginController extends BaseController
 
                     //Creación JWT
                     //cabecera del JWT
-                    $jwt = new JWT($_ENV['secret'], 'HS256', 1800, 10);
+                    $jwt = new JWT($_ENV['secret'], 'HS256', 3600, 10);
                     //payload del JWT: id_usuario, id_rol, idioma, nombre
                     $token = $jwt->encode($data);
 
@@ -53,5 +57,19 @@ class LoginController extends BaseController
         }
 
         $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+    }
+
+    public static function getPermisos(int $idRol = -1): array
+    {
+        $permisos = [
+            "categoriaController" => ''
+        ];
+
+        return match ($idRol) {
+            self::ROL_ADMIN => array_replace($permisos, ['categoriaController' => 'rwd']),
+            self::ROL_ENCARGADO=>  array_replace($permisos, ['categoriaController' => 'r']),
+            self::ROL_STAFF  =>  array_replace($permisos, []),
+            default => $permisos
+        };
     }
 }

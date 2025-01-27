@@ -82,4 +82,6 @@ class UsuariosSistemaModel extends BaseDbModel
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute(['id_usuario' => $id_usuario]);
     }
+
+
 }

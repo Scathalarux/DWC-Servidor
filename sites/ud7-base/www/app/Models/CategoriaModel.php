@@ -65,8 +65,10 @@ class CategoriaModel extends BaseDbModel
         return ($executed && $stmt->rowCount() === 1);
     }
 
-    public function updateCategoria()
+    public function updateCategoria(array $data):bool
     {
-        
+        $sql = "UPDATE categoria SET id_padre = :id_padre, nombre_categoria = :categoria WHERE id_categoria = :id_categoria";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
     }
 }

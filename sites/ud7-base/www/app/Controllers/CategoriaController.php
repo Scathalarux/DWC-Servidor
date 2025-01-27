@@ -72,7 +72,7 @@ class CategoriaController extends BaseController
                     $respuesta = new Respuesta(409, ['mensaje' => 'Ya existe una categoria con estos datos']);
                 }
             } else {
-                if (isset($errores["nombre_categoria"])) {
+                if (isset($errores["categoria"])) {
                     $respuesta = new Respuesta(400, ['mensaje' => 'La categoría no es válida']);
                 }
                 if (isset($errores["id_padre"])) {
@@ -150,9 +150,9 @@ class CategoriaController extends BaseController
     {
         $errores = [];
         if (empty($data['categoria'])) {
-            $errores['nombre_categoria'] = 'La categoria es obligatoria';
-        } elseif (preg_match('/^\p{L}[\p{L} \p{N}]*\p{L}$/', $data['categoria'])) {
-            $errores['nombre_categoria'] = 'La categoria debe empezar y terminar por letras, y puede contener letras, espacios y números';
+            $errores['categoria'] = 'La categoria es obligatoria';
+        } elseif (!preg_match('/^\p{L}[\p{L} \p{N}]*\p{L}$/', $data['categoria'])) {
+            $errores['categoria'] = 'La categoria debe empezar y terminar por letras, y puede contener letras, espacios y números';
         }
 
         if ($this->getPadre($data) === false) {
