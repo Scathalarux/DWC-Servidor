@@ -13,6 +13,6 @@ class ErrorController extends BaseController
     public function errorWithBody(int $code, array $body): void
     {
         $respuesta = new Respuesta($code, $body);
-        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+        $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
     }
 }

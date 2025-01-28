@@ -7,6 +7,7 @@ use Ahc\Jwt\JWTException;
 use Com\Daw2\Controllers\CategoriaController;
 use Com\Daw2\Controllers\ErrorController;
 use Com\Daw2\Controllers\LoginController;
+use Com\Daw2\Controllers\ProductoController;
 use Com\Daw2\Helpers\JwtTool;
 use Steampixel\Route;
 
@@ -17,6 +18,7 @@ class FrontController
 
     public static function main()
     {
+
         //comprobamos si en la cabecera tenemos un token del usuario
         if (JwtTool::requestHasToken()) {
             //manejamos la posibilidad de que el token esté caducado o sea NO válido
@@ -109,6 +111,36 @@ class FrontController
             },
             'delete'
         );
+
+
+        /**
+         *
+         *  PRODUCTOS - REPASO EXAMEN
+         *
+         */
+        Route::add(
+            '/producto',
+            fn() => (new ProductoController())->listProductosFiltrados()
+            /* alternativa para mostrar todos sin filtrar por ningún campo
+             *
+             * fn() => (new ProductoController())->listProductos()*/,
+            'get'
+        );
+
+        Route::add(
+            '/producto/(\p{L}{2,3}\p{N}{7})',
+            fn($codigo) => (new ProductoController())->getProducto($codigo),
+            'get'
+        );
+        Route::add(
+            '/producto',
+            fn() => (new ProductoController())->addProducto(),
+            'post'
+        );
+
+
+
+
 
         Route::add(
             '/test',

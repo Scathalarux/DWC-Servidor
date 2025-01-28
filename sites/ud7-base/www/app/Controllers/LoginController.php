@@ -56,7 +56,7 @@ class LoginController extends BaseController
             }
         }
 
-        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+        $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
     }
 
     public static function getPermisos(int $idRol = -1): array

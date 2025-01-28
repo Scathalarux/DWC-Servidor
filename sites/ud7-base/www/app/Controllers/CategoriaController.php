@@ -46,7 +46,7 @@ class CategoriaController extends BaseController
         } catch (\Exception $e) {
             $respuesta = new Respuesta(500);
         } finally {
-            $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+            $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
         }
     }
 
@@ -64,7 +64,7 @@ class CategoriaController extends BaseController
         } catch (\Exception $e) {
             $respuesta = new Respuesta(500);
         } finally {
-            $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+            $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
         }
     }
 
@@ -100,7 +100,7 @@ class CategoriaController extends BaseController
         } catch (\Exception $e) {
             $respuesta = new Respuesta(500);
         } finally {
-            $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+            $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
         }
     }
 
@@ -125,7 +125,7 @@ class CategoriaController extends BaseController
         } catch (\Exception $e) {
             $respuesta = new Respuesta(500);
         } finally {
-            $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+            $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
         }
     }
 
@@ -161,7 +161,7 @@ class CategoriaController extends BaseController
             }
         }
 
-        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+        $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
     }
 
     public function checkForm(array $data): array
