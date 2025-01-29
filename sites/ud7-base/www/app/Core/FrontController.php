@@ -7,6 +7,7 @@ use Ahc\Jwt\JWTException;
 use Com\Daw2\Controllers\CategoriaController;
 use Com\Daw2\Controllers\ErrorController;
 use Com\Daw2\Controllers\LoginController;
+use Com\Daw2\Controllers\LoginController2;
 use Com\Daw2\Controllers\ProductoController;
 use Com\Daw2\Helpers\JwtTool;
 use Steampixel\Route;
@@ -40,7 +41,7 @@ class FrontController
                 //para que finalice la ejecución
                 die;
             }
-        }else{
+        } else {
             self::$permisos = LoginController::getPermisos();
         }
 
@@ -61,7 +62,8 @@ class FrontController
                 } else {
                     http_response_code(403);
                 }
-            }, 'get'
+            },
+            'get'
         );
         Route::add(
             '/categoria/(\p{N}+)',
@@ -96,7 +98,8 @@ class FrontController
                 } else {
                     http_response_code(403);
                 }
-            },'put'
+            },
+            'put'
         );
 
 
@@ -118,25 +121,99 @@ class FrontController
          *  PRODUCTOS - REPASO EXAMEN
          *
          */
+        //comprobamos que en la petición se haya enviado el token de autorización
+        if (JwtTool::requestHasToken()) {
+            try {
+                //obtenemos el token que nos trae el portador (bearer)
+                $bearer = JwtTool::getBearerToken();
+                //creamos un nuevo JWT con el elemento secreto
+                $jwt = new JWT($_ENV['secret']);
+                //obtenemos los datos del token
+                self::$jwtData = $jwt->decode($bearer);
+                //obtenemos los permisos asociados al rol del usuario que accede
+                self::$permisos = LoginController::getPermisos(self::$jwtData['id_rol']);
+            } catch (JWTException $e) {
+                $controller = new ErrorController();
+                //enviamos el mensaje de error
+                $controller->errorWithBody(403, ['mensaje' => $e->getMessage()]);
+                //finalizamos el proceso
+                die;
+            }
+        } else {
+            self::$permisos = LoginController2::getPermisos();
+        }
+
+
+
+
+
         Route::add(
             '/producto',
-            fn() => (new ProductoController())->listProductosFiltrados()
+            function () {
+                if (str_contains(self::$permisos['productoController'], 'r')) {
+                    (new ProductoController())->listProductosFiltrados();
+                } else {
+                    http_response_code(403);
+                }
+            }
             /* alternativa para mostrar todos sin filtrar por ningún campo
              *
-             * fn() => (new ProductoController())->listProductos()*/,
+             * fn() => (new ProductoController())->listProductos()
+             * fn() => (new ProductoController())->listProductosFiltrados()
+             * */,
             'get'
         );
 
         Route::add(
             '/producto/(\p{L}{2,3}\p{N}{7})',
-            fn($codigo) => (new ProductoController())->getProducto($codigo),
+            function ($codigo) {
+                if (str_contains(self::$permisos['productoController'], 'r')) {
+                    (new ProductoController())->getProducto($codigo);
+                } else {
+                    http_response_code(403);
+                }
+            },
             'get'
         );
         Route::add(
             '/producto',
-            fn() => (new ProductoController())->addProducto(),
+            function () {
+                if (str_contains(self::$permisos['productoController'], 'w')) {
+                    (new ProductoController())->addProducto();
+                } else {
+                    http_response_code(403);
+                }
+            },
             'post'
         );
+        Route::add(
+            '/producto/(\p{L}{2,3}\p{N}{7})',
+            function ($codigo) {
+                if (str_contains(self::$permisos['productoController'], 'd')) {
+                    (new ProductoController())->deleteProducto($codigo);
+                } else {
+                    http_response_code(403);
+                }
+            },
+            'delete'
+        );
+        Route::add(
+            '/producto/(\p{L}{2,3}\p{N}{7})',
+            function ($codigo) {
+                if (str_contains(self::$permisos['productoController'], 'w')) {
+                    (new ProductoController())->editProducto($codigo);
+                } else {
+                    http_response_code(403);
+                }
+            },
+            'put'
+        );
+        Route::add(
+            '/login-producto',
+            fn() => (new LoginController2())->login(),
+            'post'
+        );
+
 
 
 
@@ -149,25 +226,17 @@ class FrontController
         );
 
         Route::pathNotFound(
-            function ()
-            {
+            function () {
                 http_response_code(404);
             }
         );
 
         Route::methodNotAllowed(
-            function ()
-            {
+            function () {
                 http_response_code(405);
             }
         );
 
         Route::run();
     }
-
 }
-
-
-
-
-
