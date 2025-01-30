@@ -7,11 +7,21 @@ namespace Com\Daw2\Controllers;
 use Com\Daw2\Core\BaseController;
 use Com\Daw2\Models\AuxCountriesModel;
 use Com\Daw2\Models\AuxRolModel;
+use Com\Daw2\Libraries\Mensaje;
 use Com\Daw2\Models\UsuariosModel;
 use Decimal\Decimal;
 
 class UsuariosController extends BaseController
 {
+    /** TODO
+     *  - Añadir Login
+     *  - Añadir Login con Google
+     *  - Añadir Registro
+     *  - Añadir Registro con Google
+     *  - Añaidr ver perfil específico en ventana individual
+     *  - Añadir Logout
+     *  - Añadir obtención de permisos
+     */
     private const DEFAULT_ORDER = 1;
     private const DEFAULT_PAGE = 1;
     private const DEFAULT_SIZE = 25;
@@ -57,7 +67,7 @@ class UsuariosController extends BaseController
         $data['page'] = $page;
 
 
-        $this->view->showViews(array('templates/header.view.php', 'usuario.view.php', 'templates/footer.view.php'), $data);
+        $this->view->showViews(array('templates/header.view.php', 'usuarioSistema.view.php', 'templates/footer.view.php'), $data);
     }
 
     public function getCommonData(): array
@@ -100,7 +110,7 @@ class UsuariosController extends BaseController
 
         //username
         if (!empty($data['username'])) {
-            if (!preg_match('/[\p{L}\p{N}_]{3,50}/ui'), $data['username']){
+            if (!preg_match('/[\p{L}\p{N}_]{3,50}/ui', $data['username'])){
                 $errores['username'] = 'El nombre solo puede contener 3-50 caracteres, números y _';
             }
         } else {
@@ -198,17 +208,19 @@ class UsuariosController extends BaseController
         if ($errores === []) {
             //comprobamos que tenemos todos los datos
             $insertData = $_POST;
-            $insertData['activo']= isset($_POST['activo']) ? 1 : 0;
+            $insertData['activo'] = isset($_POST['activo']) ? 1 : 0;
             //le pasamos los datos al modelo para que ejecute el add
             $model = new UsuariosModel();
             $resultado = $model->addUsuario($insertData);
             if ($resultado !== false) {
                 //mensaje de éxito
-            }else{
+                $this->addFlashMessage(new Mensaje('Usuario añadido correctamente.', 'success'));
+            } else {
                 //mensaje de error
+                $this->addFlashMessage(new Mensaje('No se ha podido añadir el usuario.', 'danger'));
             }
             //redirigimos a la lista de usuarios
-            header('Location: /usuarios');
+            header('Location: '.$_ENV['host.folder'].'usuariosSistema');
 
 
         } else {
@@ -219,7 +231,7 @@ class UsuariosController extends BaseController
 
     }
 
-    public function showEditUser(string $username, array $errores = [], array $input = []): void
+    public function showEditUser(int $idUsuario, array $errores = [], array $input = []): void
     {
         $data = $this->getCommonData();
         $data += [
@@ -227,10 +239,10 @@ class UsuariosController extends BaseController
             'breadcrumb' => ['Inicio', 'Usuarios', 'Añadir Usuario'],
         ];
         $model = new UsuariosModel();
-        $usuario = $model->findUsuario($username);
+        $usuario = $model->findUsuario($idUsuario);
         //Si no exite el usuario, redirigimos
-        if (is_null($usuario)) {
-            header('Location: /usuarios');
+        if ($usuario === false) {
+            header('Location: '.$_ENV['host.folder'].'usuariosSistema');
         }
 
         $data['errores'] = $errores;
@@ -239,13 +251,25 @@ class UsuariosController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'editUsuario.add.php', 'templates/footer.view.php'), $data);
     }
 
-    public function doEditUser(): void
+    public function doEditUser(string $username): void
     {
 
     }
 
-    public function deleteUsuario(): void
+    public function deleteUsuario(string $username): void
     {
+        //TODO añadir condición para que si ha iniciado sesión no se pueda borrar a si mismo
+        $modelUsuarios = new UsuariosModel();
+        $usuario = $modelUsuarios->findUsuario($username);
+        if ($usuario !== false) {
+            if ($modelUsuarios->deleteUsuario($username)) {
+                $this->addFlashMessage(new Mensaje('El usuario ha sido eliminado', 'success'));
+            } else {
+                $this->addFlashMessage(new Mensaje('El usuario no ha podido ser eliminado', 'danger'));
+            }
+        }
+
+        header('Location: '.$_ENV['host.folder'].'usuariosSistema');
 
     }
 

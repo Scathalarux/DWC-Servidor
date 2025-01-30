@@ -87,9 +87,11 @@
     </div>
     <div class="col-12">
         <div class="card shadow mb-4">
-            <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Usuarios</h6>
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-black">Usuarios</h6>
+            </div>
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
+                <a href="<?php echo $_ENV['host.folder'].'usuarios/new' ?>" class="m-0 font-weight-bold text-primary">Nuevo usuario <i class="fa fa-plus-square "></i></a>
             </div>
             <!-- Card Body -->
             <div class="card-body" id="card_table">
@@ -130,18 +132,27 @@
                     <?php if (!empty($usuarios)) { ?>
                         <tbody>
                         <?php foreach ($usuarios as $usuario) { ?>
-                            <tr <?php echo $usuario['activo'] == false ? 'class=bg-danger' : '' ?>>
+                            <tr <?php echo $usuario['activo'] == false ? 'class=table-danger' : '' ?>>
                                 <td><?php echo $usuario['username'] ?></td>
                                 <td><?php echo $usuario['salarioBruto'] ?></td>
                                 <td><?php echo $usuario['retencionIRPF'] ?></td>
                                 <td><?php echo $usuario['nombre_rol'] ?></td>
                                 <td><?php echo $usuario['country_name'] ?></td>
                                 <td><?php echo $usuario['activo'] ? 'Sí' : 'No' ?></td>
-                                <td></td>
+                                <td>
+                                    <a href="<?php echo $_ENV['host.folder'].'usuarios/edit/'.$usuario['username'] ?>" target="_blank" class="btn btn-success ml-1 mt-1" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pen"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'].'usuarios/ver/'.$usuario['username'] ?>" target="_blank" class="btn btn-info ml-1 mt-1" data-toggle="tooltip" data-placement="top" title="Ver Detalles"><i class="fas fa-eye"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'].'usuarios/delete/'.$usuario['username'] ?>" target="_blank" class="btn btn-danger ml-1 mt-1" data-toggle="tooltip" data-placement="top" title="Borrar"><i class="fas fa-trash"></i></a>
+
+
+                                </td>
                             </tr>
                         <?php } ?>
                         </tbody>
                     <?php } else { ?>
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">No hay datos que mostrar</h6>
+                        </div>
                     <?php } ?>
                 </table>
             </div>

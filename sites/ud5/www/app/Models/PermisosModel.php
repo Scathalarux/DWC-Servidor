@@ -9,14 +9,14 @@ use PDO;
 
 class PermisosModel extends BaseDbModel
 {
-    public const CREATE_PERMISOS = 'CREATE TABLE IF NOT EXISTS permisos (
+/*    public const CREATE_PERMISOS = 'CREATE TABLE IF NOT EXISTS permisos (
                                     id_rol INT NOT NULL PRIMARY KEY,
                                     seccion VARCHAR(255) NOT NULL PRIMARY KEY,
                                     permisos VARCHAR(5) NULL,
                                     constraint FK_id_rol
                                         foreign key (id_rol) references rol (id_rol)
                                         on update cascade
-                                    )';
+                                    )';*/
 
     public function createTablePermisos(): void
     {

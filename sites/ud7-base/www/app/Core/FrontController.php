@@ -9,6 +9,7 @@ use Com\Daw2\Controllers\ErrorController;
 use Com\Daw2\Controllers\LoginController;
 use Com\Daw2\Controllers\LoginController2;
 use Com\Daw2\Controllers\ProductoController;
+use Com\Daw2\Controllers\ProveedorController;
 use Com\Daw2\Helpers\JwtTool;
 use Steampixel\Route;
 
@@ -145,8 +146,6 @@ class FrontController
 
 
 
-
-
         Route::add(
             '/producto',
             function () {
@@ -213,6 +212,58 @@ class FrontController
             fn() => (new LoginController2())->login(),
             'post'
         );
+
+
+        /**
+         *
+         *  PROVEEDOR - REPASO EXAMEN
+         *
+         */
+        Route::add(
+            '/login-proveedor',
+            fn() => (new ProveedorController())->login(),
+            'post'
+        );
+        Route::add(
+            '/proveedor',
+            fn() => (new ProveedorController())->listarProveedor(),
+            'get'
+        );
+        Route::add(
+            '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
+            fn($cif) => (new ProveedorController())->getProveedor($cif),
+            'get'
+        );
+        Route::add(
+            '/proveedor',
+            fn() => (new ProveedorController())->addProveedor(),
+            'post'
+        );
+        Route::add(
+            '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
+            fn($cif) => (new ProveedorController())->deleteProveedor($cif),
+            'delete'
+        );
+        Route::add(
+            '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
+            fn($cif) => (new ProveedorController())->editProveedor($cif),
+            'patch'
+        );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

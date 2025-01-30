@@ -8,12 +8,13 @@ use Com\Daw2\Core\BaseDbModel;
 
 class UsuariosModel extends BaseDbModel
 {
-    private const SELECT_BASE = "SELECT u.*, au.nombre_rol , ac.country_name
-                                    FROM usuario u 
-                                    JOIN aux_rol au ON au.id_rol = u.id_rol 
-                                    JOIN aux_countries ac ON ac.id = u.id_country ";
+    private const SELECT_BASE = "SELECT u.*, au.nombre_rol , ac.country_name ".self::FROM;
 
-    private const COUNT_BASE = "SELECT COUNT(*) FROM usuario";
+    private const COUNT_BASE = "SELECT COUNT(*) ".self::FROM;
+
+    private const FROM = "FROM usuario u 
+                            JOIN aux_rol au ON au.id_rol = u.id_rol 
+                            JOIN aux_countries ac ON ac.id = u.id_country";
 
     public const ORDER_COLUMNS = ['username', 'salarioBruto', 'retencionIRPF', 'id_rol', 'id_country'];
 
@@ -144,7 +145,7 @@ class UsuariosModel extends BaseDbModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function findUsuario(string $username):?array
+    public function findUsuario(string $username):false|array
     {
         $sql='SELECT * FROM usuario WHERE username = :username';
         $stmt = $this->pdo->prepare($sql);
@@ -157,5 +158,12 @@ class UsuariosModel extends BaseDbModel
         $sql = 'INSERT INTO usuario (username, salarioBruto, retencionIRPF, activo, id_rol, id_country) VALUES (:username, :salarioBruto, :retencion, :activo, :id_rol, :id_country)';
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($data);
+    }
+
+    public function deleteUsuario(string $username):bool
+    {
+        $sql = 'DELETE FROM usuario WHERE username = :username';
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':username' => $username]);
     }
 }
