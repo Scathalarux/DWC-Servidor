@@ -123,7 +123,7 @@ class FrontController
          *
          */
         //comprobamos que en la petición se haya enviado el token de autorización
-        if (JwtTool::requestHasToken()) {
+        /*if (JwtTool::requestHasToken()) {
             try {
                 //obtenemos el token que nos trae el portador (bearer)
                 $bearer = JwtTool::getBearerToken();
@@ -142,7 +142,7 @@ class FrontController
             }
         } else {
             self::$permisos = LoginController2::getPermisos();
-        }
+        }*/
 
 
 
