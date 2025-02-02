@@ -81,6 +81,27 @@ class ProveedorController extends BaseController
         $errores = $this->checkForm($_POST);
 
         if ($errores === []) {
+            $modelProveedor = new ProveedorModel();
+            $insertData = $_POST;
+            $insertData['telefono'] = empty($insertData['telefono']) ? null : $insertData['telefono'];
+            //Alternativa
+            /* $insertData = [
+                 'cif' => $_POST['cif'],
+                 'codigo' => (empty($_POST['codigo'])) ? null : $_POST['codigo'],
+                 'nombre' => (empty($_POST['nombre_proveedor'])) ? null : $_POST['nombre_proveedor'],
+                 'direccion' => (empty($_POST['direccion'])) ? null : $_POST['direccion'],
+                 'website' => (empty($_POST['website'])) ? null : $_POST['website'],
+                 'pais' => (empty($_POST['pais'])) ? null : $_POST['pais'],
+                 'email' => (empty($_POST['email'])) ? null : $_POST['email'],
+                 'telefono' => (empty($_POST['telefono'])) ? null : $_POST['telefono']
+             ];*/
+
+            $proveedor = $modelProveedor->addProveedor($insertData);
+            if ($proveedor !== false) {
+                $respuesta = new Respuesta(200, ['mensaje' => 'Proveedor agregado']);
+            } else {
+                $respuesta = new Respuesta(400, ['mensaje' => 'Proveedor no agregado']);
+            }
 
         } else {
             $respuesta = new Respuesta(400, $errores);
@@ -98,6 +119,11 @@ class ProveedorController extends BaseController
         if (!empty($data['cif'])) {
             if (!preg_match('/^\p{L}[\p{N}]{7}\p{L}$/', $data['cif'])) {
                 $errores['cif'] = 'El cif no es válido';
+            }else{
+                $proveedor = $modelProveedor->getProveedor($data['cif']);
+                if($proveedor !== false){
+                    $errores['cif'] = 'El cif ya existe';
+                }
             }
         } else {
             $errores['cif'] = 'El cif es obligatorio';
@@ -148,14 +174,14 @@ class ProveedorController extends BaseController
                 }
             }
         } else {
-            $errores['cif'] = 'La website es obligatoria';
+            $errores['website'] = 'La website es obligatoria';
         }
 
 
         //pais --> string 100, required
         if (!empty($data['pais'])) {
             if (mb_strlen(trim($data['pais'])) > 100) {
-                $errores['pais'] = 'El pais no es válido';
+                $errores['pais'] = 'El pais no es válido, debe tener máximo 100 caracteres';
             }
         } else {
             $errores['pais'] = 'El pais es obligatorio';
@@ -181,9 +207,10 @@ class ProveedorController extends BaseController
             if (filter_var($data['telefono'], FILTER_VALIDATE_INT) === false) {
                 $errores['telefono'] = 'El telefono no es válido, solo puede contener números';
             } else {
-                if (mb_strlen(trim($data['email'])) != 8 || mb_strlen(trim($data['email'])) != 12) {
+                if (mb_strlen(trim($data['telefono'])) !== (8 | 12)) {
                     $errores['telefono'] = 'El telefono no es válido, solo puede contener 8 o 12 números';
                 }
+
             }
         }
 

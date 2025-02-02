@@ -15,7 +15,8 @@ class ProveedorModel extends BaseDbModel
 
     private const GROUP_BY = ' GROUP BY pv.cif ';
     private const COUNT_BASE = 'SELECT COUNT(*) ' . self::FROM;
-    public const COLUMNS_ORDER = ['cif','codigo','nombre', 'pais', 'total_productos_proveedor'];
+    public const COLUMNS_ORDER = ['cif', 'codigo', 'nombre', 'pais', 'total_productos_proveedor'];
+
     public function find(string $cif): false|array
     {
         $sql = "SELECT * FROM proveedor WHERE cif = :cif";
@@ -45,19 +46,19 @@ class ProveedorModel extends BaseDbModel
             $stmt->execute($filtros['vars']);
         } else {
             $stmt = $this->pdo->query(self::SELECT_BASE . self::GROUP_BY
-                                        . ' ORDER BY ' . self::COLUMNS_ORDER[$order - 1] . $sentido
-                                        . " LIMIT $offset, $sizePage");
+                . ' ORDER BY ' . self::COLUMNS_ORDER[$order - 1] . $sentido
+                . " LIMIT $offset, $sizePage");
         }
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getProveedor(string $cif):false|array
+    public function getProveedor(string $cif): false|array
     {
         $sql1 = "SELECT * FROM proveedor WHERE cif = :cif";
         $stmt = $this->pdo->prepare($sql1);
         $stmt->execute(['cif' => $cif]);
         $proveedor = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if($proveedor !== false){
+        if ($proveedor !== false) {
             $sql2 = "SELECT * FROM producto WHERE proveedor = :cif";
             $stmt = $this->pdo->prepare($sql2);
             $stmt->execute(['cif' => $cif]);
@@ -67,7 +68,7 @@ class ProveedorModel extends BaseDbModel
         return $proveedor;
     }
 
-    public function getProveedorCodigo(string $codigo):false|array
+    public function getProveedorCodigo(string $codigo): false|array
     {
         $sql1 = "SELECT * FROM proveedor WHERE codigo = :codigo";
         $stmt = $this->pdo->prepare($sql1);
@@ -147,10 +148,23 @@ class ProveedorModel extends BaseDbModel
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($filtros['vars']);
         } else {
-            $stmt = $this->pdo->query(self::COUNT_BASE. self::GROUP_BY);
+            $stmt = $this->pdo->query(self::COUNT_BASE . self::GROUP_BY);
         }
-        $rows =  $stmt->rowCount();
+        $rows = $stmt->rowCount();
 
         return (int)ceil($rows / $sizePage);
+    }
+
+    public function addProveedor(array $data): false|int
+    {
+        $sql = 'INSERT INTO proveedor (cif, codigo, nombre, direccion, website, pais, email, telefono) VALUES (:cif, :codigo, :nombre_proveedor, :direccion, :website, :pais, :email, :telefono)';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($data);
+        $id = $stmt->rowCount();
+        if ($id == 1) {
+            return (int)$id;
+        } else {
+            return false;
+        }
     }
 }
