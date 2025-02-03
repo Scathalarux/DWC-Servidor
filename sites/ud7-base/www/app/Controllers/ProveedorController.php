@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Controllers;
 
+use Ahc\Jwt\JWT;
 use Com\Daw2\Core\BaseController;
 use Com\Daw2\Libraries\Respuesta;
 use Com\Daw2\Models\ProveedorModel;
+use Com\Daw2\Models\UsuariosSistemaModel;
+use Com\Daw2\Models\UsuariosSistemaModel2;
+use Com\Daw2\Traits\BaseRestController;
 
 class ProveedorController extends BaseController
 {
@@ -14,9 +18,68 @@ class ProveedorController extends BaseController
     private const DEFAULT_PAGE = 1;
 
     private const DEFAULT_ORDER = 1;
+    private const DEFAULT_SENTIDO = 'asc';
+
+    private const TYPE_CHECK = ['add' => 'add', 'edit' => 'edit'];
+
+    private const ROL_ADMIN = 1;
+    private const ROL_ENCARGADO = 2;
+    private const ROL_STUFF = 3;
+
 
     public function login(): void
     {
+        $userModel = new UsuariosSistemaModel2();
+        if (isset($_POST['email']) && isset($_POST['password'])) {
+            $usuario = $userModel->findUsuarioEmail($_POST['email']);
+            $passOk = false;
+            if ($usuario !== false) {
+                $passOk = password_verify($_POST['password'], $usuario['pass']);
+                if ($passOk !== false) {
+                    //creamos el token
+                    $jwt = new JWT ($_ENV['secret'], 'HS256', 3600, 10);
+
+                    $insertData = [
+                        'id_usuario' => $usuario['id_usuario'],
+                        'id_rol' => $usuario['id_rol'],
+                    ];
+
+                    $token = $jwt->encode($insertData);
+
+                    $respuesta = new Respuesta(200, ['mensaje' => 'Sesión iniciada correctamente', 'token' => $token]);
+
+                    $userModel->updateFechaAcceso((int)$usuario['id_usuario']);
+
+                }
+
+            }
+            if ($usuario === false || $passOk === false) {
+                $respuesta = new Respuesta(404, ['mensaje' => 'Los datos introducidos son erróneos. Vuelva a intentarlo']);
+            }
+        }
+
+        $this->view->show('jsonProveedor.view.php', ['respuesta' => $respuesta]);
+    }
+
+    public function getPermisos(int $idRol): array
+    {
+        $permisos = [
+            'catecoriaController' => '',
+            'productoController' => '',
+            'proveedorController' => '',
+        ];
+
+        return match ($idRol) {
+            self::ROL_ADMIN => array_replace($permisos,
+                ['catecoriaController' => 'rwd',
+                    'productoController' => 'rwd',
+                    'proveedorController' => 'rwd']),
+            self::ROL_ENCARGADO => array_replace($permisos,
+                ['catecoriaController' => 'r',
+                    'productoController' => 'r',
+                    'proveedorController' => 'r']),
+            self::ROL_STUFF => []
+        };
     }
 
     public function listarProveedor(): void
@@ -25,12 +88,15 @@ class ProveedorController extends BaseController
         //obtención del campo para la ordenación
         $order = $this->getOrder();
 
+        //obtenemos el sentido verificado
+        $sentido = $this->getSentido();
+
         //obtención de a página máxima que se puede alcanzar
         $maxPage = $modelProveedor->getMaxPage($_GET, self::SIZE_PAGE);
         //obtención de la página de la que se quieren mostrar los resultados
         $page = $this->getPage($maxPage);
 
-        $proveedores = $modelProveedor->listProveedoresFiltered($_GET, $order, $page, self::SIZE_PAGE);
+        $proveedores = $modelProveedor->listProveedoresFiltered($_GET, $order, $sentido, $page, self::SIZE_PAGE);
 
         if ($proveedores === false || $proveedores === []) {
             $respuesta = new Respuesta(400, ['mensaje' => 'ne se han podido encontrar proveedores con esas características']);
@@ -63,6 +129,16 @@ class ProveedorController extends BaseController
         return self::DEFAULT_PAGE;
     }
 
+    public function getSentido(): string
+    {
+        if (isset($_GET['sentido']) && filter_var($_GET['sentido'], FILTER_SANITIZE_FULL_SPECIAL_CHARS)) {
+            if (mb_strtolower(trim($_GET['sentido'])) === 'asc' || mb_strtolower(trim($_GET['sentido'])) === 'desc') {
+                return trim($_GET['sentido']);
+            }
+        }
+        return self::DEFAULT_SENTIDO;
+    }
+
     public function getProveedor(string $cif): void
     {
         $modelProveedor = new ProveedorModel();
@@ -78,27 +154,16 @@ class ProveedorController extends BaseController
 
     public function addProveedor(): void
     {
-        $errores = $this->checkForm($_POST);
+        $errores = $this->checkForm($_POST, self::TYPE_CHECK['add']);
 
         if ($errores === []) {
             $modelProveedor = new ProveedorModel();
             $insertData = $_POST;
             $insertData['telefono'] = empty($insertData['telefono']) ? null : $insertData['telefono'];
-            //Alternativa
-            /* $insertData = [
-                 'cif' => $_POST['cif'],
-                 'codigo' => (empty($_POST['codigo'])) ? null : $_POST['codigo'],
-                 'nombre' => (empty($_POST['nombre_proveedor'])) ? null : $_POST['nombre_proveedor'],
-                 'direccion' => (empty($_POST['direccion'])) ? null : $_POST['direccion'],
-                 'website' => (empty($_POST['website'])) ? null : $_POST['website'],
-                 'pais' => (empty($_POST['pais'])) ? null : $_POST['pais'],
-                 'email' => (empty($_POST['email'])) ? null : $_POST['email'],
-                 'telefono' => (empty($_POST['telefono'])) ? null : $_POST['telefono']
-             ];*/
 
             $proveedor = $modelProveedor->addProveedor($insertData);
             if ($proveedor !== false) {
-                $respuesta = new Respuesta(200, ['mensaje' => 'Proveedor agregado']);
+                $respuesta = new Respuesta(200, ['url' => 'http://localhost:8085/proveedor/' . $insertData['cif']]);
             } else {
                 $respuesta = new Respuesta(400, ['mensaje' => 'Proveedor no agregado']);
             }
@@ -109,7 +174,7 @@ class ProveedorController extends BaseController
         $this->view->show('jsonProveedor.view.php', ['respuesta' => $respuesta]);
     }
 
-    public function checkForm(array $data): array
+    public function checkForm(array $data, string $type): array
     {
         $errores = [];
 
@@ -119,13 +184,13 @@ class ProveedorController extends BaseController
         if (!empty($data['cif'])) {
             if (!preg_match('/^\p{L}[\p{N}]{7}\p{L}$/', $data['cif'])) {
                 $errores['cif'] = 'El cif no es válido';
-            }else{
+            } else {
                 $proveedor = $modelProveedor->getProveedor($data['cif']);
-                if($proveedor !== false){
+                if ($proveedor !== false) {
                     $errores['cif'] = 'El cif ya existe';
                 }
             }
-        } else {
+        } elseif ($type === 'add') {
             $errores['cif'] = 'El cif es obligatorio';
         }
 
@@ -139,7 +204,7 @@ class ProveedorController extends BaseController
                     $errores['codigo'] = 'El codigo ya existe en la BD';
                 }
             }
-        } else {
+        } elseif ($type === 'add') {
             $errores['codigo'] = 'El codigo es obligatorio';
         }
 
@@ -149,7 +214,7 @@ class ProveedorController extends BaseController
             if (mb_strlen(trim($data['nombre_proveedor'])) > 255) {
                 $errores['nombre_proveedor'] = 'El nombre_proveedor no es válido, solo puede tener 255 caracteres';
             }
-        } else {
+        } elseif ($type === 'add') {
             $errores['nombre_proveedor'] = 'El nombre_proveedor es obligatorio';
         }
 
@@ -159,7 +224,7 @@ class ProveedorController extends BaseController
             if (mb_strlen(trim($data['direccion'])) > 255) {
                 $errores['direccion'] = 'La direccion no es válida, solo puede tener 255 caracteres';
             }
-        } else {
+        } elseif ($type === 'add') {
             $errores['direccion'] = 'La direccion es obligatoria';
         }
 
@@ -173,7 +238,7 @@ class ProveedorController extends BaseController
                     $errores['website'] = 'La website no es válida, solo puede tener 255 caracteres';
                 }
             }
-        } else {
+        } elseif ($type === 'add') {
             $errores['website'] = 'La website es obligatoria';
         }
 
@@ -183,7 +248,7 @@ class ProveedorController extends BaseController
             if (mb_strlen(trim($data['pais'])) > 100) {
                 $errores['pais'] = 'El pais no es válido, debe tener máximo 100 caracteres';
             }
-        } else {
+        } elseif ($type === 'add') {
             $errores['pais'] = 'El pais es obligatorio';
         }
 
@@ -197,7 +262,7 @@ class ProveedorController extends BaseController
                     $errores['email'] = 'El email no es válido, solo puede tener 255 caracteres';
                 }
             }
-        } else {
+        } elseif ($type === 'add') {
             $errores['email'] = 'El email es obligatorio';
         }
 
@@ -221,10 +286,60 @@ class ProveedorController extends BaseController
     public
     function deleteProveedor(string $cif): void
     {
+        $model = new ProveedorModel();
+        $proveedor = $model->find($cif);
+        if ($proveedor === false) {
+            $respuesta = new Respuesta(404, ['mensaje' => 'El proveedor no existe']);
+        } else {
+            //añadimos el manejo de la excepción en caso de que se quiera borrar un proveedor del que dependen otros productos
+            try {
+                $resultado = $model->deleteProveedor($cif);
+                if ($resultado === false) {
+                    $respuesta = new Respuesta(404, ['mensaje' => 'No se ha podido eliminar el proveedor']);
+                } else {
+                    $respuesta = new Respuesta(200, ['mensaje' => 'El proveedor se ha eliminado correctamente']);
+                }
+            } catch (\PDOException $e) {
+                if (isset($e->errorInfo[0]) && $e->errorInfo[0] == '23000') {
+                    $respuesta = new Respuesta(400, ['mensaje' => 'No se puede eliminar el proveedor ya que tiene dependecias con determinados productos']);
+                } else {
+                    throw $e;
+                }
+
+            }
+        }
+
+        $this->view->show('jsonProveedor.view.php', ['respuesta' => $respuesta]);
     }
 
-    public
-    function editProveedor(string $cif): void
+    use BaseRestController;
+
+    public function editProveedor(string $oldCif): void
     {
+        $model = new ProveedorModel();
+        $proveedor = $model->find($oldCif);
+
+        if ($proveedor === false) {
+            $respuesta = new Respuesta(404, ['mensaje' => 'El proveedor no existe']);
+        } else {
+            $patch = $this->getParams();
+            $errores = $this->checkForm($patch, self::TYPE_CHECK['edit']);
+            if ($errores === []) {
+                $keys = array_keys($proveedor);
+                foreach ($keys as $key) {
+                    $insertData[$key] = empty($patch[$key]) ? $proveedor[$key] : $patch[$key];
+                }
+                $resultado = $model->editProveedor($oldCif, $insertData);
+
+                if ($resultado === false) {
+                    $respuesta = new Respuesta(404, ['mensaje' => 'No se ha modificado el proveedor']);
+                } else {
+                    $respuesta = new Respuesta(200, ['mensaje' => 'Se ha modificado el proveedor correctamente']);
+                }
+            } else {
+                $respuesta = new Respuesta(404, $errores);
+            }
+        }
+        $this->view->show('jsonProveedor.view.php', ['respuesta' => $respuesta]);
     }
 }

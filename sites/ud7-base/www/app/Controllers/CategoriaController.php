@@ -34,6 +34,7 @@ class CategoriaController extends BaseController
                 $respuesta = new Respuesta(400, $errores);
             }
         }
+        $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
     }
 
 

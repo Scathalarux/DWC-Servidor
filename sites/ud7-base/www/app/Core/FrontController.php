@@ -145,7 +145,6 @@ class FrontController
         }*/
 
 
-
         Route::add(
             '/producto',
             function () {
@@ -219,6 +218,26 @@ class FrontController
          *  PROVEEDOR - REPASO EXAMEN
          *
          */
+        //comprobamos la existencia del token y obtenemos los permisos asociados al usuario que inicia sesión
+        if (JwtTool::requestHasToken()) {
+            //OJO, NO OLVIDAR EL TRY-CATCH PARA MANEJAR PROBLEMAS DE TOKEN CADUCADO O MANIPULADO
+            try {
+                $bearer = JwtTool::getBearerToken();
+                $jwt = new Jwt($_ENV['secret']);
+                self::$jwtData = $jwt->decode($bearer);
+                self::$permisos = LoginController2::getPermisos(self::$jwtData['id_rol']);
+
+            } catch (JWTException $e) {
+                $controller = new ErrorController();
+                $controller->errorWithBody(403, ['mensaje' => $e->getMessage()]);
+                die();
+            }
+
+        } else {
+            self::$permisos = LoginController2::getPermisos();
+        }
+
+        //TODO: añadir comprobación permisos
         Route::add(
             '/login-proveedor',
             fn() => (new ProveedorController())->login(),
@@ -249,25 +268,6 @@ class FrontController
             fn($cif) => (new ProveedorController())->editProveedor($cif),
             'patch'
         );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         Route::add(

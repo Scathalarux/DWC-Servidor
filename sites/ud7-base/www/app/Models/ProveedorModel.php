@@ -26,27 +26,26 @@ class ProveedorModel extends BaseDbModel
     }
 
 
-    public function listProveedoresFiltered(array $data, int $order, int $page, int $sizePage): array|false
+    public function listProveedoresFiltered(array $data, int $order, string $sentido, int $page, int $sizePage): array|false
     {
         $filtros = $this->filtrosQuery($data);
-
-        $sentido = $order > 0 ? ' ASC ' : ' DESC ';
 
         $order = abs($order);
 
         $offset = ($page - 1) * $sizePage;
 
-        if ($filtros['conditions'] !== []) {
+        if ($filtros['conditionsWhere'] !== [] || $filtros['conditionsHaving'] !== []) {
             $sql = self::SELECT_BASE
-                . " WHERE " . implode(' AND ', $filtros['conditions'])
+                . (!empty($filtros['conditionsWhere']) ? " WHERE " . implode(' AND ', $filtros['conditionsWhere']) : '')
                 . self::GROUP_BY
-                . ' ORDER BY ' . self::COLUMNS_ORDER[$order - 1] . $sentido
+                . (!empty($filtros['conditionsHaving']) ? " HAVING " . implode(' AND ', $filtros['conditionsHaving']) : '')
+                . " ORDER BY " . self::COLUMNS_ORDER[$order - 1] . ' ' . $sentido
                 . " LIMIT $offset, $sizePage";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($filtros['vars']);
         } else {
             $stmt = $this->pdo->query(self::SELECT_BASE . self::GROUP_BY
-                . ' ORDER BY ' . self::COLUMNS_ORDER[$order - 1] . $sentido
+                . ' ORDER BY ' . self::COLUMNS_ORDER[$order - 1] . ' ' . $sentido
                 . " LIMIT $offset, $sizePage");
         }
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -78,57 +77,61 @@ class ProveedorModel extends BaseDbModel
 
     public function filtrosQuery(array $data): array
     {
-        $conditions = [];
+        $conditionsWhere = [];
         $vars = [];
+        $conditionsHaving = [];
+
 
         //cif
         if (!empty($data['cif'])) {
-            $conditions[] = ' pv.cif LIKE :cif ';
+            $conditionsWhere[] = ' pv.cif LIKE :cif ';
             $cif = $data['cif'];
             $vars['cif'] = "%$cif%";
         }
 
         //nombre
         if (!empty($data['nombre'])) {
-            $conditions[] = '  pv.nombre LIKE :nombre ';
+            $conditionsWhere[] = '  pv.nombre LIKE :nombre ';
             $nombre = $data['nombre'];
             $vars['nombre'] = "%$nombre%";
         }
 
         //codigo
         if (!empty($data['codigo'])) {
-            $conditions[] = '  pv.codigo LIKE :codigo ';
+            $conditionsWhere[] = '  pv.codigo LIKE :codigo ';
             $codigo = $data['codigo'];
             $vars['codigo'] = "%$codigo%";
         }
 
         //email
         if (!empty($data['email'])) {
-            $conditions[] = '  pv.email LIKE :email ';
+            $conditionsWhere[] = '  pv.email LIKE :email ';
             $email = $data['email'];
             $vars['email'] = "%$email%";
         }
 
         //pais
         if (!empty($data['pais'])) {
-            $conditions[] = '  pv.pais = :pais ';
+            $conditionsWhere[] = '  pv.pais = :pais ';
             $vars['pais'] = $data['pais'];
         }
 
         //productos minimos
         if (!empty($data['min_productos'])) {
-            $conditions[] = ' total_productos_proveedor >=:min_productos ';
-            $vars['min_productos'] = $data['min_productos'];
+            $conditionsHaving[] = ' total_productos_proveedor >=:min_productos ';
+            $vars['min_productos'] = (int)$data['min_productos'];
         }
 
         //productos máximos
         if (!empty($data['max_productos'])) {
-            $conditions[] = ' total_productos_proveedor <= :max_productos ';
-            $vars['max_productos'] = $data['max_productos'];
+            $conditionsHaving[] = ' total_productos_proveedor <= :max_productos ';
+            $vars['max_productos'] = (int)$data['max_productos'];
         }
 
-        $respuesta['conditions'] = $conditions;
+        $respuesta['conditionsWhere'] = $conditionsWhere;
         $respuesta['vars'] = $vars;
+        $respuesta['conditionsHaving'] = $conditionsHaving;
+
 
         return $respuesta;
     }
@@ -141,10 +144,11 @@ class ProveedorModel extends BaseDbModel
 
         $filtros = $this->filtrosQuery($data);
 
-        if ($filtros['conditions'] !== []) {
+        if ($filtros['conditionsWhere'] !== [] || $filtros['conditionsHaving'] !== []) {
             $sql = self::COUNT_BASE
-                . " WHERE " . implode(' AND ', $filtros['conditions'])
-                . self::GROUP_BY;
+                .(!empty($filtros['conditionsWhere']) ? " WHERE " . implode(' AND ', $filtros['conditionsWhere']) : '')
+                . self::GROUP_BY
+                .(!empty($filtros['conditionsHaving']) ? " HAVING " . implode(' AND ', $filtros['conditionsHaving']) : '');
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($filtros['vars']);
         } else {
@@ -166,5 +170,22 @@ class ProveedorModel extends BaseDbModel
         } else {
             return false;
         }
+    }
+
+    public function deleteProveedor(string $cif): bool
+    {
+        $sql = 'DELETE FROM proveedor WHERE cif = :cif';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['cif' => $cif]);
+        return ($stmt->rowCount() == 1);
+    }
+
+    public function editProveedor(string $oldCif, array $data): bool
+    {
+        $sql = 'UPDATE proveedor SET cif = :cif, codigo = :codigo, nombre =:nombre, direccion = :direccion, website = :website, pais = :pais, email = :email, telefono = :telefono WHERE cif = :oldCif';
+        $stmt = $this->pdo->prepare($sql);
+        $data['oldCif'] = $oldCif;
+        $stmt->execute($data);
+        return ($stmt->rowCount() === 1);
     }
 }
