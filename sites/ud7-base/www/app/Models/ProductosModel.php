@@ -21,6 +21,18 @@ class ProductosModel extends BaseDbModel
         $stmt->execute(['codigo' => $codigo]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
+    public function findSinProveedor(string $proveedor): array
+    {
+        $sql = "SELECT codigo, nombre, descripcion, coste, margen, iva, stock FROM producto WHERE proveedor = :proveedor";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['proveedor' => $proveedor]);
+        $resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        if(!$resultado){
+            return [];
+        }else{
+            return $resultado;
+        }
+    }
 
     public function getFiltered(array $data): array
     {

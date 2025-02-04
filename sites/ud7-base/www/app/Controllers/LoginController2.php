@@ -14,6 +14,7 @@ class LoginController2 extends BaseController
     private const ROL_ADMIN = 1;
     private const ROL_ENCARGADO = 2;
     private const ROL_STAFF = 3;
+
     public function login(): void
     {
         //comprobamos que se hayan introducido los campos necesarios para logearse
@@ -59,10 +60,11 @@ class LoginController2 extends BaseController
                 'categoriaController' => 'rwd',
                 'productoController' => 'rwd']),
             self::ROL_ENCARGADO => array_replace($permisos, [
-                'categoriaController' => 'rw',
-                'productoController' => 'rw']),
+                'categoriaController' => 'r',
+                'productoController' => 'r']),
             self::ROL_STAFF => array_replace($permisos, [
-                'productoController' => 'r'])
+                'productoController' => 'r']),
+            default => $permisos
         };
     }
 }

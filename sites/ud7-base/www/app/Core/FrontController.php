@@ -8,6 +8,7 @@ use Com\Daw2\Controllers\CategoriaController;
 use Com\Daw2\Controllers\ErrorController;
 use Com\Daw2\Controllers\LoginController;
 use Com\Daw2\Controllers\LoginController2;
+use Com\Daw2\Controllers\LoginController3;
 use Com\Daw2\Controllers\ProductoController;
 use Com\Daw2\Controllers\ProveedorController;
 use Com\Daw2\Helpers\JwtTool;
@@ -225,7 +226,7 @@ class FrontController
                 $bearer = JwtTool::getBearerToken();
                 $jwt = new Jwt($_ENV['secret']);
                 self::$jwtData = $jwt->decode($bearer);
-                self::$permisos = LoginController2::getPermisos(self::$jwtData['id_rol']);
+                self::$permisos = LoginController3::getPermisos(self::$jwtData['id_rol']);
 
             } catch (JWTException $e) {
                 $controller = new ErrorController();
@@ -234,38 +235,73 @@ class FrontController
             }
 
         } else {
-            self::$permisos = LoginController2::getPermisos();
+            self::$permisos = LoginController3::getPermisos();
         }
 
-        //TODO: añadir comprobación permisos
+
         Route::add(
             '/login-proveedor',
-            fn() => (new ProveedorController())->login(),
+            fn() => (new LoginController3())->login(),
             'post'
         );
         Route::add(
             '/proveedor',
-            fn() => (new ProveedorController())->listarProveedor(),
+            function () {
+                if (str_contains(self::$permisos['proveedorController'], 'r')) {
+                    (new ProveedorController())->listarProveedor();
+                } else {
+                    http_response_code(403);
+                }
+            },
+            //fn() => (new ProveedorController())->listarProveedor(),
             'get'
         );
         Route::add(
             '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
-            fn($cif) => (new ProveedorController())->getProveedor($cif),
+            function ($cif) {
+                if (str_contains(self::$permisos['proveedorController'], 'r')) {
+                    (new ProveedorController())->getProveedor($cif);
+                } else {
+                    http_response_code(403);
+                }
+            },
+            //fn($cif) => (new ProveedorController())->getProveedor($cif),
             'get'
         );
         Route::add(
             '/proveedor',
-            fn() => (new ProveedorController())->addProveedor(),
+            function () {
+                if (str_contains(self::$permisos['proveedorController'], 'w')) {
+                    (new ProveedorController())->addProveedor();
+                } else {
+                    http_response_code(403);
+                }
+            },
+            //fn() => (new ProveedorController())->addProveedor(),
             'post'
         );
         Route::add(
             '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
-            fn($cif) => (new ProveedorController())->deleteProveedor($cif),
+            function ($cif) {
+                if (str_contains(self::$permisos['proveedorController'], 'd')) {
+                    (new ProveedorController())->deleteProveedor($cif);
+                } else {
+                    http_response_code(403);
+                }
+            },
+            //fn($cif) => (new ProveedorController())->deleteProveedor($cif),
             'delete'
         );
         Route::add(
             '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
-            fn($cif) => (new ProveedorController())->editProveedor($cif),
+            function ($cif) {
+                if (str_contains(self::$permisos['proveedorController'], 'w')) {
+                    (new ProveedorController())->editProveedor($cif);
+                } else {
+                    http_response_code(403);
+                }
+            },
+            //fn($cif) => (new ProveedorController())->editProveedor($cif),
             'patch'
         );
 

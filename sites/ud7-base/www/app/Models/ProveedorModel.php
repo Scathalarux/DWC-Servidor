@@ -58,10 +58,8 @@ class ProveedorModel extends BaseDbModel
         $stmt->execute(['cif' => $cif]);
         $proveedor = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($proveedor !== false) {
-            $sql2 = "SELECT * FROM producto WHERE proveedor = :cif";
-            $stmt = $this->pdo->prepare($sql2);
-            $stmt->execute(['cif' => $cif]);
-            $productos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $modelProducto = new ProductosModel();
+            $productos = $modelProducto->findSinProveedor($proveedor['cif']);
             $proveedor['productos'] = $productos;
         }
         return $proveedor;
