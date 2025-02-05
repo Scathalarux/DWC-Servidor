@@ -162,9 +162,9 @@ class ProveedorModel extends BaseDbModel
         $sql = 'INSERT INTO proveedor (cif, codigo, nombre, direccion, website, pais, email, telefono) VALUES (:cif, :codigo, :nombre_proveedor, :direccion, :website, :pais, :email, :telefono)';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
-        $id = $stmt->rowCount();
-        if ($id == 1) {
-            return (int)$id;
+        $result = $stmt->rowCount();
+        if ($result == 1) {
+            return (int)$result;
         } else {
             return false;
         }
