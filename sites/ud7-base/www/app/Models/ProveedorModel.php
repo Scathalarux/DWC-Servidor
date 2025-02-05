@@ -9,7 +9,7 @@ use Com\Daw2\Core\BaseDbModel;
 class ProveedorModel extends BaseDbModel
 {
 
-    private const SELECT_BASE = ' SELECT pv.*, count(*) as total_productos_proveedor ' . self::FROM;
+    private const SELECT_BASE = ' SELECT pv.*, count(pd.codigo) as total_productos_proveedor ' . self::FROM;
     private const FROM = ' FROM proveedor pv
                             LEFT JOIN producto pd ON pd.proveedor = pv.cif';
 
