@@ -21,12 +21,29 @@ class CentrosModel extends BaseDbModel
     public function getCentros(array $data): array
     {
         $filtros = $this->getFiltrosQuery($data);
-        if($filtros['conditions'] !== []){
+        if ($filtros['conditions'] !== []) {
 
-        }else{
-            $sql=self::SELECT_BASE.self::FROM;
+        } else {
+            $sql = self::SELECT_BASE . self::FROM;
             $stmt = $this->pdo->query($sql);
             $centros = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
+    }
+
+    public function getFiltrosQuery(array $data): array
+    {
+        $conditions = [];
+        $vars = [];
+
+        //nombre de centro LIKE
+        if(!empty($data['centro']))
+
+        //concello LIKE
+
+        //ciclos que se imparten (select multiple)
+
+        $resultado['conditions'] = $conditions;
+        $resultado['vars'] = $vars;
+        return $resultado;
     }
 }

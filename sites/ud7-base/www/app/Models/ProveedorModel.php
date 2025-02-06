@@ -9,7 +9,7 @@ use Com\Daw2\Core\BaseDbModel;
 class ProveedorModel extends BaseDbModel
 {
 
-    private const SELECT_BASE = ' SELECT pv.*, count(pd.codigo) as total_productos_proveedor ' . self::FROM;
+    private const SELECT_BASE = ' SELECT pv.cif, pv.codigo, pv.nombre as nombre_proveedor, pv.direccion, pv.website as sitio_web, pv.pais, pv.email, pv.telefono, count(pd.codigo) as total_productos_proveedor ' . self::FROM;
     private const FROM = ' FROM proveedor pv
                             LEFT JOIN producto pd ON pd.proveedor = pv.cif';
 
@@ -79,49 +79,29 @@ class ProveedorModel extends BaseDbModel
         $vars = [];
         $conditionsHaving = [];
 
-
-        //cif
-        if (!empty($data['cif'])) {
-            $conditionsWhere[] = ' pv.cif LIKE :cif ';
-            $cif = $data['cif'];
-            $vars['cif'] = "%$cif%";
-        }
-
-        //nombre
-        if (!empty($data['nombre'])) {
-            $conditionsWhere[] = '  pv.nombre LIKE :nombre ';
-            $nombre = $data['nombre'];
-            $vars['nombre'] = "%$nombre%";
-        }
-
-        //codigo
-        if (!empty($data['codigo'])) {
-            $conditionsWhere[] = '  pv.codigo LIKE :codigo ';
-            $codigo = $data['codigo'];
-            $vars['codigo'] = "%$codigo%";
-        }
-
-        //email
-        if (!empty($data['email'])) {
-            $conditionsWhere[] = '  pv.email LIKE :email ';
-            $email = $data['email'];
-            $vars['email'] = "%$email%";
+        //cif, nombre, codigo, email
+        $likeValues = ['cif', 'nombre', 'codigo', 'email'];
+        foreach ($likeValues as $value) {
+            if (!empty($data[$value]) && is_string($data[$value])) {
+                $conditionsWhere[] = " pv.$value LIKE :$value ";
+                $vars[$value] = "%$value%";
+            }
         }
 
         //pais
-        if (!empty($data['pais'])) {
+        if (!empty($data['pais']) && is_string($data[$value])) {
             $conditionsWhere[] = '  pv.pais = :pais ';
             $vars['pais'] = $data['pais'];
         }
 
         //productos minimos
-        if (!empty($data['min_productos'])) {
+        if (!empty($data['min_productos']) && filter_var($data['min_productos'], FILTER_VALIDATE_INT) !== false) {
             $conditionsHaving[] = ' total_productos_proveedor >=:min_productos ';
             $vars['min_productos'] = (int)$data['min_productos'];
         }
 
         //productos máximos
-        if (!empty($data['max_productos'])) {
+        if (!empty($data['max_productos']) && filter_var($data['max_productos'], FILTER_VALIDATE_INT) !== false) {
             $conditionsHaving[] = ' total_productos_proveedor <= :max_productos ';
             $vars['max_productos'] = (int)$data['max_productos'];
         }
@@ -144,9 +124,9 @@ class ProveedorModel extends BaseDbModel
 
         if ($filtros['conditionsWhere'] !== [] || $filtros['conditionsHaving'] !== []) {
             $sql = self::COUNT_BASE
-                .(!empty($filtros['conditionsWhere']) ? " WHERE " . implode(' AND ', $filtros['conditionsWhere']) : '')
+                . (!empty($filtros['conditionsWhere']) ? " WHERE " . implode(' AND ', $filtros['conditionsWhere']) : '')
                 . self::GROUP_BY
-                .(!empty($filtros['conditionsHaving']) ? " HAVING " . implode(' AND ', $filtros['conditionsHaving']) : '');
+                . (!empty($filtros['conditionsHaving']) ? " HAVING " . implode(' AND ', $filtros['conditionsHaving']) : '');
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($filtros['vars']);
         } else {

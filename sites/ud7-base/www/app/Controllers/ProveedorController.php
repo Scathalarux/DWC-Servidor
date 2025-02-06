@@ -62,6 +62,9 @@ class ProveedorController extends BaseController
 
     public function getPage($maxPage): int
     {
+        //OJO
+        //Si definimos el default page 1 podemos confundir al usuario
+        //Es mejor que devuelva un array vacío
         if (isset($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT)) {
             if ((int)$_GET['page'] > 0 && (int)$_GET['page'] <= $maxPage) {
                 return (int)$_GET['page'];
