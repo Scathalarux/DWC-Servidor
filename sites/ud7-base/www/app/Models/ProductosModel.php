@@ -14,18 +14,18 @@ class ProductosModel extends BaseDbModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function find(string $codigo): false|array
+    public function findCodigo(string $codigo): false|array
     {
         $sql = "SELECT * FROM producto WHERE codigo = :codigo";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['codigo' => $codigo]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-    public function findSinProveedor(string $proveedor): array
+    public function findSinProveedor(string $proveedorCif): array
     {
         $sql = "SELECT codigo, nombre, descripcion, coste, margen, iva, stock FROM producto WHERE proveedor = :proveedor";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['proveedor' => $proveedor]);
+        $stmt->execute(['proveedor' => $proveedorCif]);
         $resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if(!$resultado){
             return [];

@@ -12,6 +12,7 @@ use Com\Daw2\Controllers\LoginController3;
 use Com\Daw2\Controllers\ProductoController;
 use Com\Daw2\Controllers\ProveedorController;
 use Com\Daw2\Helpers\JwtTool;
+use Com\Daw2\Libraries\Respuesta;
 use Steampixel\Route;
 
 class FrontController
@@ -257,7 +258,7 @@ class FrontController
             'get'
         );
         Route::add(
-            '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
+            '/proveedor/(\p{L}[\p{N}]{7,8}[\p{L}]{0,1})',
             function ($cif) {
                 if (str_contains(self::$permisos['proveedorController'], 'r')) {
                     (new ProveedorController())->getProveedor($cif);
@@ -281,7 +282,7 @@ class FrontController
             'post'
         );
         Route::add(
-            '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
+            '/proveedor/(\p{L}[\p{N}]{7,8}[\p{L}]{0,1})',
             function ($cif) {
                 if (str_contains(self::$permisos['proveedorController'], 'd')) {
                     (new ProveedorController())->deleteProveedor($cif);
@@ -293,7 +294,7 @@ class FrontController
             'delete'
         );
         Route::add(
-            '/proveedor/(\p{L}[\p{N}]{7}\p{L})',
+            '/proveedor/(\p{L}[\p{N}]{7,8}[\p{L}]{0,1})',
             function ($cif) {
                 if (str_contains(self::$permisos['proveedorController'], 'w')) {
                     (new ProveedorController())->editProveedor($cif);
@@ -314,13 +315,13 @@ class FrontController
 
         Route::pathNotFound(
             function () {
-                http_response_code(404);
+                (new ErrorController())->errorWithBody(404, ['mensaje'=>'paǵina no encontrada']);
             }
         );
 
         Route::methodNotAllowed(
             function () {
-                http_response_code(405);
+                (new ErrorController())->errorWithBody(404, ['mensaje'=>'método no permitido']);
             }
         );
 

@@ -42,7 +42,7 @@ class ProductoController extends BaseController
     {
 
         $modeloProductos = new ProductosModel();
-        $producto = $modeloProductos->find($codigo);
+        $producto = $modeloProductos->findCodigo($codigo);
         if (is_array($producto)) {
             $respuesta = new Respuesta(200, $producto);
         } else {
@@ -57,7 +57,7 @@ class ProductoController extends BaseController
         $errores = $this->checkForm($_POST, self::CHECK_FORM_TYPE['add']);
         if ($errores === []) {
             $modeloProductos = new ProductosModel();
-            if($modeloProductos->find($_POST['codigo'])!==false){
+            if($modeloProductos->findCodigo($_POST['codigo'])!==false){
                 $respuesta = new Respuesta(409, ['mensaje' => "El producto ya existe"]);
             }else{
                 $insertData = $_POST;
@@ -186,7 +186,7 @@ class ProductoController extends BaseController
     public function editProducto(string $oldCodigo): void
     {
         $modeloProductos = new ProductosModel();
-        $producto = $modeloProductos->find($oldCodigo);
+        $producto = $modeloProductos->findCodigo($oldCodigo);
         if ($producto === false) {
             $respuesta = new Respuesta(404, ['mensaje' => 'No existe el producto']);
         } else {
@@ -216,7 +216,7 @@ class ProductoController extends BaseController
     public function deleteProducto(string $codigo): void
     {
         $modeloProductos = new ProductosModel();
-        $producto = $modeloProductos->find($codigo);
+        $producto = $modeloProductos->findCodigo($codigo);
         if ($producto === false) {
             $respuesta = new Respuesta(404, ['mensaje' => "No se pudo encontrar el producto"]);
         } else {

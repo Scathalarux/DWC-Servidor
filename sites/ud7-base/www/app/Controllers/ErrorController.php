@@ -15,4 +15,5 @@ class ErrorController extends BaseController
         $respuesta = new Respuesta($code, $body);
         $this->view->show('jsonCategorias.view.php', ['respuesta' => $respuesta]);
     }
+
 }

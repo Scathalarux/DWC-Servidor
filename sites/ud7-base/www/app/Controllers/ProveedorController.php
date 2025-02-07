@@ -26,6 +26,7 @@ class ProveedorController extends BaseController
 
     public function listarProveedor(): void
     {
+        //TODO implementar las "Invalid Argument Exceptions y su manejo en el modelo"
         $modelProveedor = new ProveedorModel();
         //obtención del campo para la ordenación
         $order = $this->getOrder();
@@ -62,7 +63,7 @@ class ProveedorController extends BaseController
 
     public function getPage($maxPage): int
     {
-        //OJO
+        //TODO
         //Si definimos el default page 1 podemos confundir al usuario
         //Es mejor que devuelva un array vacío
         if (isset($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT)) {
@@ -86,6 +87,8 @@ class ProveedorController extends BaseController
 
     public function getProveedor(string $cif): void
     {
+        //TODO en la mayoría de los frameworks hay una función find en la que se les pasa la
+        //clave primaria y devuelve null o el elemento a obtener
         $modelProveedor = new ProveedorModel();
         $proveedor = $modelProveedor->getProveedor($cif);
         if ($proveedor === false) {

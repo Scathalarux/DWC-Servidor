@@ -53,13 +53,13 @@ class ProveedorModel extends BaseDbModel
 
     public function getProveedor(string $cif): false|array
     {
-        $sql1 = "SELECT * FROM proveedor WHERE cif = :cif";
-        $stmt = $this->pdo->prepare($sql1);
+        $sql = self::SELECT_BASE . self::FROM . " WHERE cif = :cif " . self::GROUP_BY;
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['cif' => $cif]);
         $proveedor = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($proveedor !== false) {
             $modelProducto = new ProductosModel();
-            $productos = $modelProducto->findSinProveedor($proveedor['cif']);
+            $productos = $modelProducto->findSinProveedor($cif);
             $proveedor['productos'] = $productos;
         }
         return $proveedor;
