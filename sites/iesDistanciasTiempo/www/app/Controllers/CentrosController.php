@@ -11,6 +11,7 @@ use Com\Daw2\Models\CiclosModel;
 class CentrosController extends BaseController
 {
     private const DEFAULT_ORDER = 1;
+    private const DEFAULT_SIZE_PAGE = 20;
 
     public function listadoConFiltros(): void
     {

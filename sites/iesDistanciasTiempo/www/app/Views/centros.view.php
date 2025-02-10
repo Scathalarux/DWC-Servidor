@@ -92,6 +92,14 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <?php foreach ($centros as $centro){ ?>
+                            <tr>
+                                <td><?php echo $centro['centro_educativo'] ?></td>
+                                <td><?php echo $centro['concello'] ?></td>
+                                <td><?php echo $centro['codigo'] ?></td>
+                                <td><?php echo $centro['ciclos'] ?></td>
+                            </tr>
+                        <?php } ?>
                         </tbody>
                     </table>
                 </div>
