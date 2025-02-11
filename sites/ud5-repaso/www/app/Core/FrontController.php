@@ -28,38 +28,7 @@ class FrontController
             },
             'get'
         );
-        /*Route::add(
-            '/usuarios',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->showUsuarios();
-            },
-            'get'
-        );*/
-        Route::add(
-            '/usuarios',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->showFilteredUsuarios();
-            },
-            'get'
-        );
-        Route::add(
-            '/usuarios/new',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->showNewUsuario();
-            },
-            'get'
-        );
-        Route::add(
-            '/usuarios/new',
-            function () {
-                $controlador = new UsuariosController();
-                $controlador->doNewUsuario();
-            },
-            'post'
-        );
+
 
 
         Route::pathNotFound(

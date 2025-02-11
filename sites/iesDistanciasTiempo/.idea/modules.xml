@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/iesDistancias.iml" filepath="$PROJECT_DIR$/.idea/iesDistancias.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/iesDistanciasTiempo.iml" filepath="$PROJECT_DIR$/.idea/iesDistanciasTiempo.iml" />
     </modules>
   </component>
 </project>

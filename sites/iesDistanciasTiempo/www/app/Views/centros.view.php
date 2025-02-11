@@ -68,42 +68,88 @@
                     <table id="tabladatos" class="table table-striped">
                         <thead>
                         <tr>
-                            <th><a href="<?php echo $_ENV['host.folder'] . 'centros?order=' ?>1">Nombre del Centro</a>
-                                <?php /*if (abs($order) === 1) { */ ?><!--
-                                <i class="fas fa-sort-amount-<?php /*echo $order > 0 ? 'down' : 'up' */ ?>-alt"></i>
-                            --><?php /*} */ ?>
+                            <th>
+                                <a href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetOrder . 'order=' . (($order > 0) ? '-' : '') ?>1">Nombre
+                                    del Centro</a>
+                                <?php if (abs($order) === 1) { ?>
+                                    <i class="fas fa-sort-amount-<?php echo $order > 0 ? 'down' : 'up' ?>-alt"></i>
+                                <?php } ?>
                             </th>
-                            <th><a href="<?php echo $_ENV['host.folder'] . 'centros?order=' ?>2">Concello</a>
-                                <?php /*if (abs($order) === 2) { */ ?><!--
-                                <i class="fas fa-sort-amount-<?php /*echo $order > 0 ? 'down' : 'up' */ ?>-alt"></i>
-                            --><?php /*} */ ?>
+                            <th>
+                                <a href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetOrder . 'order=' . (($order > 0) ? '-' : '') ?>2">Concello</a>
+                                <?php if (abs($order) === 2) { ?>
+                                    <i class="fas fa-sort-amount-<?php echo $order > 0 ? 'down' : 'up' ?>-alt"></i>
+                                <?php } ?>
                             </th>
-                            <th><a href="<?php echo $_ENV['host.folder'] . 'centros?order=' ?>3">Código</a>
-                                <?php /*if (abs($order) === 3) { */ ?><!--
-                                <i class="fas fa-sort-amount-<?php /*echo $order > 0 ? 'down' : 'up' */ ?>-alt"></i>
-                            --><?php /*} */ ?>
+                            <th>
+                                <a href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetOrder . 'order=' . (($order > 0) ? '-' : '') ?>3">Código</a>
+                                <?php if (abs($order) === 3) { ?>
+                                    <i class="fas fa-sort-amount-<?php echo $order > 0 ? 'down' : 'up' ?>-alt"></i>
+                                <?php } ?>
                             </th>
-                            <th><a href="<?php echo $_ENV['host.folder'] . 'centros?order=' ?>4">Ciclos</a>
-                                <?php /*if (abs($order) === 4) { */ ?><!--
-                                <i class="fas fa-sort-amount-<?php /*echo $order > 0 ? 'down' : 'up' */ ?>-alt"></i>
-                            --><?php /*} */ ?>
-                            </th>
+                            <th>Ciclos</a></th>
                             <th>Opcións</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($centros as $centro){ ?>
+                        <?php foreach ($centros as $centro) { ?>
                             <tr>
                                 <td><?php echo $centro['centro_educativo'] ?></td>
                                 <td><?php echo $centro['concello'] ?></td>
                                 <td><?php echo $centro['codigo'] ?></td>
-                                <td><?php foreach ($centro['ciclos'] as $ciclo) {?>
-                                    <span><?php echo $ciclo ?></span><br />
+                                <td><?php foreach ($centro['ciclos'] as $ciclo) { ?>
+                                        <span><?php echo $ciclo ?></span><br/>
                                     <?php } ?></td>
                             </tr>
                         <?php } ?>
                         </tbody>
                     </table>
+                </div>
+                <div class="card-footer">
+                    <nav aria-label="Navegacion por paginas">
+                        <ul class="pagination justify-content-center">
+                            <?php if ($page !== 1) { ?>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetPage . 'page=1' ?>"
+                                       aria-label="First">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">First</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetPage . 'page=' . ($page - 1) ?>"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&lt;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                            <?php } ?>
+                            <li class="page-item active"><a class="page-link"
+                                                            href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetPage . 'page=' . $page ?>"><?php echo $page ?></a>
+                            </li>
+
+                            <?php if ($page !== $maxPage) { ?>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetPage . 'page=' . ($page + 1) ?>"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&gt;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetPage . 'page=' . $maxPage ?>"
+                                       aria-label="Last">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Last</span>
+                                    </a>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                    </nav>
                 </div>
             <?php } else { ?>
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">

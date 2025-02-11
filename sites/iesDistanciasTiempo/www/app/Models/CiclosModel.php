@@ -23,7 +23,7 @@ class CiclosModel extends BaseDbModel
                 LEFT JOIN rel_centro_ciclo_formativo rcf ON rcf.codigo_ciclo = cf.codigo
                 LEFT JOIN centros c ON c.codigo = rcf.codigo_centro
                 WHERE codigo_centro = :codigoCentro "
-                .(!empty($filtros['conditionsCiclos']) ? " AND ".$filtros['conditionsCiclos']: "" : "");
+                .(!empty($filtros['conditionsCiclos']) ? " AND ".$filtros['conditionsCiclos'] : "");
         $stmt = $this->pdo->prepare($sql);
         $filtros['vars']['codigoCentro'] = $codigoCentro;
         $stmt->execute($filtros['vars']);
