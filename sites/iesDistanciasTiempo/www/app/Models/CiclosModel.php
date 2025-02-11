@@ -16,15 +16,17 @@ class CiclosModel extends BaseDbModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getCiclosByCodigoCentro(int $codigoCentro): array
+    public function getCiclosByCodigoCentro(int $codigoCentro, array $filtros = []): array
     {
         $sql = "SELECT concat('[',cf.codigo,'] ', cf.nombre) as nombre_ciclo
                 FROM ciclos_formativos cf
                 LEFT JOIN rel_centro_ciclo_formativo rcf ON rcf.codigo_ciclo = cf.codigo
                 LEFT JOIN centros c ON c.codigo = rcf.codigo_centro
-                WHERE codigo_centro = :codigoCentro";
+                WHERE codigo_centro = :codigoCentro "
+                .(!empty($filtros['conditionsCiclos']) ? " AND ".$filtros['conditionsCiclos']: "" : "");
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['codigoCentro' => $codigoCentro]);
+        $filtros['vars']['codigoCentro'] = $codigoCentro;
+        $stmt->execute($filtros['vars']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

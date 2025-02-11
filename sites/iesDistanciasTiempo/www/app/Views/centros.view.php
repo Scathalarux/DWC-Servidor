@@ -97,7 +97,9 @@
                                 <td><?php echo $centro['centro_educativo'] ?></td>
                                 <td><?php echo $centro['concello'] ?></td>
                                 <td><?php echo $centro['codigo'] ?></td>
-                                <td><?php echo $centro['ciclos'] ?></td>
+                                <td><?php foreach ($centro['ciclos'] as $ciclo) {?>
+                                    <span><?php echo $ciclo ?></span><br />
+                                    <?php } ?></td>
                             </tr>
                         <?php } ?>
                         </tbody>
