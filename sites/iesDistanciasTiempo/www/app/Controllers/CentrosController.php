@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
+use Com\Daw2\Libraries\Mensaje;
 use Com\Daw2\Models\CentrosModel;
 use Com\Daw2\Models\CiclosModel;
+use GuzzleHttp\Client;
 
 class CentrosController extends BaseController
 {
@@ -47,6 +49,7 @@ class CentrosController extends BaseController
         $page = $this->getPage($maxPage);
 
         $centros = $centrosModel->getCentros($_GET, $order, $page, self::DEFAULT_SIZE_PAGE);
+        $centros = $this->apiWeather($centros);
 
         $data['centros'] = $centros;
         $data['order'] = $order;
@@ -87,6 +90,45 @@ class CentrosController extends BaseController
 
         }
         return self::DEFAULT_PAGE;
+    }
+
+    public function apiWeather(array $centros): array
+    {
+        $centrosWeather = [];
+        $client = new Client();
+        foreach ($centros as $centro) {
+            $res = $client->request('GET', "https://api.open-meteo.com/v1/forecast?latitude=" . $centro['latitud'] . "&longitude=" . $centro['longitud'] . "&current=temperature_2m,is_day,weather_code");
+            $respuesta = json_decode($res->getBody()->getContents(), true);
+            $centro['weather']['temperatura'] = $respuesta['current']['temperature_2m']. ' '. $respuesta['current_units']['temperature_2m'];
+
+            if (strlen((string)$respuesta['current']['weather_code']) == 1) {
+                $respuesta['current']['weather_code'] = '0' . $respuesta['current']['weather_code'];
+            }
+
+            $centro['weather']['img'] = 'http://openweathermap.org/img/wn/' . $respuesta['current']['weather_code'] . ($respuesta['current']['is_day'] ? 'd' : 'n') . '.png';
+            $centrosWeather[] = $centro;
+        }
+        return $centrosWeather;
+    }
+
+    public function delete(int $codigo): void
+    {
+        $centrosModel = new CentrosModel();
+        $centro = $centrosModel->getCentroByCodigo($codigo);
+        if ($centro === false) {
+            header('Location: /centros');
+        } else {
+            $result = $centrosModel->delete($codigo);
+            if ($result === false) {
+                //mensaje de error
+                $mensaje = new Mensaje('No se pudo borrar el centro', Mensaje::ERROR, 'Error');
+            } else {
+                //mensaje de éxito
+                $mensaje = new Mensaje('Centro borrado correctamente', Mensaje::SUCCESS, 'Éxito');
+            }
+            $this->addFlashMessage($mensaje);
+            header('Location: /centros');
+        }
     }
 
 }

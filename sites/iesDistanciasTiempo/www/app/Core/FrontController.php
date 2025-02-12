@@ -25,6 +25,13 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/centros/delete/(\d{8})',
+            function ($codigo) {
+                (new CentrosController())->delete((int) $codigo);
+            },
+            'get'
+        );
 
 
         Route::pathNotFound(

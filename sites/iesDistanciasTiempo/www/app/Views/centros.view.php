@@ -65,9 +65,10 @@
                 <div class="card-body" id="card_table">
                     <div id="button_container" class="mb-3"></div>
                     <!--<form action="./?sec=formulario" method="post">                   -->
-                    <table id="tabladatos" class="table table-striped">
+                    <table id="tabladatos" class="table">
                         <thead>
                         <tr>
+                            <th>Tiempo</th>
                             <th>
                                 <a href="<?php echo $_ENV['host.folder'] . 'centros?' . $copiaGetOrder . 'order=' . (($order > 0) ? '-' : '') ?>1">Nombre
                                     del Centro</a>
@@ -94,6 +95,10 @@
                         <tbody>
                         <?php foreach ($centros as $centro) { ?>
                             <tr>
+                                <td>
+                                    <img src="<?php echo $centro['weather']['img'] ?>" alt="Indicador del tiempo">
+                                    <span><?php echo $centro['weather']['temperatura'] ?></span>
+                                </td>
                                 <td><?php echo $centro['centro_educativo'] ?></td>
                                 <td><?php echo $centro['concello'] ?></td>
                                 <td><?php echo $centro['codigo'] ?></td>

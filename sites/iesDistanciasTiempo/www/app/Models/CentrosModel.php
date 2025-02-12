@@ -10,7 +10,7 @@ class CentrosModel extends BaseDbModel
 {
     public const ORDER_COLUMNS = ['c.centro_educativo', 'c.concello', 'c.codigo'];
 
-    private const SELECT_BASE = "SELECT c.centro_educativo, c.concello, c.codigo ";
+    private const SELECT_BASE = "SELECT c.* ";
     private const FROM = 'FROM centros c
                             LEFT JOIN rel_centro_ciclo_formativo rcf ON rcf.codigo_centro = c.codigo
                             LEFT JOIN ciclos_formativos cf ON cf.codigo = rcf.codigo_ciclo';
@@ -112,5 +112,20 @@ class CentrosModel extends BaseDbModel
         $rows = $stmt->rowCount();
 
         return (int)ceil($rows / $sizePage);
+    }
+
+    public function getCentroByCodigo(int $codigoCentro): array|false
+    {
+        $sql = self::SELECT_BASE . self::FROM . " WHERE c.codigo = :codigo";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':codigo' => $codigoCentro]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function delete(int $codigoCentro): bool
+    {
+        $sql = self::SELECT_BASE . self::FROM . " WHERE c.codigo = :codigo";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':codigo' => $codigoCentro]);
     }
 }
