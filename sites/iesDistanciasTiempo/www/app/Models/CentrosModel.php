@@ -101,7 +101,8 @@ class CentrosModel extends BaseDbModel
         if ($filtros['conditions'] !== []) {
             $sql = self::SELECT_BASE
                 . self::FROM
-                . " WHERE " . implode(' AND ', $filtros['conditions']);
+                . " WHERE " . implode(' AND ', $filtros['conditions'])
+                . " GROUP BY c.codigo ";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($filtros['vars']);
         } else {
@@ -124,8 +125,17 @@ class CentrosModel extends BaseDbModel
 
     public function delete(int $codigoCentro): bool
     {
-        $sql = self::SELECT_BASE . self::FROM . " WHERE c.codigo = :codigo";
+        $sql = "DELETE FROM centros WHERE codigo = :codigo";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([':codigo' => $codigoCentro]);
+        return $stmt->execute(['codigo' => $codigoCentro]);
+    }
+
+    public function addCentro(array $data): bool
+    {
+        $sql = "INSERT INTO centros (concello, codigo, centro_educativo, telefono, provincia, link_fp, latitud, longitud, familia_informatica) 
+                VALUES (:concello, :codigo, :centro_educativo, :telefono, :provincia, :link_fp, :latitud, :longitud, :familia_informatica)";
+
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
     }
 }

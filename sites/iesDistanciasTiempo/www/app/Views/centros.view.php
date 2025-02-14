@@ -14,9 +14,9 @@
                     <div class="row">
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
-                                <label for="centro">Nombre del Centro:</label>
-                                <input type="text" class="form-control" name="centro" id="centro"
-                                       value="<?php echo $input['centro'] ?? '' ?>"/>
+                                <label for="centro_educativo">Nombre del Centro:</label>
+                                <input type="text" class="form-control" name="centro_educativo" id="centro_educativo"
+                                       value="<?php echo $input['centro_educativo'] ?? '' ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-6">
@@ -96,8 +96,12 @@
                         <?php foreach ($centros as $centro) { ?>
                             <tr>
                                 <td>
+                                    <?php if(isset($centro['weather'])){ ?>
                                     <img src="<?php echo $centro['weather']['img'] ?>" alt="Indicador del tiempo">
                                     <span><?php echo $centro['weather']['temperatura'] ?></span>
+                                    <?php }else{ ?>
+                                        <i class="fa fa-exclamation-circle"></i>
+                                    <?php } ?>
                                 </td>
                                 <td><?php echo $centro['centro_educativo'] ?></td>
                                 <td><?php echo $centro['concello'] ?></td>
@@ -105,6 +109,17 @@
                                 <td><?php foreach ($centro['ciclos'] as $ciclo) { ?>
                                         <span><?php echo $ciclo ?></span><br/>
                                     <?php } ?></td>
+                                <td>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'centros/edit/' . $centro['codigo'] ?>"
+                                       class="btn btn-success ml-1 mt-1" data-toggle="tooltip" data-placement="top"
+                                       title="Editar"><i class="fas fa-pen"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'centros/view' . $centro['codigo'] ?>"
+                                       class="btn btn-info ml-1 mt-1" data-toggle="tooltip" data-placement="top"
+                                       title="Ver más"><i class="fas fa-eye"></i></a>
+                                    <a href="<?php echo $_ENV['host.folder'] . 'centros/delete/' . $centro['codigo'] ?>"
+                                       class="btn btn-danger ml-1 mt-1" data-toggle="tooltip" data-placement="top"
+                                       title="Borrar"><i class="fas fa-trash"></i></a>
+                                </td>
                             </tr>
                         <?php } ?>
                         </tbody>

@@ -56,7 +56,7 @@
         <ul class="navbar-nav ml-auto">
             <!-- Navbar Search -->
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo $_ENV['host.folder'].'logout' ?>" role="button">
+                <a class="nav-link" href="<?php echo $_ENV['host.folder'] . 'logout' ?>" role="button">
                     <i class="text-danger fas fa-sign-out-alt"></i>
                 </a>
             </li>
@@ -111,17 +111,17 @@
 
                     if (isset($breadcrumb) && is_array($breadcrumb)) {
                         ?>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <?php
-
-                            foreach ($breadcrumb as $b) {
-                                ?>
-                            <li class="breadcrumb-item"><?php echo $b; ?></li>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
                                 <?php
-                            } ?>
-                        </ol>
-                    </div><!-- /.col -->
+
+                                foreach ($breadcrumb as $b) {
+                                    ?>
+                                    <li class="breadcrumb-item"><?php echo $b; ?></li>
+                                    <?php
+                                } ?>
+                            </ol>
+                        </div><!-- /.col -->
                         <?php
                     }
                     ?>
@@ -134,14 +134,15 @@
             <div class="container-fluid">
 
                 <!--Comprobamos la existencia de errores-->
-                <?php if (isset($flashMessages) && is_array($flashMessages)) {
-                    foreach ($flashMessages as $flashMessage) {?>
-                        <div class="alert alert-<?php echo $flashMessage->getTipoMensaje(); ?> alert-dismissible fade show" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <?php if ($flashMessage->getTitulo() !== '') {?>
-                            <h5 class="m-2 font-weight-bold text-white"><?php echo $flashMessage->getTitulo(); ?></h5>
-                        <?php } ?>
-                            <p class="m-2 text-white"><?php echo $flashMessage->getTexto(); ?></p>
-                        </div>
-                    <?php }
-                } ?>
+                <?php if (isset($_SESSION['flashMessages']) && is_array($_SESSION['flashMessages'])) {
+                foreach ($_SESSION['flashMessages'] as $flashMessage) { ?>
+                <div class="alert alert-<?php echo $flashMessage->getTipoMensaje(); ?> alert-dismissible fade show"
+                     role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <?php if ($flashMessage->getTitulo() !== '') { ?>
+                        <h5 class="m-2 font-weight-bold text-white"><?php echo $flashMessage->getTitulo(); ?></h5>
+                    <?php } ?>
+                    <p class="m-2 text-white"><?php echo $flashMessage->getTexto(); ?></p>
+                </div>
+<?php }
+} ?>
