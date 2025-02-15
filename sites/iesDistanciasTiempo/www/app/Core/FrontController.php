@@ -5,6 +5,7 @@ namespace Com\Daw2\Core;
 use Com\Daw2\Controllers\CentrosController;
 use Com\Daw2\Controllers\ErroresController;
 use Com\Daw2\Controllers\InicioController;
+use Com\Daw2\Controllers\LoginController;
 use Steampixel\Route;
 
 class FrontController
@@ -20,6 +21,44 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/login',
+            function () {
+                (new LoginController())->showLogin();
+            },
+            'get'
+        );
+        Route::add(
+            '/login',
+            function () {
+                (new LoginController())->doLogin();
+            },
+            'post'
+        );
+        Route::add(
+            '/register',
+            function () {
+                (new LoginController())->showRegister();
+            },
+            'get'
+        );
+        Route::add(
+            '/register',
+            function () {
+                (new LoginController())->doRegister();
+            },
+            'post'
+        );
+        Route::add(
+            '/logout',
+            function () {
+                (new LoginController())->logout();
+            },
+            'get'
+        );
+
+
+
         Route::add(
             '/centros',
             function () {

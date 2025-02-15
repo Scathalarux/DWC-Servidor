@@ -15,6 +15,7 @@ class Mensaje
     public const ERROR = 'danger';
 
     public const ALLOWED_TYPES = [self::INFO, self::SUCCESS, self::WARNING, self::ERROR];
+
     /*Son privadas para que no se puedan modificar, al no poder introducir el tipo readonly*/
     public function __construct(private string $texto, private string $tipoMensaje, private string $titulo = '')
     {
@@ -45,5 +46,16 @@ class Mensaje
     public function getTitulo(): string
     {
         return $this->titulo;
+    }
+
+    public function getIcon()
+    {
+        return match ($this->tipoMensaje) {
+            self::INFO => 'fa fa-info',
+            self::ERROR => 'fa fa-ban',
+            self::SUCCESS => 'fa fa-check',
+            self::WARNING => 'fa fa-warning',
+            default => ''
+        };
     }
 }
