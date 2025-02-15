@@ -70,14 +70,14 @@ class CentrosModel extends BaseDbModel
         $vars = [];
 
         //nombre de centro LIKE
-        if (!empty($data['centro'])) {
+        if (!empty($data['centro_educativo'])) {
             $conditions[] = ' c.centro_educativo LIKE :centro ';
-            $vars[':centro'] = '%' . $data['centro'] . '%';
+            $vars['centro'] = '%' . $data['centro_educativo'] . '%';
         }
         //concello LIKE
         if (!empty($data['concello'])) {
             $conditions[] = ' c.concello LIKE :concello ';
-            $vars[':concello'] = '%' . $data['concello'] . '%';
+            $vars['concello'] = '%' . $data['concello'] . '%';
         }
 
         //ciclos que se imparten (select multiple)
@@ -120,7 +120,17 @@ class CentrosModel extends BaseDbModel
         $sql = self::SELECT_BASE . self::FROM . " WHERE c.codigo = :codigo";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':codigo' => $codigoCentro]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $centro = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($centro !== false) {
+            $ciclosModel = new CiclosModel();
+            $ciclos = $ciclosModel->getCiclosByCodigoCentro((int)$centro['codigo']);
+            $data = [];
+            foreach ($ciclos as $ciclo) {
+                $data[] = ['codigo' => $ciclo['codigo'], 'nombre' => $ciclo['nombre_ciclo']];
+            }
+            $centro['ciclos'] = $data;
+        }
+        return $centro;
     }
 
     public function delete(int $codigoCentro): bool
@@ -137,5 +147,14 @@ class CentrosModel extends BaseDbModel
 
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($data);
+    }
+
+    public function editCentro(int $codigoCentroOld, array $data): bool
+    {
+        $sql = "UPDATE centros SET concello = :concello, codigo =:codigo, centro_educativo = :centro_educativo, telefono = :telefono, provincia = :provincia, link_fp =:link_fp, latitud = :latitud, longitud =:longitud, familia_informatica = :familia_informatica WHERE codigo = :codigoCentroOld";
+        $stmt = $this->pdo->prepare($sql);
+        $data['codigoCentroOld'] = $codigoCentroOld;
+        $stmt->execute($data);
+        return $stmt->rowCount() === 1;
     }
 }

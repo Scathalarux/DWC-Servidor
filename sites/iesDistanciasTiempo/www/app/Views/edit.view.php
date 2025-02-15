@@ -16,17 +16,17 @@
                                 <label for="centro_educativo">Nombre del Centro:</label>
                                 <input type="text" class="form-control" name="centro_educativo" id="centro_educativo"
                                        placeholder="IES Ejemplo"
-                                       value="<?php echo $input['centro_educativo'] ?? '' ?> " <?php echo $disabled ? 'disabled' : '' ?>/>
+                                       value="<?php echo $input['centro_educativo'] ?? '' ?>"<?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
-                            <small><?php echo $errores['centro_educativo'] ?? '' ?></small>
+                            <small class="text-danger"><?php echo $errores['centro_educativo'] ?? '' ?></small>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
                                 <label for="concello">Concello:</label>
                                 <input type="text" class="form-control" name="concello" id="concello" placeholder="Vigo"
-                                       value="<?php echo $input['concello'] ?? '' ?><?php echo $disabled ? 'disabled' : '' ?>"/>
+                                       value="<?php echo $input['concello'] ?? '' ?>" <?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
-                            <small><?php echo $errores['concello'] ?? '' ?></small>
+                            <small class="text-danger"><?php echo $errores['concello'] ?? '' ?></small>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
@@ -34,7 +34,7 @@
                                 <input type="text" class="form-control" name="codigo" id="codigo" placeholder="12345678"
                                        value="<?php echo $input['codigo'] ?? '' ?>" <?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
-                            <small><?php echo $errores['codigo'] ?? '' ?></small>
+                            <small class="text-danger"><?php echo $errores['codigo'] ?? '' ?></small>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
@@ -43,7 +43,7 @@
                                        placeholder="986986986"
                                        value="<?php echo $input['telefono'] ?? '' ?>" <?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
-                            <small><?php echo $errores['telefono'] ?? '' ?></small>
+                            <small class="text-danger"><?php echo $errores['telefono'] ?? '' ?></small>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
@@ -52,7 +52,7 @@
                                        placeholder="Pontevedra"
                                        value="<?php echo $input['provincia'] ?? '' ?>" <?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
-                            <small><?php echo $errores['provincia'] ?? '' ?></small>
+                            <small class="text-danger"><?php echo $errores['provincia'] ?? '' ?></small>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
@@ -61,7 +61,7 @@
                                        placeholder="42.123456"
                                        value="<?php echo $input['latitud'] ?? '' ?>" <?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
-                            <small><?php echo $errores['latitud'] ?? '' ?></small>
+                            <small class="text-danger"><?php echo $errores['latitud'] ?? '' ?></small>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
@@ -70,7 +70,7 @@
                                        placeholder="-8.123456"
                                        value="<?php echo $input['longitud'] ?? '' ?>" <?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
-                            <small><?php echo $errores['longitud'] ?? '' ?></small>
+                            <small class="text-danger"><?php echo $errores['longitud'] ?? '' ?></small>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
@@ -79,8 +79,9 @@
                                        placeholder="http://www.edu.xunta.gal/fp/centroEjemplo"
                                        value="<?php echo $input['link_fp'] ?? '' ?>" <?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
-                            <small><?php echo $errores['link_fp'] ?? '' ?></small>
+                            <small class="text-danger"><?php echo $errores['link_fp'] ?? '' ?></small>
                         </div>
+                        <?php if($disabled){ ?>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
                                 <label for="ciclos">Ciclos:</label>
@@ -93,11 +94,12 @@
                                 </select>
                             </div>
                         </div>
+                        <?php } ?>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
-                                <label for="informatica">Familia informática:</label>
-                                <input type="checkbox" class="form-control" name="informatica"
-                                       id="informatica" <?php echo isset($input['informatica']) ? 'checked' : '' ?> <?php echo $disabled ? 'disabled' : '' ?>/>
+                                <label for="familia_informatica">Familia informática:</label>
+                                <input type="checkbox" class="form-control" name="familia_informatica"
+                                       id="familia_informatica" <?php echo isset($input['familia_informatica']) ? 'checked' : '' ?> <?php echo $disabled ? 'disabled' : '' ?>/>
                             </div>
                         </div>
                     </div>
@@ -105,7 +107,7 @@
                 <div class="card-footer">
                     <div class="col-12 text-right">
                         <a href="/centros" class="btn btn-danger">Volver</a>
-                        <?php if ($disabled !== false) { ?>
+                        <?php if ($disabled === false) { ?>
                             <input type="submit" value="Aplicar" class="btn btn-primary ml-2"/>
                         <?php } ?>
                     </div>

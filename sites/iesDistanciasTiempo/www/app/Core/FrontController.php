@@ -3,6 +3,7 @@
 namespace Com\Daw2\Core;
 
 use Com\Daw2\Controllers\CentrosController;
+use Com\Daw2\Controllers\ErroresController;
 use Com\Daw2\Controllers\InicioController;
 use Steampixel\Route;
 
@@ -79,13 +80,13 @@ class FrontController
 
         Route::pathNotFound(
             function () {
-
+                (new ErroresController())->error404();
             }
         );
 
         Route::methodNotAllowed(
             function () {
-
+                (new ErroresController())->error405();
             }
         );
 

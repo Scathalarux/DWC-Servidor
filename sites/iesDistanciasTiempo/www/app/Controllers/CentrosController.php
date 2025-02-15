@@ -8,7 +8,10 @@ use Com\Daw2\Core\BaseController;
 use Com\Daw2\Libraries\Mensaje;
 use Com\Daw2\Models\CentrosModel;
 use Com\Daw2\Models\CiclosModel;
+use Google\Service\Appengine\Library;
 use GuzzleHttp\Client;
+
+
 
 class CentrosController extends BaseController
 {
@@ -30,6 +33,12 @@ class CentrosController extends BaseController
 
         $centrosModel = new CentrosModel();
 
+
+
+        $order = $this->getOrder();
+        $maxPage = $centrosModel->getMaxPage($_GET, self::DEFAULT_SIZE_PAGE);
+        $page = $this->getPage($maxPage);
+
         $copiaGet = $_GET;
         //mantenemos los filtros sin la pagina
         unset($copiaGet['page']);
@@ -44,11 +53,6 @@ class CentrosController extends BaseController
         if (!empty($data['copiaGetOrder'])) {
             $data['copiaGetOrder'] .= '&';
         }
-
-
-        $order = $this->getOrder();
-        $maxPage = $centrosModel->getMaxPage($_GET, self::DEFAULT_SIZE_PAGE);
-        $page = $this->getPage($maxPage);
 
         $centros = $centrosModel->getCentros($_GET, $order, $page, self::DEFAULT_SIZE_PAGE);
         $centros = $this->apiWeather($centros);
@@ -102,7 +106,6 @@ class CentrosController extends BaseController
             if (!empty($centro['latitud']) && !empty($centro['longitud'])) {
                 $res = $client->request('GET', "https://api.open-meteo.com/v1/forecast?latitude=" . $centro['latitud'] . "&longitude=" . $centro['longitud'] . "&current=temperature_2m,is_day,weather_code");
                 $respuesta = json_decode($res->getBody()->getContents(), true);
-                var_dump($respuesta);
                 $centro['weather']['temperatura'] = $respuesta['current']['temperature_2m'] . ' ' . $respuesta['current_units']['temperature_2m'];
                 $centro['weather']['weather_code'] = $respuesta['current']['weather_code'];
                 $day = $respuesta['current']['is_day'] ? true : false;
@@ -116,11 +119,10 @@ class CentrosController extends BaseController
 
     public function getWeatherImg(int $weatherCode, bool $isDay): string
     {
-        //TODO terminar obtención imagenes
-        $json =
+        $json =file_get_contents(__DIR__.'/../Data/weatherIcons.json');
         $weatherIcons = json_decode($json, true);
         $day = $isDay ? 'day' : 'night';
-        return $weatherIcons[$weatherCode][$day];
+        return $weatherIcons[$weatherCode][$day]['image'];
     }
 
     public function delete(int $codigo): void
@@ -153,6 +155,7 @@ class CentrosController extends BaseController
 
         $data['errores'] = $errores;
         $data['input'] = $input;
+        $data['disabled']=false;
 
         $this->view->showViews(array('templates/header.view.php', 'edit.view.php', 'templates/footer.view.php'), $data);
     }
@@ -164,10 +167,11 @@ class CentrosController extends BaseController
             //comprobar que están todos los elementos necesarios para añadir aunque sea a null, y el checkbox de informatica
             $insertData = [];
             foreach (self::ALLOWED_PARAMS as $key) {
-                $insertData[$key] = isset($_POST[$key]) ? $insertData[$key] : null;
+                $insertData[$key] = !empty($_POST[$key]) ? $_POST[$key] : null;
             }
 
             $centrosModel = new CentrosModel();
+            var_dump($insertData);
 
             $centro = $centrosModel->addCentro($insertData);
             if ($centro === false) {
@@ -191,7 +195,7 @@ class CentrosController extends BaseController
 
         //concello
         if (!empty($data['concello'])) {
-            if (preg_match('/[\p{L} ]{3,50}/ui', $data['concello'])) {
+            if (!preg_match('/[\p{L}]{3,50}/ui', $data['concello'])) {
                 $errores['concello'] = 'El concello debe estar compuesto por letras y tener un máximo de 50 caracteres';
             }
         }
@@ -209,7 +213,7 @@ class CentrosController extends BaseController
 
         //centro
         if (!empty($data['centro'])) {
-            if (preg_match('/[\p{L} ]{5,40}/ui', $data['centro'])) {
+            if (!preg_match('/[\p{L} ]{5,40}/ui', $data['centro'])) {
                 $errores['centro'] = 'El centro debe estar compuesto por letras y tener un máximo de 40 caracteres';
             }
         }
@@ -225,33 +229,34 @@ class CentrosController extends BaseController
 
         //provincia
         if (!empty($data['provincia'])) {
-            if (preg_match('/[\p{L} ]{1,10}/ui', $data['provincia'])) {
+            if (!preg_match('/[\p{L} ]{1,10}/ui', $data['provincia'])) {
                 $errores['provincia'] = 'La provincia debe estar compuesta por letras y tener un máximo de 10 caracteres';
             }
         }
 
         //link
-        if (!empty($data['link'])) {
-            if (preg_match('/[\p{L} ]{10,100}/ui', $data['link'])) {
-                $errores['link'] = 'El enlace del centro debe estar compuesto por letras y tener un máximo de 100 caracteres';
-            } elseif (filter_var($data['link'], FILTER_VALIDATE_URL) === false) {
-                $errores['link'] = 'El enlace del centro debe ser formato URL';
+        if (!empty($data['link_fp'])) {
+            if (filter_var($data['link_fp'], FILTER_VALIDATE_URL) === false && strlen($data['link_fp']) >100) {
+                $errores['link_fp'] = 'El enlace del centro debe ser formato URL y tener hasta 100 caracteres';
             }
         }
 
         //latitud
         if (!empty($data['latitud'])) {
             if (filter_var($data['latitud'], FILTER_VALIDATE_FLOAT) === false) {
-                $errores['latitud'] = 'La provincia debe estar en formato decimal';
+                $errores['latitud'] = 'La latitud debe estar en formato decimal, separado por punto';
+            }elseif(!preg_match('/[-]?[0-9]{1,2}.[0-6]{1,6}/',$data['latitud'])){
+                $errores['longitud'] = 'La latitud debe tener un formato -12.123456 o 12.123456';
             }
-
         }
 
         //longitud
         if (!empty($data['longitud'])) {
-
-            $errores['longitud'] = 'La provincia debe estar compuesta por letras y tener un máximo de 10 caracteres';
-
+            if (filter_var($data['longitud'], FILTER_VALIDATE_FLOAT) === false) {
+                $errores['longitud'] = 'La longitud debe estar en formato decimal, separado por punto';
+            }elseif(!preg_match('/[-]?[0-9]{1,2}.[0-6]{1,6}/',$data['longitud'])){
+                $errores['longitud'] = 'La longitud debe tener un formato -12.123456 o 12.123456';
+            }
         }
 
         return $errores;
@@ -268,7 +273,9 @@ class CentrosController extends BaseController
         $centrosModel = new CentrosModel();
 
         $data['errores'] = $errores;
-        $data['input'] = !empty($input) ? $input : $centrosModel->getCentroByCodigo($codigoCentro);
+        $data['input'] = !empty($input) ? $input : ($centrosModel->getCentroByCodigo($codigoCentro));
+        $data['disabled']=false;
+
 
         $this->view->showViews(array('templates/header.view.php', 'edit.view.php', 'templates/footer.view.php'), $data);
     }
@@ -284,11 +291,16 @@ class CentrosController extends BaseController
             //existe el centro
             $errores = $this->checkForm($_POST, self::CHECK_TYPES['edit']);
             if ($errores === []) {
-                $insertData = $_POST;
-                foreach ($centro as $key) {
-                    $insertData[$key] = isset($_POST[$key]) ? $_POST[$key] : $centro[$key];
+                $insertData = [];
+                foreach ($centro as $key => $value) {
+                    if($key == 'familia_informatica'){
+                        $insertData[$key] = isset($_POST[$key]) ? 1 : 0;
+                    }else{
+                        $insertData[$key] = isset($_POST[$key]) ? $_POST[$key] : $centro[$key];
+                    }
                 }
-                $resultado = $centrosModel->editCentro($insertData);
+                unset($insertData['ciclos']);
+                $resultado = $centrosModel->editCentro($codigoCentro, $insertData);
                 if ($resultado === false) {
                     $mensaje = new Mensaje('No se pudo editar el centro', Mensaje::ERROR, 'Error');
                 } else {
@@ -306,13 +318,18 @@ class CentrosController extends BaseController
 
     public function showCentro(int $codigoCentro): void
     {
+        $data = $this->getCommonData();
+        $data += [
+            'titulo' => 'Centro Educativo',
+            'breadcrumb' => ['Inicio', 'Centros', 'Ver centro'],
+        ];
         $centrosModel = new CentrosModel();
         $centro = $centrosModel->getCentroByCodigo($codigoCentro);
         if ($centro === false) {
             header('Location: /centros');
-        }else{
-            $data['input'] = $centro
-            $data['disabled']= true;
+        } else {
+            $data['input'] = $centro;
+            $data['disabled'] = true;
             $this->view->showViews(array('templates/header.view.php', 'edit.view.php', 'templates/footer.view.php'), $data);
 
         }

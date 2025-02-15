@@ -65,7 +65,7 @@
                 <div class="card-body" id="card_table">
                     <div id="button_container" class="mb-3"></div>
                     <!--<form action="./?sec=formulario" method="post">                   -->
-                    <table id="tabladatos" class="table">
+                    <table id="tabladatos" class="table table-striped">
                         <thead>
                         <tr>
                             <th>Tiempo</th>
@@ -92,7 +92,7 @@
                             <th>Opcións</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="bg-gradient-lightblue">
                         <?php foreach ($centros as $centro) { ?>
                             <tr>
                                 <td>
@@ -114,7 +114,7 @@
                                        class="btn btn-success ml-1 mt-1" data-toggle="tooltip" data-placement="top"
                                        title="Editar"><i class="fas fa-pen"></i></a>
                                     <a href="<?php echo $_ENV['host.folder'] . 'centros/view' . $centro['codigo'] ?>"
-                                       class="btn btn-info ml-1 mt-1" data-toggle="tooltip" data-placement="top"
+                                       class="btn btn-warning ml-1 mt-1" data-toggle="tooltip" data-placement="top"
                                        title="Ver más"><i class="fas fa-eye"></i></a>
                                     <a href="<?php echo $_ENV['host.folder'] . 'centros/delete/' . $centro['codigo'] ?>"
                                        class="btn btn-danger ml-1 mt-1" data-toggle="tooltip" data-placement="top"
