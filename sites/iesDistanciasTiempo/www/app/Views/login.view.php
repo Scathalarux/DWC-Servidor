@@ -25,7 +25,6 @@
         <div class="card-body login-card-body">
             <p class="login-box-msg">Autentícate para iniciar sesión</p>
             <small class="text-danger"><?php echo $errores['verificacion'] ?? '' ?></small>
-
             <form action="" method="post">
                 <div class="col-12 input-group mb-3">
                     <input type="email" name="email" class="form-control" placeholder="Email">
@@ -60,15 +59,15 @@
                 </div>
             </form>
 
-            <div class="social-auth-links text-center mb-3">
+            <!--<div class="social-auth-links text-center mb-3">
                 <p>- OR -</p>
-                <!--<a href="#" class="btn btn-block btn-primary">
+               <a href="#" class="btn btn-block btn-primary">
                     <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-                </a>-->
-                <a href="<?php echo $_ENV['host.folder'] . 'login-with-google' ?>" class="btn btn-block btn-danger">
+                </a>
+                <a href="<?php /*echo $_ENV['host.folder'] . 'login-with-google' */?>" class="btn btn-block btn-danger">
                     <i class="fab fa-google mr-2"></i> Sign in using Google
                 </a>
-            </div>
+            </div>-->
             <!-- /.social-auth-links -->
 
             <p class="mb-1">

@@ -23,8 +23,8 @@
     <!-- /.login-logo -->
     <div class="card">
         <div class="card-body login-card-body">
-            <p class="login-box-msg">Autentícate para iniciar sesión</p>
-            <small class="text-danger"><?php echo $errores['verificacion'] ?? '' ?></small>
+            <p class="login-box-msg">Regístrate para iniciar sesión</p>
+
 
             <form action="" method="post">
                 <div class="col-12 input-group mb-3">
@@ -34,6 +34,25 @@
                             <span class="fas fa-envelope"></span>
                         </div>
                     </div>
+                    <small class="text-danger"><?php echo $errores['email'] ?? '' ?></small>
+                </div>
+                <div class="col-12 input-group mb-3">
+                    <input type="text" name="nombre" class="form-control" placeholder="Nombre">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                    <small class="text-danger"><?php echo $errores['nombre'] ?? '' ?></small>
+                </div>
+                <div class="col-12 input-group mb-3">
+                    <input type="text" name="idioma" class="form-control" placeholder="Idioma">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                    <small class="text-danger"><?php echo $errores['idioma'] ?? '' ?></small>
                 </div>
                 <div class="col-12 input-group mb-3">
                     <input type="password" name="password" class="form-control" placeholder="Password">
@@ -42,40 +61,38 @@
                             <span class="fas fa-lock"></span>
                         </div>
                     </div>
+                    <small class="text-danger"><?php echo $errores['password'] ?? '' ?></small>
                 </div>
-                <div class="row">
-                    <div class="col-4">
-                        <div class="icheck-primary">
-                            <input type="checkbox" id="remember" name="remember">
-                            <label for="remember">
-                                Recordarme
-                            </label>
+                <div class="col-12 input-group mb-3">
+                    <input type="password" name="password2" class="form-control" placeholder="Repetir password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
                         </div>
                     </div>
-                    <!-- /.col -->
-                    <div class="col-6 ml-5">
-                        <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+                    <small class="text-danger"><?php echo $errores['password2'] ?? '' ?></small>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">Crear usuario</button>
                     </div>
-                    <!-- /.col -->
                 </div>
             </form>
 
-            <div class="social-auth-links text-center mb-3">
+            <!--<div class="social-auth-links text-center mb-3">
                 <p>- OR -</p>
-                <!--<a href="#" class="btn btn-block btn-primary">
+                <a href="#" class="btn btn-block btn-primary">
                     <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-                </a>-->
-                <a href="<?php echo $_ENV['host.folder'] . 'login-with-google' ?>" class="btn btn-block btn-danger">
+                </a>
+                <a href="<?php /*echo $_ENV['host.folder'] . 'login-with-google' */?>" class="btn btn-block btn-danger">
                     <i class="fab fa-google mr-2"></i> Sign in using Google
                 </a>
-            </div>
+            </div>-->
             <!-- /.social-auth-links -->
 
-            <p class="mb-1">
-                <a href="">Olvidé mi contraseña</a>
-            </p>
+
             <p class="mb-0">
-                <a href="<?php echo $_ENV['host.folder'] . 'register' ?>" class="text-center">Registrarse</a>
+                <a href="<?php echo $_ENV['host.folder'] . 'login' ?>" class="text-center">Iniciar sesión</a>
             </p>
         </div>
         <!-- /.login-card-body -->

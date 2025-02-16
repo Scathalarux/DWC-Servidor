@@ -113,7 +113,7 @@
                                     <a href="<?php echo $_ENV['host.folder'] . 'centros/edit/' . $centro['codigo'] ?>"
                                        class="btn btn-success ml-1 mt-1" data-toggle="tooltip" data-placement="top"
                                        title="Editar"><i class="fas fa-pen"></i></a>
-                                    <a href="<?php echo $_ENV['host.folder'] . 'centros/view' . $centro['codigo'] ?>"
+                                    <a href="<?php echo $_ENV['host.folder'] . 'centros/view/' . $centro['codigo'] ?>"
                                        class="btn btn-warning ml-1 mt-1" data-toggle="tooltip" data-placement="top"
                                        title="Ver más"><i class="fas fa-eye"></i></a>
                                     <a href="<?php echo $_ENV['host.folder'] . 'centros/delete/' . $centro['codigo'] ?>"

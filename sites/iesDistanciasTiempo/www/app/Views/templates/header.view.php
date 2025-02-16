@@ -87,7 +87,7 @@
                 </div>
                 <div class="info">
                     <a href="#"
-                       class="d-block"><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : "Usuario"; ?></a>
+                       class="d-block"><?php echo isset($_SESSION['nombre']) ? $_SESSION['nombre'] : "Usuario"; ?></a>
                 </div>
             </div>
             <?php
