@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Core;
 
-use Com\Daw2\Controllers\CategoriasController;
+use Com\Daw2\Controllers\ProveedoresController;
 use Com\Daw2\Controllers\ErroresController;
 use Com\Daw2\Controllers\InicioController;
 
@@ -24,10 +24,59 @@ class FrontController
             'get'
         );
         Route::add(
-            '/categorias',
+            '/proveedores',
             function () {
-                $controlador = new CategoriasController();
-                $controlador->listarCategorias();
+                $controlador = new ProveedoresController();
+                //$controlador->listarProveedoresAll();
+                $controlador->listarProveedoresFiltrados();
+            },
+            'get'
+        );
+        Route::add(
+            '/proveedores/view/(\p{L}[0-9]{7,8}[\p{L}]*)',
+            function ($cif) {
+                $controlador = new ProveedoresController();
+                $controlador->getProveedor($cif);
+            },
+            'get'
+        );
+        Route::add(
+            '/proveedores/add',
+            function () {
+                $controlador = new ProveedoresController();
+                $controlador->showAddProveedor();
+            },
+            'get'
+        );
+        Route::add(
+            '/proveedores/add',
+            function () {
+                $controlador = new ProveedoresController();
+                $controlador->doAddProveedor();
+            },
+            'post'
+        );
+        Route::add(
+            '/proveedores/edit/(\p{L}[0-9]{7,8}[\p{L}]*)',
+            function ($cif) {
+                $controlador = new ProveedoresController();
+                $controlador->showEditProveedor($cif);
+            },
+            'get'
+        );
+        Route::add(
+            '/proveedores/edit/(\p{L}[0-9]{7,8}[\p{L}]*)',
+            function ($cif) {
+                $controlador = new ProveedoresController();
+                $controlador->doEditProveedor($cif);
+            },
+            'post'
+        );
+        Route::add(
+            '/proveedores/delete/(\p{L}[0-9]{7,8}[\p{L}]*)',
+            function ($cif) {
+                $controlador = new ProveedoresController();
+                $controlador->deleteProveedor($cif);
             },
             'get'
         );
