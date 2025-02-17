@@ -168,4 +168,10 @@ class ProveedoresModel extends BaseDbModel
         $data['oldCif'] = $data['cif'];
         return $stmt->execute($data);
     }
+
+    public function getPaises(): array
+    {
+        $stmt = $this->pdo->query("SELECT pais from proveedor group by pais order by pais asc");
+        return $stmt->fetchAll(pdo::FETCH_ASSOC);
+    }
 }

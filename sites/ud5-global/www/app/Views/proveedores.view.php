@@ -15,19 +15,22 @@
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="nombre">Nombre:</label>
-                                <input type="text" class="form-control" name="nombre" id="nombre" value=""/>
+                                <input type="text" class="form-control" name="nombre" id="nombre"
+                                       value="<?php echo $input['nombre'] ?? '' ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="cif">Cif:</label>
-                                <input type="text" class="form-control" name="cif" id="cif" value=""/>
+                                <input type="text" class="form-control" name="cif" id="cif"
+                                       value="<?php echo $input['cif'] ?? '' ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="codigo">Código:</label>
-                                <input type="text" class="form-control" name="codigo" id="codigo" value=""/>
+                                <input type="text" class="form-control" name="codigo" id="codigo"
+                                       value="<?php echo $input['codigo'] ?? '' ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-3">
@@ -35,20 +38,24 @@
                                 <label for="pais">Pais:</label>
                                 <select name="pais[]" id="pais" class="form-control select2"
                                         data-placeholder="Tipo proveedor" multiple>
-                                    <option value="">-</option>
+                                    <?php foreach ($paises as $pais) { ?>
+                                        <option value="<?php echo $pais['pais'] ?>" <?php echo (isset($input['pais']) && in_array($pais['pais'], $input['pais'])) ? 'selected' : '' ?>><?php echo $pais['pais'] ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="email">Email:</label>
-                                <input type="email" class="form-control" name="email" id="email" value=""/>
+                                <input type="email" class="form-control" name="email" id="email"
+                                       value="<?php echo $input['email'] ?? '' ?>"/>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="telefono">Teléfono:</label>
-                                <input type="tel" class="form-control" name="telefono" id="telefono" value=""/>
+                                <input type="tel" class="form-control" name="telefono" id="telefono"
+                                       value="<?php echo $input['telefono'] ?? '' ?>"/>
                             </div>
                         </div>
                     </div>
