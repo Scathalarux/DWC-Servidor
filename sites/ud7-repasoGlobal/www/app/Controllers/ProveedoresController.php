@@ -46,7 +46,14 @@ class ProveedoresController extends BaseController
     public function addProveedor(): void
     {
         $proveedorModel = new ProveedoresModel();
-        $proveedor = $proveedorModel->getProveedorByCif($cif);
+
+        $errores = $this->checkErrors($_POST);
+        if ($errores === []) {
+
+        } else {
+            $respuesta = new Respuesta(404, ['mensaje' => $errores]);
+        }
+
 
         $this->view->show('jsonProveedor.view.php', ['respuesta' => $respuesta]);
     }
@@ -88,5 +95,71 @@ class ProveedoresController extends BaseController
         $proveedor = $proveedorModel->getProveedorByCif($cif);
 
         $this->view->show('jsonProveedor.view.php', ['respuesta' => $respuesta]);
+    }
+
+    private function checkErrors(array $data, bool $required): array
+    {
+        $errores = [];
+        $proveedorModel = new ProveedoresModel();
+        //cif
+        if (!empty($data['cif'])) {
+            if (!is_string($data['cif'])) {
+                $errores['cif'] = 'El código debe ser un string';
+            } elseif (!preg_match("/^\p{L}[0-9]{7,8}[\p{L}]*$/iu", $data['cif'])) {
+                $errores['cif'] = 'El cif debe estar compuesto por una letra, seguida de 7 números y una letra u 8 números sin letra';
+            } else {
+                //nos aseguramos que el cif no está repetido
+                if ($proveedorModel->getProveedorByCif($data['cif']) !== false) {
+                    $errores['cif'] = 'El cif ya existe';
+                }
+            }
+        } elseif ($required) {
+            $errores['cif'] = 'El cif es obligatorio';
+        }
+
+        //codigo
+        if (!empty($data['codigo'])) {
+            if (!is_string($data['codigo'])) {
+                $errores['codigo'] = 'El código debe ser un string';
+            } elseif (!strlen($data['codigo']) > 10) {
+                $errores['codigo'] = 'El codigo debe estar compuesto por máximo 10 caracteres';
+            } else {
+                //nos aseguramos que el codigo no está repetido
+                if ($proveedorModel->getProveedorByCodigo($data['codigo']) !== false) {
+                    $errores['codigo'] = 'El codigo ya existe';
+                }
+            }
+        } elseif ($required) {
+            $errores['codigo'] = 'El código es obligatorio';
+        }
+
+        //nombre
+        if (!empty($data['nombre_proveedor'])) {
+            if (!is_string($data['nombre_proveedor'])) {
+                $errores['nombre_proveedor'] = 'El código debe ser un string';
+            } elseif (!strlen($data['nombre_proveedor']) > 10) {
+                $errores['nombre_proveedor'] = 'El nombre debe estar compuesto por máximo 10 caracteres';
+            } else {
+                //nos aseguramos que el nombre no está repetido
+                if ($proveedorModel->getProveedorByCodigo($data['nombre_proveedor']) !== false) {
+                    $errores['nombre_proveedor'] = 'El nombre ya existe';
+                }
+            }
+        } elseif ($required) {
+            $errores['nombre_proveedor'] = 'El código es obligatorio';
+        }
+
+        //direccion
+
+        //website
+
+        //pais
+
+        //email
+
+        //telefono
+
+
+        return $errores;
     }
 }
