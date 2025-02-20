@@ -12,9 +12,9 @@ class ProveedoresModel extends BaseDbModel
 {
 
     private const SELECT_BASE = "SELECT pv.cif, pv.codigo, pv.nombre as nombre_proveedor, pv.direccion, pv.website as sitio_web, pv.pais, pv.email, pv.telefono, count(pd.codigo) as total_productos_proveedor";
-    private const FROM = "FROM proveedor pv
-                LEFT JOIN producto pd ON pd.proveedor = pv.cif";
-    private const GROUP_BY = "GROUP BY pv.cif";
+    private const FROM = " FROM proveedor pv
+                LEFT JOIN producto pd ON pd.proveedor = pv.cif ";
+    private const GROUP_BY = " GROUP BY cif";
 
     /**
      * Función que devuelve los datos de un proveedor, junto a sus productos, en caso de que exista
@@ -49,9 +49,17 @@ class ProveedoresModel extends BaseDbModel
 
     public function getProveedorByCodigo(string $codigo): array|false
     {
-        $sql = self::SELECT_BASE . self::FROM . ' WHERE cif = :cif ' . self::GROUP_BY;
+        $sql = self::SELECT_BASE . self::FROM . ' WHERE pv.codigo = :codigo ' . self::GROUP_BY;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(["codigo" => $codigo]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function addProveedor(array $data): bool
+    {
+        $sql = "INSERT INTO proveedor (cif, codigo, nombre, direccion, website, pais, email, telefono)
+                VALUES (:cif, :codigo, :nombre_proveedor, :direccion, :website, :pais, :email, :telefono)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
     }
 }

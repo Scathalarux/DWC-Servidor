@@ -10,6 +10,7 @@ use Com\Daw2\Models\ProveedoresModel;
 
 class ProveedoresController extends BaseController
 {
+    private const ALLOWED_PARAMS = ['cif', 'codigo', 'nombre_proveedor', 'direccion', 'website', 'pais', 'email', 'telefono'];
 
     /**
      * Función que lista los proveedores teniendo en cuenta filtros, un número de página y la ordenación + setido
@@ -47,11 +48,21 @@ class ProveedoresController extends BaseController
     {
         $proveedorModel = new ProveedoresModel();
 
-        $errores = $this->checkErrors($_POST);
+        $errores = $this->checkErrors($_POST, true);
         if ($errores === []) {
+            $insertData = $_POST;
+            $insertData['telefono'] = !empty($_POST['telefono']) ? $_POST['telefono'] : null;
+
+            $resultado = $proveedorModel->addProveedor($insertData);;
+            if ($resultado === false) {
+                $respuesta = new Respuesta(500, ['mensaje' => 'No se ha podido añadir al proveedor']);
+            } else {
+                $respuesta = new Respuesta(200, ['mensaje' => 'Proveedor añadido correctamente']);
+            }
+
 
         } else {
-            $respuesta = new Respuesta(404, ['mensaje' => $errores]);
+            $respuesta = new Respuesta(400, ['mensaje' => $errores]);
         }
 
 
@@ -136,7 +147,7 @@ class ProveedoresController extends BaseController
         //nombre
         if (!empty($data['nombre_proveedor'])) {
             if (!is_string($data['nombre_proveedor'])) {
-                $errores['nombre_proveedor'] = 'El código debe ser un string';
+                $errores['nombre_proveedor'] = 'El nombre debe ser un string';
             } elseif (!strlen($data['nombre_proveedor']) > 10) {
                 $errores['nombre_proveedor'] = 'El nombre debe estar compuesto por máximo 10 caracteres';
             } else {
@@ -150,15 +161,61 @@ class ProveedoresController extends BaseController
         }
 
         //direccion
+        if (!empty($data['direccion'])) {
+            if (!is_string($data['direccion'])) {
+                $errores['direccion'] = 'La direccion debe ser un string';
+            } elseif (!strlen($data['direccion']) > 255) {
+                $errores['direccion'] = 'La dirección debe estar compuesto por máximo 255 caracteres';
+            }
+        } elseif ($required) {
+            $errores['direccion'] = 'La dirección es obligatoria';
+        }
 
         //website
+        if (!empty($data['website'])) {
+            if (!is_string($data['website'])) {
+                $errores['website'] = 'La website debe ser un string';
+            } elseif (!strlen($data['website']) > 255) {
+                $errores['website'] = 'La website debe estar compuesto por máximo 255 caracteres';
+            } elseif (filter_var($data['website'], FILTER_VALIDATE_URL) === false) {
+                $errores['website'] = 'La website debe estar en formato URL';
+            }
+        } elseif ($required) {
+            $errores['website'] = 'La website es obligatoria';
+        }
 
         //pais
+        if (!empty($data['pais'])) {
+            if (!is_string($data['pais'])) {
+                $errores['pais'] = 'El pais debe ser un string';
+            } elseif (!strlen($data['pais']) > 100) {
+                $errores['pais'] = 'El pais debe estar compuesto por máximo 100 caracteres';
+            }
+        } elseif ($required) {
+            $errores['pais'] = 'El pais es obligatorio';
+        }
 
         //email
+        if (!empty($data['email'])) {
+            if (!is_string($data['email'])) {
+                $errores['email'] = 'El email debe ser un string';
+            } elseif (!strlen($data['email']) > 255) {
+                $errores['email'] = 'El email debe estar compuesto por máximo 255 caracteres';
+            } elseif (filter_var($data['email'], FILTER_VALIDATE_EMAIL) === false) {
+                $errores['email'] = 'El email debe estar en formato email';
+            }
+        } elseif ($required) {
+            $errores['email'] = 'El email es obligatorio';
+        }
 
         //telefono
-
+        if (!empty($data['telefono'])) {
+            if (filter_var($data['telefono'], FILTER_VALIDATE_INT) === false) {
+                $errores['telefono'] = 'El telefono debe ser un string';
+            } elseif (strlen($data['telefono']) > 12 && strlen($data['telefono']) < 8) {
+                $errores['telefono'] = 'El telefono debe estar compuesto por 8-12 caracteres';
+            }
+        }
 
         return $errores;
     }
