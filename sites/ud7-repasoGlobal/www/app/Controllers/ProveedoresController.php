@@ -57,7 +57,7 @@ class ProveedoresController extends BaseController
             if ($resultado === false) {
                 $respuesta = new Respuesta(500, ['mensaje' => 'No se ha podido añadir al proveedor']);
             } else {
-                $respuesta = new Respuesta(200, ['mensaje' => 'Proveedor añadido correctamente']);
+                $respuesta = new Respuesta(200, ['mensaje' => 'Proveedor añadido correctamente. '.$_ENV['base.url'].'/proveedores/'.$insertData['cif']]);
             }
 
 
