@@ -8,6 +8,7 @@ use Com\Daw2\Controllers\ErrorController;
 use Com\Daw2\Controllers\UsersController;
 use Com\Daw2\Controllers\XogadoresController;
 use Com\Daw2\Helpers\JwtTool;
+use PDOException;
 use Steampixel\Route;
 
 class FrontController
@@ -19,17 +20,16 @@ class FrontController
     {
         if (JwtTool::requestHasToken()) {
             try {
-                $jwt = new JWT($_ENV['secret']);
                 $bearer = JwtTool::getBearerToken();
+                $jwt = new JWT($_ENV['secret']);
+
                 self::$jwtData = $jwt->decode($bearer);
                 self::$permisos = UsersController::getPermisos(self::$jwtData['user_type']);
 
-            } catch (JWTException $e) {
-                $controller = new ErrorController(403, ['mensaje' => $e->getMessage()]);
+            } catch (PDOException $e) {
+                $controller = new ErrorController(422, ['mensaje' => $e->getMessage()]);
                 $controller->showError();
-                die();
             }
-
         } else {
             self::$permisos = UsersController::getPermisos();
         }
@@ -39,6 +39,7 @@ class FrontController
             fn() => (new UsersController())->login()
             , 'post'
         );
+
         Route::add(
             '/xogadores',
             function () {
@@ -51,14 +52,8 @@ class FrontController
             , 'get'
         );
         Route::add(
-            '/xogadores/([0-9]{1,})',
-            function ($numLicencia) {
-                if (str_contains(self::$permisos['xogadoresController'], 'r')) {
-                    (new XogadoresController())->getXogador($numLicencia);
-                } else {
-
-                }
-            }
+            '/xogadores/(\p{N}{1,})',
+            fn($numLicencia) => (new XogadoresController())->getXogador((int)$numLicencia)
             , 'get'
         );
         Route::add(
@@ -67,18 +62,18 @@ class FrontController
             , 'post'
         );
         Route::add(
-            '/xogadores/([0-9]{1,})',
-            fn($numLicencia) => (new XogadoresController())->deleteXogador($numLicencia)
+            '/xogadores/(\p{N}{1,})',
+            fn($numLicencia) => (new XogadoresController())->deleteXogador((int)$numLicencia)
             , 'delete'
         );
         Route::add(
-            '/xogadores/([0-9]{1,})',
-            fn($numLicencia) => (new XogadoresController())->editXogadorPut($numLicencia)
+            '/xogadores/(\p{N}{1,})',
+            fn($numLicencia) => (new XogadoresController())->editXogadorPut((int)$numLicencia)
             , 'put'
         );
         Route::add(
-            '/xogadores/([0-9]{1,})',
-            fn($numLicencia) => (new XogadoresController())->editXogadorPatch($numLicencia)
+            '/xogadores/(\p{N}{1,})',
+            fn($numLicencia) => (new XogadoresController())->editXogadorPatch((int)$numLicencia)
             , 'patch'
         );
 
