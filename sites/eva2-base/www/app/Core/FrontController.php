@@ -53,39 +53,69 @@ class FrontController
         );
         Route::add(
             '/xogadores/(\p{N}{1,})',
-            fn($numLicencia) => (new XogadoresController())->getXogador((int)$numLicencia)
+            function ($numLicencia) {
+                if (str_contains(self::$permisos['xogadoresController'], 'r')) {
+                    (new XogadoresController())->getXogador((int)$numLicencia);
+                } else {
+                    http_response_code(403);
+                }
+            }
             , 'get'
         );
         Route::add(
             '/xogadores',
-            fn() => (new XogadoresController())->addXogador()
+            function () {
+                if (str_contains(self::$permisos['xogadoresController'], 'r')) {
+                    (new XogadoresController())->addXogador();
+                } else {
+                    http_response_code(403);
+                }
+            }
             , 'post'
         );
         Route::add(
             '/xogadores/(\p{N}{1,})',
-            fn($numLicencia) => (new XogadoresController())->deleteXogador((int)$numLicencia)
+            function ($numLicencia) {
+                if (str_contains(self::$permisos['xogadoresController'], 'r')) {
+                    (new XogadoresController())->deleteXogador((int)$numLicencia);
+                } else {
+                    http_response_code(403);
+                }
+            }
             , 'delete'
         );
         Route::add(
             '/xogadores/(\p{N}{1,})',
-            fn($numLicencia) => (new XogadoresController())->editXogadorPut((int)$numLicencia)
+            function ($numLicencia) {
+                if (str_contains(self::$permisos['xogadoresController'], 'r')) {
+                    (new XogadoresController())->editXogadorPut((int)$numLicencia);
+                } else {
+                    http_response_code(403);
+                }
+            }
             , 'put'
         );
         Route::add(
             '/xogadores/(\p{N}{1,})',
-            fn($numLicencia) => (new XogadoresController())->editXogadorPatch((int)$numLicencia)
+            function ($numLicencia) {
+                if (str_contains(self::$permisos['xogadoresController'], 'r')) {
+                    (new XogadoresController())->editXogadorPatch((int)$numLicencia);
+                } else {
+                    http_response_code(403);
+                }
+            }
             , 'patch'
         );
 
         Route::pathNotFound(
             function () {
-
+                (new ErrorController(404))->showError();
             }
         );
 
         Route::methodNotAllowed(
             function () {
-
+                (new ErrorController(405))->showError();
             }
         );
 

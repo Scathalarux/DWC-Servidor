@@ -7,23 +7,30 @@ namespace Com\Daw2\Controllers;
 use Com\Daw2\Core\BaseController;
 use Com\Daw2\Libraries\Respuesta;
 use Com\Daw2\Models\XogadoresModel;
+use Com\Daw2\Traits\BaseRestController;
 use Decimal\Decimal;
 use PDOException;
 
 class XogadoresController extends BaseController
 {
+    private const ALLOWED_PARAMS = ['numero_licencia', 'codigo_equipo', 'numero', 'nome', 'posicion', 'nacionalidade', 'ficha', 'estatura', 'data_nacemento', 'temporadas'];
+
     public function listarXogadores(): void
     {
         //Licencia, nombre, nacionalidad, equipo, club
         // = , like , multiple, = , like
 
         $xogadoresModel = new XogadoresModel();
+        try {
+            $xogadores = $xogadoresModel->getFilteredXogadores($_GET);
+            if ($xogadores === false) {
+                $respuesta = new Respuesta(404, ['mensaje' => 'no hay xogadores que mostrar']);
+            } else {
+                $respuesta = new Respuesta(200, $xogadores);
+            }
 
-        $xogadores = $xogadoresModel->getFilteredXogadores($_GET);
-        if ($xogadores === false) {
-            $respuesta = new Respuesta(404, ['mensaje' => 'no hay xogadores que mostrar']);
-        } else {
-            $respuesta = new Respuesta(200, $xogadores);
+        } catch (\InvalidArgumentException $e) {
+            $respuesta = new Respuesta(400, ['mensaje' => $e->getMessage()]);
         }
 
 
@@ -79,8 +86,19 @@ class XogadoresController extends BaseController
         } else {
             $errores = $this->checkForm($_POST, true);
             if ($errores === []) {
+
+                $insertData = $_POST;
                 //nacionalidade si no aparece será null
+                $insertData['nacionalidade'] = !empty($_POST["nacionalidade"]) ? $_POST["nacionalidade"] : null;
                 //ficha si no aparece será ''
+                $insertData['ficha'] = !empty($_POST["ficha"]) ? $_POST["ficha"] : '';
+
+                $resultado = $xogadoresModel->addXogador($insertData);
+                if ($resultado === false) {
+                    $respuesta = new Respuesta(200, ['mensaje' => 'Xogador añadido correctamente']);
+                } else {
+                    $respuesta = new Respuesta(500, ['mensaje' => 'No se pudo añadir al xogador']);
+                }
 
             } else {
                 $respuesta = new Respuesta(400, ['mensaje' => $errores]);
@@ -127,7 +145,7 @@ class XogadoresController extends BaseController
         }
         //nome
         if (!empty($data['nome'])) {
-            if (!preg_match('/^[\p{L}]{2,15}, [\p{L}]{2,15}$/iu', $data['nome'])) {
+            if (!preg_match('/^[\p{L} ]{1,15}, [\p{L} ]{1,15}$/iu', $data['nome'])) {
                 $errores['nome'] = 'El nombre debe estar compuesto por apellido, seguido de una come y un espacio y el nombre';
             }
 
@@ -137,9 +155,9 @@ class XogadoresController extends BaseController
 
         //posicion
         if (!empty($data['posicion'])) {
-            if (!preg_match('/^\p{N}$/', $data['posicion'])) {
+            if (!preg_match('/^\p{L}$/', $data['posicion'])) {
                 $errores['posicion'] = 'La posición debe estar compuesto por 1 letra';
-            } elseif (in_array($data['posicion'], ['P', 'B', 'F', 'A', 'E'])) {
+            } elseif (!in_array(strtoupper($data['posicion']), ['P', 'B', 'F', 'A', 'E'])) {
                 $errores['posicion'] = 'La posición debe ser A, B, E, F o P';
             }
 
@@ -167,9 +185,9 @@ class XogadoresController extends BaseController
         if (!empty($data['estatura'])) {
             if (filter_var($data['estatura'], FILTER_VALIDATE_FLOAT) === false) {
                 $errores['estatura'] = 'La estatura debe ser de tipo decimal';
-            }else{
+            } else {
                 $estatura = new Decimal($data['estatura']);
-                if($estatura !== $estatura->round(2)){
+                if ($estatura !== $estatura->round(2)) {
                     $errores['estatura'] = 'La estatura debe ser de tipo 1 número con 2 decimales';
                 }
             }
@@ -181,32 +199,102 @@ class XogadoresController extends BaseController
         //data_nacemento
         if (!empty($data['data_nacemento'])) {
 
-            if (!preg_match('/^(?:0[1-9]|[12]\d|3[01])([\/.-])(?:0[1-9]|1[012])\1(?:19|20)\d\d$/', $data['data_nacemento'])) {
-                $errores['data_nacemento'] = 'El numero de licencia debe estar compuesto por números, iniciando desde el 1';
+            if (!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/', $data['data_nacemento'])) {
+                $errores['data_nacemento'] = 'La fecha de naciemiento debe seguir el formato YYYY-MM-DD';
             }
 
         } elseif ($required) {
-            $errores['data_nacemento'] = 'El numero de licencia es obligatorio';
+            $errores['data_nacemento'] = 'La fecha de naciemiento es obligatoria';
         }
+
         //temporadas
-        if (!empty($data['numero_licencia'])) {
-            if (!preg_match('/[1-9][\p{N}]{0,}/', $data['numero_licencia'])) {
-                $errores['numero_licencia'] = 'El numero de licencia debe estar compuesto por números, iniciando desde el 1';
+        if (!empty($data['temporadas'])) {
+            if (!preg_match('/[\p{N}]{1,}/', $data['temporadas'])) {
+                $errores['temporadas'] = 'El numero de temporadas debe estar compuesto por números, iniciando desde el 1';
+            } elseif ((int)$data['temporadas'] < 0) {
+                $errores['temporadas'] = 'El número de temporadas debe ser mayor o igual a 0';
             }
 
         } elseif ($required) {
-            $errores['numero_licencia'] = 'El numero de licencia es obligatorio';
+            $errores['temporadas'] = 'El numero de temporadas es obligatorio';
         }
 
         return $errores;
     }
 
-    public function editXogadorPut(): void
+    use BaseRestController;
+
+    public function editXogadorPut(int $numLicencia): void
     {
+        $put = $this->getParams();
+
+        $xogadoresModel = new XogadoresModel();
+        $xogador = $xogadoresModel->getXogador($numLicencia);
+        if ($xogador === false) {
+            $respuesta = new Respuesta(404, ['mensaje' => 'no existe el xogador']);
+        } else {
+            if ($put === []) {
+                $respuesta = new Respuesta(400, ['mensaje' => 'no se han introducido parámetros para la edición']);
+            } else {
+                $errores = $this->checkForm($put, false);
+                if ($errores === []) {
+                    $arrayAux = [];
+                    foreach (self::ALLOWED_PARAMS as $param) {
+                        if (isset($put[$param])) {
+                            $arrayAux[$param] = $put[$param];
+                        } else {
+                            $arrayAux[$param] = $xogador[$param];
+                        }
+                    }
+
+                    if ($xogadoresModel->editXogadorPut($numLicencia, $arrayAux)) {
+                        $respuesta = new Respuesta(200, ['mensaje' => 'xogador editado correctamente']);
+                    } else {
+                        $respuesta = new Respuesta(500, ['mensaje' => 'no se pudo editar el xogador']);
+                    }
+
+                } else {
+                    $respuesta = new Respuesta(404, ['mensaje' => $errores]);
+                }
+
+            }
+
+
+        }
+
+        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
 
     }
 
-    public function editXogadorPatch()
+    public function editXogadorPatch(int $numLicencia): void
     {
+        $patch = $this->getParams();
+        $xogadoresModel = new XogadoresModel();
+        $xogador = $xogadoresModel->getXogador($numLicencia);
+        if ($xogador === false) {
+            $respuesta = new Respuesta(404, ['mensaje' => 'no existe el xogador']);
+        } else {
+            $arrayAux = [];
+            foreach (self::ALLOWED_PARAMS as $param) {
+                if (isset($patch[$param])) {
+                    $arrayAux[$param] = $patch[$param];
+                }
+            }
+            if ($patch === [] || $arrayAux === []) {
+                $respuesta = new Respuesta(400, ['mensaje' => 'no se han pasados parámetros para la edición']);
+            } else {
+                $errores = $this->checkForm($arrayAux, false);
+                if ($errores === []) {
+                    if ($xogadoresModel->editXogadorPatch($numLicencia, $arrayAux)) {
+                        $respuesta = new Respuesta(200, ['mensaje' => 'xogador actualizado correctamente']);
+                    } else {
+                        $respuesta = new Respuesta(500, ['mensaje' => 'xogador non actualizado']);
+                    }
+                } else {
+                    $respuesta = new Respuesta(400, ['mensaje' => $errores]);
+                }
+            }
+        }
+        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
     }
 }
