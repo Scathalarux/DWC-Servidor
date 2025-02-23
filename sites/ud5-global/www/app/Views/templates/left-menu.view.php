@@ -31,17 +31,17 @@
                 <p>Nuevo usuario</p>
             </a>
         </li>-->
-        <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'].'proveedores']) ? 'menu-open' : '';?>">
+        <li class="nav-item <?php echo in_array($_SERVER['REQUEST_URI'], [$_ENV['host.folder'].'usuarios-sistema']) ? 'menu-open' : '';?>">
             <a href="<?php echo $_ENV['host.folder']?>" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>Proveedores<i class="right fas fa-angle-left"></i></p>
+                <p>Usuarios sistema<i class="right fas fa-angle-left"></i></p>
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
                     <a href="<?php echo $_ENV['host.folder']?>proveedores"
-                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'].'proveedores' ? 'active' : ''; ?>">
+                       class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'].'usuarios-sistema' ? 'active' : ''; ?>">
                         <i class="fas fa-laptop-code nav-icon"></i>
-                        <p>Listado Proveedores</p>
+                        <p>Listado Usuarios sistema</p>
                     </a>
                 </li>
             </ul>

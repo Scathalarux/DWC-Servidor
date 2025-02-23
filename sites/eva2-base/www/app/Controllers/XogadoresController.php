@@ -155,10 +155,8 @@ class XogadoresController extends BaseController
 
         //posicion
         if (!empty($data['posicion'])) {
-            if (!preg_match('/^\p{L}$/', $data['posicion'])) {
-                $errores['posicion'] = 'La posición debe estar compuesto por 1 letra';
-            } elseif (!in_array(strtoupper($data['posicion']), ['P', 'B', 'F', 'A', 'E'])) {
-                $errores['posicion'] = 'La posición debe ser A, B, E, F o P';
+            if (!preg_match('/^[ABEFP]$/iu', $data['posicion'])) {
+                $errores['posicion'] = 'La posición debe ser una única letra: A, B, E, F o P';
             }
 
         } elseif ($required) {
