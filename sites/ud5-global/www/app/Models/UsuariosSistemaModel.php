@@ -12,7 +12,7 @@ class UsuariosSistemaModel extends BaseDbModel
 
     public function getAll(): array
     {
-        $sql = 'SELECT u.id_usuario, u.nombre_completo, u.dni, u.email, ar.nombre_rol FROM usuario_sistema u JOIN aux_rol ar ON u.id_rol = ar.id_rol';
+        $sql = 'SELECT u.*, ar.nombre_rol FROM usuario_sistema u JOIN aux_rol ar ON u.id_rol = ar.id_rol';
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -46,5 +46,41 @@ class UsuariosSistemaModel extends BaseDbModel
                 VALUES (:id_rol, :dni, :email, :nombre_completo, :contrasinal, null, :idioma, :baja)';
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($data);
+    }
+
+    public function getById(int $idUsuario): false|array
+    {
+        $sql = 'SELECT * FROM usuario_sistema WHERE id_usuario = :id_usuario';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id_usuario' => $idUsuario]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function editUsuario(int $idUsuario, array $data): bool
+    {
+        $sql = 'UPDATE usuario_sistema SET id_rol =:id_rol, dni= :dni, email=:email, nombre_completo = :nombre_completo, contrasinal = :contrasinal, idioma =:idioma WHERE id_usuario = :id_usuario';
+        $stmt = $this->pdo->prepare($sql);
+        $data['id_usuario'] = $idUsuario;
+        $stmt->execute($data);
+        return $stmt->rowCount() === 1;
+
+    }
+
+    public function changeBaja(int $idUsuario, int $baja): bool
+    {
+        $sql = 'UPDATE usuario_sistema SET baja =:baja WHERE id_usuario = :id_usuario';
+        $stmt = $this->pdo->prepare($sql);
+        $data['baja'] = $baja;
+        $data['id_usuario'] = $idUsuario;
+        $stmt->execute($data);
+        return $stmt->rowCount() === 1;
+    }
+
+    public function getByEmail(string $email): false|array
+    {
+        $sql = 'SELECT * FROM usuario_sistema WHERE email = :email';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

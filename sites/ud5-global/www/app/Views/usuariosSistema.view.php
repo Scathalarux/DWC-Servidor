@@ -74,7 +74,9 @@
                             <h6 class="m-0 font-weight-bold text-primary">Usuarios</h6>
                         </div>
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
-                            <a href="<?php echo $_ENV['host.folder'].'usuarios-sistema/add'; ?>" class="m-0 font-weight-bold text-primary">Añadir Usuario <i class="fa fa-plus-circle"></i></a>
+                            <a href="<?php echo $_ENV['host.folder'] . 'usuarios-sistema/add'; ?>"
+                               class="m-0 font-weight-bold text-primary">Añadir Usuario <i
+                                        class="fa fa-plus-circle"></i></a>
                         </div>
                         <?php if (!empty($usuarios)){ ?>
                             <!-- Card Body -->
@@ -101,7 +103,7 @@
                                     </thead>
                                     <tbody>
                                     <?php foreach ($usuarios as $usuario) { ?>
-                                        <tr>
+                                        <tr class="<?php echo $usuario['baja'] ? 'bg-danger' : '' ?>">
                                             <td><?php echo $usuario['nombre_completo'] ?></td>
                                             <td><?php echo $usuario['dni'] ?></td>
                                             <td><?php echo $usuario['email'] ?></td>
@@ -115,15 +117,12 @@
                                                                 class="fas fa-pen"></i></a>
                                                 <?php } ?>
                                                 <?php if ($_SESSION['id_usuario'] === $usuario['id_usuario']) { ?>
-                                                    <a href=""
-                                                       target="_blank" class="btn btn-info" data-toggle="tooltip"
-                                                       data-placement="top" title="Activar/Desactivar">
-                                                        <div>No se puede autodesactivar</div>
-                                                        <i class="fas fa-exclamation"></i></a>
+                                                    <div class="btn btn-info" title="<?php echo $usuario['baja'] ? 'Activar' : 'Desactivar' ?>">No se puede
+                                                        autodesactivar <i class="fas fa-exclamation"></i></div>
                                                 <?php } else { ?>
                                                     <a href="<?php echo $_ENV['host.folder'] . 'usuarios-sistema/baja/' . $usuario['id_usuario'] ?>"
-                                                       target="_blank" class="btn btn-info" data-toggle="tooltip"
-                                                       data-placement="top" title="Activar/Desactivar"><i
+                                                       class="btn btn-info" data-toggle="tooltip"
+                                                       data-placement="top" title="<?php echo $usuario['baja'] ? 'Activar' : 'Desactivar' ?>"><i
                                                                 class="fas fa-wrench"></i></a>
                                                 <?php } ?>
 
