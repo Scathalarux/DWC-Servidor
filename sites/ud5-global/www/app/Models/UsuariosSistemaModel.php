@@ -10,11 +10,49 @@ use PDO;
 class UsuariosSistemaModel extends BaseDbModel
 {
 
-    public function getAll(): array
+    public const ORDER_COLUMNS = ['nombre_completo', 'dni', 'email', 'id_rol'];
+
+
+    public function getAll(array $data, int $order): array
     {
-        $sql = 'SELECT u.*, ar.nombre_rol FROM usuario_sistema u JOIN aux_rol ar ON u.id_rol = ar.id_rol';
-        $stmt = $this->pdo->query($sql);
+        $filtros = $this->filtrosQuery($data);
+
+        $sentido = $order > 0 ? ' ASC ' : ' DESC ';
+        $order = abs($order);
+
+        if ($filtros['conditions'] !== []) {
+            $sql = 'SELECT u.*, ar.nombre_rol FROM usuario_sistema u JOIN aux_rol ar ON u.id_rol = ar.id_rol '
+                . " where " . implode(' AND ', $filtros['conditions'])
+                . " order by " . self::ORDER_COLUMNS[$order - 1] . $sentido;
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($filtros['vars']);
+        } else {
+            $sql = 'SELECT u.*, ar.nombre_rol FROM usuario_sistema u JOIN aux_rol ar ON u.id_rol = ar.id_rol '
+                . " order by " . self::ORDER_COLUMNS[$order - 1] . $sentido;
+            $stmt = $this->pdo->query($sql);
+        }
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function filtrosQuery(array $data): array
+    {
+        $conditions = [];
+        $vars = [];
+
+        //nombre completo
+        if (!empty($data['nombre_completo'])) {
+            $conditions[] = ' u.nombre_completo LIKE :nombre_completo ';
+            $vars['nombre_completo'] = "%" . $data['nombre_completo'] . "%";
+        }
+
+        //id_rol
+        if (!empty($data['id_rol'])) {
+            $conditions[] = ' u.id_rol = :id_rol ';
+            $vars['id_rol'] = $data['id_rol'];
+        }
+
+        return ['conditions' => $conditions, 'vars' => $vars];
     }
 
     public function getByDni(string $dni): false|array
@@ -82,5 +120,16 @@ class UsuariosSistemaModel extends BaseDbModel
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteUsuario(int $idUsuario): bool
+    {
+        $sql = 'DELETE FROM usuario_sistema WHERE id_usuario = :id_usuario';
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute(['id_usuario' => $idUsuario]);
+    }
+
+    public function getUsuario(int $idUsuario)
+    {
     }
 }

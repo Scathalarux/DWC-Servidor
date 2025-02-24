@@ -15,7 +15,7 @@
                             <div class="mb-3">
                                 <label for="nombre_completo">Nombre completo:</label>
                                 <input type="text" class="form-control" name="nombre_completo" id="nombre_completo"
-                                       value="<?php echo $input['nombre_completo'] ?? '' ?>"/>
+                                       value="<?php echo $input['nombre_completo'] ?? '' ?>" <?php echo $onlyRead ? 'disabled' : '' ?>/>
                             </div>
                             <small class="text-danger"><?php echo $errores['nombre_completo'] ?? '' ?></small>
                         </div>
@@ -23,7 +23,7 @@
                             <div class="mb-3">
                                 <label for="email">Email:</label>
                                 <input type="email" class="form-control" name="email" id="email"
-                                       value="<?php echo $input['email'] ?? '' ?>"/>
+                                       value="<?php echo $input['email'] ?? '' ?>" <?php echo $onlyRead ? 'disabled' : '' ?>/>
                             </div>
                             <small class="text-danger"><?php echo $errores['email'] ?? '' ?></small>
                         </div>
@@ -31,32 +31,35 @@
                             <div class="mb-3">
                                 <label for="dni">DNI:</label>
                                 <input type="text" class="form-control" name="dni" id="dni"
-                                       value="<?php echo $input['dni'] ?? '' ?>"/>
+                                       value="<?php echo $input['dni'] ?? '' ?>" <?php echo $onlyRead ? 'disabled' : '' ?>/>
                             </div>
                             <small class="text-danger"><?php echo $errores['dni'] ?? '' ?></small>
                         </div>
-                        <div class="col-12 col-lg-3">
-                            <div class="mb-3">
-                                <label for="password">Contraseña:</label>
-                                <input type="password" class="form-control" name="password" id="password"
-                                       value="<?php echo $input['password'] ?? '' ?>"/>
-                            </div>
-                            <small class="text-danger"><?php echo $errores['password'] ?? '' ?></small>
-                        </div>
-                        <?php if ($add) { ?>
+                        <?php if (!$onlyRead) { ?>
                             <div class="col-12 col-lg-3">
                                 <div class="mb-3">
-                                    <label for="password2">Repita la contraseña:</label>
-                                    <input type="password" class="form-control" name="password2" id="password2"
-                                           value="<?php echo $input['password2'] ?? '' ?>"/>
+                                    <label for="password">Contraseña:</label>
+                                    <input type="password" class="form-control" name="password" id="password"
+                                           value="<?php echo $input['password'] ?? '' ?>" <?php echo $onlyRead ? 'disabled' : '' ?>/>
                                 </div>
-                                <small class="text-danger"><?php echo $errores['password2'] ?? '' ?></small>
+                                <small class="text-danger"><?php echo $errores['password'] ?? '' ?></small>
                             </div>
-                        <?php } ?>
+                            <?php if ($add) { ?>
+                                <div class="col-12 col-lg-3">
+                                    <div class="mb-3">
+                                        <label for="password2">Repita la contraseña:</label>
+                                        <input type="password" class="form-control" name="password2" id="password2"
+                                               value="<?php echo $input['password2'] ?? '' ?>"/>
+                                    </div>
+                                    <small class="text-danger"><?php echo $errores['password2'] ?? '' ?></small>
+                                </div>
+                            <?php }
+                        } ?>
                         <div class="col-12 col-lg-3">
                             <div class="mb-3">
                                 <label for="id_rol">Rol:</label>
-                                <select name="id_rol" id="id_rol" class="form-control" data-placeholder="Rol">
+                                <select name="id_rol" id="id_rol" class="form-control"
+                                        data-placeholder="Rol" <?php echo $onlyRead ? 'disabled' : ''  ?> <?php echo isset($sameUser) && $sameUser ? 'disabled' : '' ?>>
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) { ?>
                                         <option value="<?php echo $rol['id_rol'] ?>" <?php echo (isset($input['id_rol']) && ($input['id_rol'] === $rol['id_rol'])) ? 'selected' : '' ?>><?php echo $rol['nombre_rol'] ?></option>
@@ -67,7 +70,8 @@
                         <div class="col-12 col-lg-3">
                             <div class="mb-3">
                                 <label for="idioma">Idioma:</label>
-                                <select name="idioma" id="idioma" class="form-control" data-placeholder="Rol">
+                                <select name="idioma" id="idioma" class="form-control"
+                                        data-placeholder="Rol" <?php echo $onlyRead ? 'disabled' : '' ?>>
                                     <option value="">-</option>
                                     <?php foreach ($idiomas as $idioma) { ?>
                                         <option value="<?php echo $idioma ?>" <?php echo (isset($input['idioma']) && ($input['idioma'] === $idioma)) ? 'selected' : '' ?>><?php echo $idioma ?></option>
@@ -77,13 +81,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <div class="col-12 text-right">
-                        <a href="<?php echo $_ENV['host.folder'] . 'usuarios-sistema' ?>" value=""
-                           class="btn btn-danger">Cancelar</a>
-                        <input type="submit" value="Aplicar" class="btn btn-primary ml-2"/>
+                <?php if ($onlyRead) { ?>
+                    <div class="card-footer">
+                        <div class="col-12 text-right">
+                            <a href="<?php echo $_ENV['host.folder'] . 'usuarios-sistema' ?>" value=""
+                               class="btn btn-danger">Volver</a>
+                        </div>
                     </div>
-                </div>
+                <?php } else { ?>
+                    <div class="card-footer">
+                        <div class="col-12 text-right">
+                            <a href="<?php echo $_ENV['host.folder'] . 'usuarios-sistema' ?>" value=""
+                               class="btn btn-danger">Cancelar</a>
+                            <input type="submit" value="Aplicar" class="btn btn-primary ml-2"/>
+                        </div>
+                    </div>
+                <?php } ?>
             </form>
         </div>
     </div>

@@ -34,54 +34,77 @@ class FrontController
                 },
                 'get'
             );
-            Route::add(
-                '/usuarios-sistema',
-                function () {
-                    $controlador = new UsusariosSistemaController();
-                    $controlador->listar();
-                },
-                'get'
-            );
-            Route::add(
-                '/usuarios-sistema/add',
-                function () {
-                    $controlador = new UsusariosSistemaController();
-                    $controlador->showAddUsuario();
-                },
-                'get'
-            );
-            Route::add(
-                '/usuarios-sistema/add',
-                function () {
-                    $controlador = new UsusariosSistemaController();
-                    $controlador->doAddUsuario();
-                },
-                'post'
-            );
-            Route::add(
-                '/usuarios-sistema/edit/([0-9]{1,})',
-                function ($idUsuario) {
-                    $controlador = new UsusariosSistemaController();
-                    $controlador->showEditUsuario((int)$idUsuario);
-                },
-                'get'
-            );
-            Route::add(
-                '/usuarios-sistema/edit/([0-9]{1,})',
-                function ($idUsuario) {
-                    $controlador = new UsusariosSistemaController();
-                    $controlador->doEditUsuario((int)$idUsuario);
-                },
-                'post'
-            );
-            Route::add(
-                '/usuarios-sistema/baja/([0-9]{1,})',
-                function ($idUsuario) {
-                    $controlador = new UsusariosSistemaController();
-                    $controlador->changeBajaUsuario((int)$idUsuario);
-                },
-                'get'
-            );
+            if (str_contains($_SESSION['permisos']['usuariosSistema'], 'r') !== false) {
+                Route::add(
+                    '/usuarios-sistema',
+                    function () {
+                        $controlador = new UsusariosSistemaController();
+                        $controlador->listar();
+                    },
+                    'get'
+                );
+                Route::add(
+                    '/usuarios-sistema/view/([0-9]{1,})',
+                    function ($idUsuario) {
+                        $controlador = new UsusariosSistemaController();
+                        $controlador->getUsuario((int)$idUsuario);
+                    },
+                    'get'
+                );
+
+            }
+            if (str_contains($_SESSION['permisos']['usuariosSistema'], 'w') !== false) {
+                Route::add(
+                    '/usuarios-sistema/add',
+                    function () {
+                        $controlador = new UsusariosSistemaController();
+                        $controlador->showAddUsuario();
+                    },
+                    'get'
+                );
+                Route::add(
+                    '/usuarios-sistema/add',
+                    function () {
+                        $controlador = new UsusariosSistemaController();
+                        $controlador->doAddUsuario();
+                    },
+                    'post'
+                );
+                Route::add(
+                    '/usuarios-sistema/edit/([0-9]{1,})',
+                    function ($idUsuario) {
+                        $controlador = new UsusariosSistemaController();
+                        $controlador->showEditUsuario((int)$idUsuario);
+                    },
+                    'get'
+                );
+                Route::add(
+                    '/usuarios-sistema/edit/([0-9]{1,})',
+                    function ($idUsuario) {
+                        $controlador = new UsusariosSistemaController();
+                        $controlador->doEditUsuario((int)$idUsuario);
+                    },
+                    'post'
+                );
+                Route::add(
+                    '/usuarios-sistema/baja/([0-9]{1,})',
+                    function ($idUsuario) {
+                        $controlador = new UsusariosSistemaController();
+                        $controlador->changeBajaUsuario((int)$idUsuario);
+                    },
+                    'get'
+                );
+            }
+            if (str_contains($_SESSION['permisos']['usuariosSistema'], 'd') !== false) {
+                Route::add(
+                    '/usuarios-sistema/delete/([0-9]{1,})',
+                    function ($idUsuario) {
+                        $controlador = new UsusariosSistemaController();
+                        $controlador->deleteUsuario((int)$idUsuario);
+                    },
+                    'get'
+                );
+            }
             Route::pathNotFound(
                 function () {
                     $controller = new ErroresController();

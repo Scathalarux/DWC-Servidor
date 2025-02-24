@@ -12,6 +12,7 @@ use Com\Daw2\Models\UsuariosSistemaModel;
 class UsusariosSistemaController extends BaseController
 {
     private const ALLOWED_PARAMS = ['id_rol', 'dni', 'email', 'nombre_completo', 'contrasinal', 'idioma'];
+    private const DEFAULT_ORDER = 1;
 
     public function getCommonData(): array
     {
@@ -31,11 +32,49 @@ class UsusariosSistemaController extends BaseController
             'titulo' => 'Usuarios Sistema',
             'breadcrumb' => ['Inicio', 'Usuarios Sistema']
         ];
+        $data += $this->getCommonData();
         $usuariosSistemaModel = new UsuariosSistemaModel();
-        $usuarios = $usuariosSistemaModel->getAll();
+        $order = $this->getOrder();
+
+        $copiaGet = $_GET;
+        unset($copiaGet['order']);
+        $data['copiaGet'] = http_build_query($copiaGet);
+        if (!empty($data['copiaGet'])) {
+            $data['copiaGet'] .= '&';
+        }
+
+        $usuarios = $usuariosSistemaModel->getAll($_GET, $order);
         $data['usuarios'] = $usuarios;
+        $data['order'] = $order;
+        $data['input']= filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $this->view->showViews(array('templates/header.view.php', 'usuariosSistema.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function getUsuario(int $idUsuario)
+    {
+        $data = [
+            'titulo' => 'Usuarios Sistema',
+            'breadcrumb' => ['Inicio', 'Usuarios Sistema']
+        ];
+        $data += $this->getCommonData();
+        $usuariosSistemaModel = new UsuariosSistemaModel();
+        $usuario = $usuariosSistemaModel->getById($idUsuario);
+        $data['input'] = $usuario;
+        $data['onlyRead'] = true;
+        $data['add'] = false;
+        $this->view->showViews(array('templates/header.view.php', 'editUsuariosSistema.view.php', 'templates/footer.view.php'), $data);
+
+    }
+
+    public function getOrder(): int
+    {
+        if (isset($_GET['order']) && filter_var($_GET['order'], FILTER_VALIDATE_INT)) {
+            if (abs((int)$_GET['order']) > 0 && abs((int)$_GET['order']) <= count(UsuariosSistemaModel::ORDER_COLUMNS)) {
+                return (int)$_GET['order'];
+            }
+        }
+        return self::DEFAULT_ORDER;
     }
 
     public function showAddUsuario(array $errores = [], array $input = []): void
@@ -48,6 +87,7 @@ class UsusariosSistemaController extends BaseController
 
         $data['errores'] = $errores;
         $data['input'] = $input;
+        $data['onlyRead'] = false;
         $data['add'] = true;
 
         $this->view->showViews(array('templates/header.view.php', 'editUsuariosSistema.view.php', 'templates/footer.view.php'), $data);
@@ -114,9 +154,9 @@ class UsusariosSistemaController extends BaseController
 
         //nombre completo
         if (!empty($data['nombre_completo'])) {
-            if (!is_string($data['nombre_completo']) && (strlen($data['nombre_completo']) > 20 || strlen($data['nombre_completo']) < 5)) {
-                $errores['nombre_completo'] = 'El nombre debe tener una longitud entre 5 y 20 caracteres';
-            } elseif (!preg_match('/^\p{L}[\p{L} ]+\p{L}$/iu', $data['nombre_completo'])) {
+            if (!is_string($data['nombre_completo'])) {
+                $errores['nombre_completo'] = 'El nombre debe ser de tipo texto';
+            } elseif (!preg_match('/^\p{L}[\p{L} ]{3,18}\p{L}$/iu', $data['nombre_completo'])) {
                 $errores['nombre_completo'] = 'El nombre debe estar compuesto por letras y espacios';
             } elseif ($edit === false && $usuariosSistemaModel->getByNombre($data['nombre_completo']) !== false) {
                 $errores['nombre_completo'] = 'El nombre ya existe en la BBDD';
@@ -209,7 +249,9 @@ class UsusariosSistemaController extends BaseController
 
         $data['errores'] = $errores;
         $data['input'] = $input === [] ? $user : $input;;
+        $data['onlyRead'] = false;
         $data['add'] = false;
+        $data['sameUser'] = ((int)$_SESSION['id_usuario'] === $idUsuario) ? true : false;
 
         $this->view->showViews(array('templates/header.view.php', 'editUsuariosSistema.view.php', 'templates/footer.view.php'), $data);
     }
@@ -264,5 +306,23 @@ class UsusariosSistemaController extends BaseController
             header('Location: /usuarios-sistema');
         }
     }
+
+    public function deleteUsuario(int $idUsuario): void
+    {
+        $usuariosSistemaModel = new UsuariosSistemaModel();
+        $usuario = $usuariosSistemaModel->getById($idUsuario);
+        if ($usuario === false) {
+            header('Location: /usuarios-sistema');
+        } else {
+            if ($usuariosSistemaModel->deleteUsuario($idUsuario, (int)$usuario['baja'])) {
+                $mensaje = new Mensaje('Usuario modificado', Mensaje::SUCCESS, 'Éxito');
+            } else {
+                $mensaje = new Mensaje('Usuario no modificado', Mensaje::ERROR, 'Error');
+            }
+            $this->addFlashMessage($mensaje);
+            header('Location: /usuarios-sistema');
+        }
+    }
+
 
 }
