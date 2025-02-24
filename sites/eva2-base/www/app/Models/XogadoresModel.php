@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Com\Daw2\Models;
 
 use Com\Daw2\Core\BaseDbModel;
+use PDO;
 
 class XogadoresModel extends BaseDbModel
 {
@@ -13,7 +14,7 @@ class XogadoresModel extends BaseDbModel
                         LEFT JOIN nacionalidade n on n.codigo = x.nacionalidade
                         JOIN equipo e on e.codigo = x.codigo_equipo ';
 
-    private const ORDER_COLUMNS = ['x.numero_licencia', 'x.nome', 'n.nome', 'e.nome_equipo', 'e.nome_club'];
+    private const ORDER_COLUMNS = ['x.numero_licencia', 'e.nome_equipo', 'x.nome', 'x.estatura', 'x.data_nacemento'];
 
     private const DEFAULT_ORDER = 1;
     private const DEFAULT_SENTIDO = ' ASC ';
@@ -21,7 +22,7 @@ class XogadoresModel extends BaseDbModel
 
     private const SIZE_PAGE = 25;
 
-    public function getFilteredXogadores(array $data): false|array
+    /*public function getFilteredXogadores(array $data): false|array
     {
         $filtros = $this->filtrosQuery($data);
 
@@ -78,9 +79,71 @@ class XogadoresModel extends BaseDbModel
             $stmt = $this->pdo->query($sql);
         }
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }*/
+
+    public function getFilteredXogadores(array $data): array|false
+    {
+        $filtros = $this->filtrosQuery($data);
+
+        //order
+        if (isset($data['order'])) {
+            if (filter_var($data['order'], FILTER_VALIDATE_INT)
+                && $data['order'] > 0
+                && $data['order'] <= count(self::ORDER_COLUMNS)) {
+                $order = $data['order'];
+            } else {
+                throw new \InvalidArgumentException('Order debe estar entre 1 y ' . count(self::ORDER_COLUMNS));
+            }
+        } else {
+            $order = self::DEFAULT_ORDER;
+        }
+
+        //page
+        if (isset($data['page'])) {
+            if (filter_var($data['page'], FILTER_VALIDATE_INT)
+                && $data['page'] > 0) {
+                $page = $data['page'];
+            } else {
+                throw new \InvalidArgumentException('Page debe ser mayor o igual a 1');
+            }
+        } else {
+            $page = self::DEFAULT_PAGE;
+        }
+
+        //sentido
+        if (isset($data['sentido'])) {
+            if (strtoupper($data['sentido']) === 'ASC' || strtoupper($data['sentido']) === 'DESC') {
+                $sentido = $data['sentido'];
+            } else {
+                throw new \InvalidArgumentException('Page debe ser ASC o DESC');
+            }
+        } else {
+            $sentido = self::DEFAULT_SENTIDO;
+        }
+
+        //offset
+        $offset = ($page - 1) * self::SIZE_PAGE;
+
+        if ($filtros['conditions'] !== []) {
+            $sql = "select x.*, n.nome as nacionalidade_xogador, e.nome_equipo, e.nome_club " .
+                self::FROM
+                . " where " . implode(' AND ', $filtros['conditions'])
+                . " order by " . self::ORDER_COLUMNS[$order - 1] . " " . $sentido
+                . " limit " . $offset . ", " . self::SIZE_PAGE;
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($filtros['vars']);
+
+        } else {
+            $sql = "select x.*, n.nome as nacionalidade_xogador, e.nome_equipo, e.nome_club " .
+                self::FROM
+                . " order by " . self::ORDER_COLUMNS[$order - 1] . " " . $sentido
+                . " limit " . $offset . ", " . self::SIZE_PAGE;
+            $stmt = $this->pdo->query($sql);
+        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function filtrosQuery(array $data): array
+    /*public function filtrosQuery(array $data): array
     {
         $conditions = [];
         $vars = [];
@@ -117,6 +180,43 @@ class XogadoresModel extends BaseDbModel
 
 
         return ['conditions' => $conditions, 'vars' => $vars];
+    }*/
+
+    public function filtrosQuery(array $data): array
+    {
+        $conditions = [];
+        $vars = [];
+
+        //numero licencia
+        if (!empty($data['numero_licencia'])) {
+            $conditions[] = ' x.numero_licencia = :numero_licencia ';
+            $vars['numero_licencia'] = $data['numero_licencia'];
+        }
+
+        //codigo equipo
+        if (!empty($data['codigo_equipo'])) {
+            $conditions[] = ' x.codigo_equipo = :codigo_equipo ';
+            $vars['codigo_equipo'] = $data['codigo_equipo'];
+        }
+
+        //nome xogador
+        if (!empty($data['nome_xogador'])) {
+            $conditions[] = ' x.nome LIKE :nome_xogador ';
+            $vars['nome_xogador'] = "%" . $data['nome_xogador'] . "%";
+        }
+
+        //estatura min y max
+        if (!empty($data['min_estatura'])) {
+            $conditions[] = ' x.estatura >= :min_estatura ';
+            $vars['min_estatura'] = $data['min_estatura'];
+        }
+        if (!empty($data['max_estatura'])) {
+            $conditions[] = ' x.estatura <= :max_estatura ';
+            $vars['max_estatura'] = $data['max_estatura'];
+        }
+
+
+        return ['conditions' => $conditions, 'vars' => $vars];
     }
 
     public function getXogador(int $numLicencia): false|array
@@ -134,12 +234,17 @@ class XogadoresModel extends BaseDbModel
         return $stmt->execute(['numero_licencia' => $numLicencia]);
     }
 
-    public function addXogador(array $insertData): bool
+    public function addXogador(array $insertData): false|int
     {
         $sql = "INSERT INTO xogador (numero_licencia, codigo_equipo, numero, nome, posicion, nacionalidade, ficha, estatura, data_nacemento, temporadas)
                 VALUES (:numero_licencia, :codigo_equipo, :numero, :nome, :posicion, :nacionalidade, :ficha, :estatura, :data_nacemento, :temporadas)";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute($insertData);
+        $stmt->execute($insertData);
+        if ($stmt->rowCount() === 0) {
+            return false;
+        } else {
+            return $insertData['numero_licencia'];
+        }
     }
 
     public function editXogadorPut(int $numLicencia, array $data): bool
